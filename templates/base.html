@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="GL7T5yNgsbUZnxGBvQCl9kEONMkKr5VtSxsQau1q-qQ" />
+
+    <!-- Performance Optimizations (Core Web Vitals) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <!-- Favicon & Brand Identity -->
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{{ url_for('static', filename='images/official_brand_logo.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{{ url_for('static', filename='images/official_brand_logo.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/official_brand_logo.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="{{ url_for('static', filename='images/official_brand_logo.png') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='images/official_brand_logo.png') }}" color="#1B7A3D">
+    <meta name="msapplication-TileColor" content="#1B7A3D">
+    <meta name="theme-color" content="#1B7A3D">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="{% block meta_description %}Green Naturals - Premium Ayurvedic products crafted with pure Moringa & Neem extracts. Pure Herbal Excellence for holistic wellness at greennaturals.store.{% endblock %}">
+    <meta name="keywords"
+        content="{% block meta_keywords %}{% if all_products_seo %}{{ all_products_seo|map(attribute='name')|join(', ') }}, {% endif %}green, nature, natural, greennaturals.store, Ayurvedic Products, Herbal Wellness, Moringa, Neem, Green Naturals, Ayurvedic Health{% endblock %}">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="author" content="Green Naturals">
+    <link rel="canonical" href="{{ request.url }}">
+    {% block extra_head %}{% endblock %}
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{% block og_title %}Green Naturals | Pure Herbal Excellence{% endblock %}">
+    <meta property="og:description"
+        content="{% block og_description %}Premium Ayurvedic formulations powered by pure Moringa & Neem — trusted by thousands for holistic well-being.{% endblock %}">
+    <meta property="og:image"
+        content="{{ url_for('static', filename='images/official_brand_logo.png', _external=True) }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title"
+        content="{% block twitter_title %}Green Naturals | Pure Herbal Excellence{% endblock %}">
+    <meta property="twitter:description"
+        content="{% block twitter_description %}Discover nature's healing re-imagined with Green Naturals.{% endblock %}">
+    <meta property="twitter:image"
+        content="{{ url_for('static', filename='images/official_brand_logo.png', _external=True) }}">
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Green Naturals",
+      "url": "https://greennaturals.store",
+      "logo": "https://greennaturals.store/static/images/official_brand_logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+91{{ whatsapp_num }}",
+        "contactType": "customer service",
+        "email": "{{ support_email }}"
+      },
+      "sameAs": [
+        "https://www.instagram.com/greennaturals.store"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Green Naturals",
+      "url": "https://greennaturals.store/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://greennaturals.store/#shop?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HealthAndBeautyBusiness",
+      "name": "Green Naturals",
+      "image": "https://greennaturals.store/static/images/official_brand_logo.png",
+      "telephone": "+91{{ whatsapp_num }}",
+      "email": "{{ support_email }}",
+      "url": "https://greennaturals.store",
+      "priceRange": "₹₹",
+      "description": "Premium Ayurvedic formulations powered by pure Moringa & Neem.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Pure Organic Wellness Guide | Green Naturals",
+      "description": "Discover the synergy of traditional Ayurvedic medicine and modern herbal wellness in our comprehensive guide at greennaturals.store.",
+      "image": "https://greennaturals.store/static/images/official_brand_logo.png",
+      "author": {
+        "@type": "Organization",
+        "name": "Green Naturals"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Green Naturals",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://greennaturals.store/static/images/official_brand_logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://greennaturals.store/wellness-guide"
+      }
+    }
+    </script>
+
+    <title>{% block title %}Green Naturals | Pure Herbal Excellence{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script>
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            gn: {
+                                50: '#edfcf2',
+                                100: '#d4f7e0',
+                                200: '#acedca',
+                                300: '#6dd47e',
+                                400: '#3eaf5c',
+                                500: '#2d8b4e',
+                                600: '#1a6b3c',
+                                700: '#155a32',
+                                800: '#0f4726',
+                                900: '#0b3a1e',
+                                950: '#052211',
+                            }
+                        },
+                        fontFamily: {
+                            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                        }
+                    }
+                }
+            }
+        } else {
+            console.error("Tailwind CDN failed to load. Falling back to basic styles.");
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="/static/images/official_brand_logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8faf9;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* SAFETY NET: Force splash screen away after 5s even if JS/CSS fails */
+        @keyframes force-hide-splash {
+
+            0%,
+            99% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                pointer-events: none;
+                display: none;
+            }
+        }
+
+        #splash-screen {
+            animation: force-hide-splash 0.5s ease 5s forwards;
+        }
+
+        /* --- Navbar --- */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(45, 139, 78, 0.08);
+        }
+
+        /* --- Profile Drawer --- */
+        #profile-drawer {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .drawer-open {
+            transform: translateX(0) !important;
+        }
+
+        .drawer-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay-active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        /* --- Product Card --- */
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        @media (max-width: 1023px) {
+            .sort-select {
+                /* 16px prevents iOS Safari zoom on select focus */
+                font-size: 16px !important;
+                padding: 0 40px 0 48px !important;
+                text-align-last: center;
+                background-position: right 12px center;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .product-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 20px 50px rgba(45, 139, 78, 0.1);
+                border-color: rgba(45, 139, 78, 0.12);
+            }
+        }
+
+        /* --- Image Slider --- */
+        .image-slider-wrapper {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            position: relative;
+        }
+
+        .image-container {
+            display: flex;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            height: 100%;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .qty-hidden {
+            display: none !important;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f0f5f2;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2d8b4e;
+            border-radius: 10px;
+        }
+
+        /* --- Smooth Scroll --- */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* --- Announcement Bar Animation --- */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .marquee-track {
+            animation: marquee 30s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes bounce-subtle {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .animate-bounce-subtle {
+            animation: bounce-subtle 2s infinite;
+        }
+
+        @keyframes toast-in {
+            0% {
+                transform: translateY(100%) scale(0.9);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toast-out {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(20px) scale(0.95);
+                opacity: 0;
+            }
+        }
+
+        .animate-toast-in {
+            animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .animate-toast-out {
+            animation: toast-out 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+
+<body class="text-gray-900 overflow-x-hidden w-full relative">
+    <!-- Premium Aesthetic Offline Overlay -->
+    <div id="offline-full-overlay"
+        class="fixed inset-0 z-[100000] bg-white flex flex-col items-center justify-center p-8 text-center opacity-0 pointer-events-none transition-all duration-1000">
+        <div class="relative w-64 h-64 md:w-80 md:h-80 mb-8 group animate-float">
+            <!-- Professional 3D Illustration -->
+            <img src="/static/images/professional_offline.png" alt="Connection Lost"
+                class="w-full h-full object-contain drop-shadow-[0_20px_60px_rgba(45,139,78,0.15)] transition-transform duration-1000 group-hover:scale-105">
+            <div class="absolute inset-0 bg-gradient-to-t from-white/30 to-transparent rounded-full mix-blend-overlay">
+            </div>
+        </div>
+
+        <div class="max-w-md space-y-4">
+            <h2 class="text-3xl md:text-5xl font-black text-gn-950 tracking-tighter leading-none">Seeking Connection...
+            </h2>
+            <p class="text-slate-500 text-sm md:text-base font-medium leading-relaxed px-6">
+                It seems the digital winds have shifted. We've paused your session until your connection returns.
+            </p>
+        </div>
+
+        <div class="mt-10 flex flex-col items-center gap-6">
+            <button onclick="window.location.reload()"
+                class="px-10 py-3.5 bg-gn-900 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-gn-200/50 hover:bg-black hover:shadow-gn-400/30 transition-all flex items-center gap-3 group">
+                <i class="fas fa-rotate text-[10px] group-hover:rotate-180 transition-transform duration-700"></i> Retry
+                Connection
+            </button>
+
+            <div class="flex items-center gap-3 bg-gn-50/50 px-5 py-2.5 rounded-full border border-gn-100/30">
+                <div class="flex gap-1.5">
+                    <div class="w-1.5 h-1.5 bg-gn-400 rounded-full animate-pulse"></div>
+                    <div class="w-1.5 h-1.5 bg-gn-400 rounded-full animate-pulse [animation-delay:200ms]"></div>
+                    <div class="w-1.5 h-1.5 bg-gn-400 rounded-full animate-pulse [animation-delay:400ms]"></div>
+                </div>
+                <span class="text-[9px] font-black uppercase tracking-widest text-gn-600/60">Live Network Monitor
+                    Active</span>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(2deg);
+            }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+
+    <!-- 3D Cinematic Herbal Splash Screen (Disabled for instant page loading) -->
+    <div id="splash-screen" class="hidden" style="display: none !important;"></div>
+
+    <!-- Global Page Transition Loader (Disabled for instant page loading) -->
+    <div id="global-loader" class="hidden" style="display: none !important;"></div>
+
+    <style>
+        .char-3d {
+            display: inline-block;
+            opacity: 0;
+            /* Start state: High above, stretched, blurred, and rotated */
+            transform: translateY(-300px) rotateX(-90deg) scaleY(2) scaleX(0.8);
+            transition:
+                transform 1.1s cubic-bezier(0.175, 0.885, 0.32, 1.15),
+                opacity 0.6s ease-out,
+                filter 0.8s ease-out;
+            transition-delay: var(--d);
+            filter: blur(25px);
+            text-shadow: 0 0 0 rgba(45, 139, 78, 0);
+        }
+
+        .active-reveal .char-3d {
+            opacity: 1;
+            /* End state: Natural position, no blur, with depth shadow */
+            transform: translateY(0) rotateX(0) scaleY(1) scaleX(1);
+            filter: blur(0);
+            text-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 20px rgba(45, 139, 78, 0.2);
+        }
+
+        /* Impact Glow Animation */
+        @keyframes impact-glow {
+            0% {
+                text-shadow: 0 0 0 rgba(45, 139, 78, 0);
+            }
+
+            50% {
+                text-shadow: 0 0 40px rgba(45, 139, 78, 0.6);
+            }
+
+            100% {
+                text-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            }
+        }
+
+        .active-reveal .char-3d {
+            animation: impact-glow 0.8s ease-out forwards;
+            animation-delay: var(--d);
+        }
+
+        .active-reveal #splash-tagline {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+    </style>
+
+
+    <style>
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+
+    <!-- Announcement Bar -->
+    <div class="bg-gn-800 text-white overflow-hidden relative" style="height: 34px;">
+        <div class="marquee-track flex items-center whitespace-nowrap h-full" style="width: max-content;">
+            <span class="text-[10px] font-semibold tracking-wider px-8 opacity-90"><i
+                    class="fas fa-truck mr-1.5"></i>FAST & SECURE DELIVERY ALL OVER INDIA</span>
+            <span class="text-gn-400 mx-3">✦</span>
+            <span class="text-[10px] font-semibold tracking-wider px-8 opacity-90"><i class="fas fa-leaf mr-1.5"></i>
+                100% NATURAL & AYURVEDIC PRODUCTS</span>
+            <span class="text-gn-400 mx-3">✦</span>
+            <span class="text-[10px] font-semibold tracking-wider px-8 opacity-90"><i
+                    class="fas fa-shield-alt mr-1.5"></i> CERTIFIED & LAB TESTED FORMULATIONS</span>
+            <span class="text-gn-400 mx-3">✦</span>
+            <span class="text-[10px] font-semibold tracking-wider px-8 opacity-90"><i class="fas fa-truck mr-1.5"></i>
+                FAST & SECURE DELIVERY ALL OVER INDIA</span>
+            <span class="text-gn-400 mx-3">✦</span>
+            <span class="text-[10px] font-semibold tracking-wider px-8 opacity-90"><i class="fas fa-leaf mr-1.5"></i>
+                100% NATURAL & AYURVEDIC PRODUCTS</span>
+            <span class="text-gn-400 mx-3">✦</span>
+            <span class="text-[10px] font-semibold tracking-wider px-8 opacity-90"><i
+                    class="fas fa-shield-alt mr-1.5"></i> CERTIFIED & LAB TESTED FORMULATIONS</span>
+        </div>
+    </div>
+
+    <!-- Drawer Overlay -->
+    <div id="drawer-overlay" onclick="toggleDrawer()"
+        class="drawer-overlay fixed inset-0 bg-black/40 backdrop-blur-sm z-[60]"></div>
+
+    <!-- Profile Drawer -->
+    <div id="profile-drawer"
+        class="fixed top-0 right-0 h-full w-[290px] md:w-[360px] bg-white z-[70] shadow-2xl translate-x-full flex flex-col">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+            <span class="text-xs font-bold uppercase tracking-[0.15em] text-gn-800">My Account</span>
+            <button onclick="toggleDrawer()"
+                class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gn-50 hover:text-gn-600 transition-all">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+        </div>
+
+        <div class="flex-grow p-6 overflow-y-auto">
+            {% if session.get('username') %}
+            <div class="flex items-center gap-4 mb-8 p-4 bg-gn-50 rounded-2xl border border-gn-100">
+                <div
+                    class="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-lg shadow-gn-200 flex items-center justify-center bg-gradient-to-br from-gn-400 to-gn-600 text-white font-bold text-lg">
+                    <img src="{{ get_avatar(session.get('username'), session.get('profile_image')) }}"
+                        class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <p class="text-[10px] font-semibold text-gn-500 uppercase tracking-wider">Welcome back</p>
+                    <p class="font-bold text-gn-900 text-sm global-username-display">{{ session.get('username') }}</p>
+                </div>
+            </div>
+
+            <nav class="flex flex-col gap-1">
+                <a href="/"
+                    class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-gn-50 text-gray-600 hover:text-gn-700 transition-all font-semibold text-[13px] group">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-gn-100 flex items-center justify-center transition-colors">
+                        <i class="fas fa-home text-xs text-gray-400 group-hover:text-gn-600"></i></div> Home
+                </a>
+                <a href="/#shop"
+                    onclick="if(document.getElementById('profile-drawer').classList.contains('drawer-open')) toggleDrawer();"
+                    class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-gn-50 text-gray-600 hover:text-gn-700 transition-all font-semibold text-[13px] group">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-gn-100 flex items-center justify-center transition-colors">
+                        <i class="fas fa-store text-xs text-gray-400 group-hover:text-gn-600"></i></div> Shop
+                </a>
+                <a href="/my-orders"
+                    class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-gn-50 text-gray-600 hover:text-gn-700 transition-all font-semibold text-[13px] group">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-gn-100 flex items-center justify-center transition-colors">
+                        <i class="fas fa-box text-xs text-gray-400 group-hover:text-gn-600"></i></div> My Orders
+                </a>
+                <a href="/profile"
+                    class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-gn-50 text-gray-600 hover:text-gn-700 transition-all font-semibold text-[13px] group">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-gn-100 flex items-center justify-center transition-colors">
+                        <i class="fas fa-user text-xs text-gray-400 group-hover:text-gn-600"></i></div> My Profile
+                </a>
+                <a href="/contact"
+                    class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-gn-50 text-gray-600 hover:text-gn-700 transition-all font-semibold text-[13px] group">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-gn-100 flex items-center justify-center transition-colors">
+                        <i class="fas fa-headset text-xs text-gray-400 group-hover:text-gn-600"></i></div> Support Hub
+                </a>
+                <div class="h-px bg-gray-100 my-2"></div>
+                <a href="/logout"
+                    class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all font-semibold text-[13px] group">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-red-100 flex items-center justify-center transition-colors">
+                        <i class="fas fa-sign-out-alt text-xs text-gray-400 group-hover:text-red-500"></i></div> Logout
+                </a>
+            </nav>
+            {% else %}
+            <div class="p-2 mb-6">
+                <div class="text-center py-5 bg-gn-50/50 rounded-2xl border border-gn-100/50 mb-4">
+                    <div
+                        class="w-10 h-10 rounded-full bg-gn-100 text-gn-600 flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-user text-sm"></i>
+                    </div>
+                    <p class="text-gray-600 font-bold text-xs mb-3">Welcome to Green Naturals</p>
+                    <a href="/login"
+                        class="inline-block bg-gradient-to-r from-gn-500 to-gn-600 text-white px-6 py-2 rounded-full font-bold text-[11px] uppercase tracking-wider shadow-md shadow-gn-200 hover:shadow-lg transition-all">Login
+                        / Signup</a>
+                </div>
+                <nav class="flex flex-col gap-1">
+                    <a href="/"
+                        class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-gn-50 text-gray-600 hover:text-gn-700 transition-all font-semibold text-[13px] group">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-gn-100 flex items-center justify-center transition-colors">
+                            <i class="fas fa-home text-xs text-gray-400 group-hover:text-gn-600"></i></div> Home
+                    </a>
+                    <a href="/#shop"
+                        onclick="if(document.getElementById('profile-drawer').classList.contains('drawer-open')) toggleDrawer();"
+                        class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-gn-50 text-gray-600 hover:text-gn-700 transition-all font-semibold text-[13px] group">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-gn-100 flex items-center justify-center transition-colors">
+                            <i class="fas fa-store text-xs text-gray-400 group-hover:text-gn-600"></i></div> Shop
+                    </a>
+                    <a href="/contact"
+                        class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-gn-50 text-gray-600 hover:text-gn-700 transition-all font-semibold text-[13px] group">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-gn-100 flex items-center justify-center transition-colors">
+                            <i class="fas fa-headset text-xs text-gray-400 group-hover:text-gn-600"></i></div> Support
+                        Hub
+                    </a>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="main-nav" class="glass-nav sticky top-0 z-50 transition-all duration-500">
+        <div class="container mx-auto px-4 md:px-6 py-2.5 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="/" class="flex items-center gap-1.5 md:gap-2.5 flex-shrink-0">
+                <img src="/static/images/official_brand_logo.png" alt="Green Naturals" class="h-8 md:h-10 w-auto">
+                <div class="whitespace-nowrap">
+                    <span class="text-sm md:text-xl font-extrabold text-gn-800 tracking-tight block leading-tight">Green
+                        Naturals</span>
+                    <span
+                        class="block text-[7px] md:text-[11px] font-semibold text-gn-400 uppercase tracking-[0.2em]">Pure
+                        Herbal Excellence</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav -->
+            <div class="hidden lg:flex items-center gap-8 text-[12px] font-semibold text-gray-500">
+                <a href="/"
+                    class="hover:text-gn-600 transition-colors py-1 border-b-2 border-transparent hover:border-gn-500">Home</a>
+                <a href="/#shop"
+                    class="hover:text-gn-600 transition-colors py-1 border-b-2 border-transparent hover:border-gn-500">Shop</a>
+                <a href="/my-orders"
+                    class="hover:text-gn-600 transition-colors py-1 border-b-2 border-transparent hover:border-gn-500">My
+                    Orders</a>
+                <a href="/profile"
+                    class="hover:text-gn-600 transition-colors py-1 border-b-2 border-transparent hover:border-gn-500">Profile</a>
+                <a href="/contact"
+                    class="hover:text-gn-600 transition-colors py-1 border-b-2 border-transparent hover:border-gn-500">Contact
+                    Us</a>
+            </div>
+
+            <!-- Right Icons -->
+            <div class="flex items-center gap-2 md:gap-5">
+                <!-- Search (Desktop) -->
+                <!-- <div class="hidden md:flex items-center bg-gray-50 border border-gray-200 rounded-full px-4 py-2 focus-within:border-gn-300 focus-within:bg-white transition-all">
+                    <i class="fas fa-search text-gray-400 text-xs mr-2"></i>
+                    <input type="text" placeholder="Search products..." class="bg-transparent border-none outline-none text-xs w-28 focus:w-44 transition-all font-medium text-gray-700 placeholder-gray-400">
+                </div> -->
+
+                <!-- Cart -->
+                <div class="relative">
+                    <a href="/cart" id="global-cart-icon"
+                        class="relative w-11 h-11 md:w-12 md:h-12 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gn-700 hover:bg-gn-50 transition-all shadow-sm">
+                        <i class="fas fa-shopping-bag text-base md:text-lg"></i>
+                        <span id="cart-count-global"
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] md:text-[11px] w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center font-black border-2 border-white">0</span>
+                    </a>
+
+                    <!-- New User Hint Tooltip -->
+                    <div id="cart-hint"
+                        class="absolute top-[120%] right-0 bg-gn-700 text-white px-3 py-2 rounded-lg text-[10px] font-bold whitespace-nowrap shadow-xl opacity-0 pointer-events-none transition-all duration-500 translate-y-2 z-[100]">
+                        <div class="absolute -top-1 right-5 w-2 h-2 bg-gn-700 rotate-45"></div>
+                        <i class="fas fa-arrow-up mr-1 animate-bounce"></i> Product added! Check your cart here
+                    </div>
+                </div>
+
+                <!-- Profile / Login -->
+                {% if session.get('username') %}
+                <button onclick="toggleDrawer()"
+                    class="flex items-center gap-2.5 px-2 py-1.5 rounded-full bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gn-200 transition-all group focus:outline-none">
+                    <div
+                        class="w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-md flex items-center justify-center bg-gradient-to-br from-gn-400 to-gn-600 text-white font-bold ring-1 ring-gn-100/50">
+                        <img src="{{ get_avatar(session.get('username'), session.get('profile_image')) }}"
+                            class="w-full h-full object-cover">
+                    </div>
+                    <div class="hidden lg:flex flex-col items-start pr-1 text-left">
+                        <span
+                            class="text-[9px] font-black text-slate-400 leading-none uppercase tracking-widest mb-1">My
+                            Account</span>
+                        <span
+                            class="text-[12px] font-bold text-slate-700 group-hover:text-gn-600 transition-colors leading-none global-username-display">{{
+                            session.get('username') }}</span>
+                    </div>
+                    <i
+                        class="fas fa-chevron-down text-[8px] text-slate-300 mr-1 hidden lg:block group-hover:text-gn-400 transition-transform group-active:translate-y-0.5"></i>
+                </button>
+                {% else %}
+                <a href="/login"
+                    class="hidden md:inline-flex items-center gap-2 bg-gn-600 text-white px-5 py-2.5 rounded-full text-[11px] font-bold tracking-wider hover:bg-gn-700 transition-all shadow-sm hover:shadow-md">
+                    <i class="fas fa-user text-[9px]"></i> LOGIN
+                </a>
+                <a href="/login"
+                    class="md:hidden w-10 h-10 rounded-full bg-gn-50 border border-gn-200 flex items-center justify-center text-gn-600">
+                    <i class="fas fa-user text-sm"></i>
+                </a>
+                {% endif %}
+
+                <!-- Mobile Menu -->
+                <button onclick="toggleDrawer()"
+                    class="lg:hidden w-10 h-10 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500 ml-1">
+                    <i class="fas fa-bars text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"
+        class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[10001] flex flex-col gap-3 items-center pointer-events-none w-full max-w-md px-6">
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <!-- Footer -->
+    <footer class="bg-gn-950 text-white pt-10 pb-6">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+                <!-- Brand -->
+                <div class="lg:col-span-1">
+                    <div class="flex items-center gap-3 mb-5 flex-shrink-0">
+                        <img src="/static/images/official_brand_logo.png" alt="Green Naturals" class="h-11 w-auto">
+                        <div class="whitespace-nowrap">
+                            <span class="text-lg font-extrabold tracking-tight block leading-tight">Green
+                                Naturals</span>
+                            <span class="text-[9px] font-medium text-gn-400 uppercase tracking-widest">Pure Herbal
+                                Excellence</span>
+                        </div>
+                    </div>
+                    <p class="text-sm leading-relaxed text-gray-400 max-w-xs mb-6">Crafting premium Ayurvedic solutions
+                        with the botanical power of Moringa & Neem.</p>
+                    <div class="flex gap-3">
+                        <a href="https://www.instagram.com/greennaturals.store?igsh=MXRtcTgzd3pxdndpdg=="
+                            target="_blank"
+                            class="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:bg-gn-500 hover:border-gn-500 hover:text-white transition-all"><i
+                                class="fab fa-instagram text-xs"></i></a>
+                        <a href="mailto:{{ support_email }}"
+                            class="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:bg-gn-500 hover:border-gn-500 hover:text-white transition-all"><i
+                                class="fas fa-envelope text-xs"></i></a>
+                        <a href="https://wa.me/{{ whatsapp_num }}" target="_blank"
+                            class="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:bg-gn-500 hover:border-gn-500 hover:text-white transition-all"><i
+                                class="fab fa-whatsapp text-xs"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-gn-400 mb-5">Quick Links</h3>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="/" class="hover:text-gn-300 transition-colors">Home</a></li>
+                        <li><a href="/#shop" class="hover:text-gn-300 transition-colors">Shop All</a></li>
+                        <li><a href="/about" class="hover:text-gn-300 transition-colors">About Us</a></li>
+                        <li><a href="/wellness-guide" class="hover:text-gn-300 transition-colors">Wellness Guide</a>
+                        </li>
+                        <li><a href="/contact" class="hover:text-gn-300 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <!-- Support -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-gn-400 mb-5">Support</h3>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="/privacy-policy" class="hover:text-gn-300 transition-colors">Privacy Policy</a>
+                        </li>
+                        <li><a href="/terms" class="hover:text-gn-300 transition-colors">Terms of Service</a></li>
+                        <li><a href="/shipping" class="hover:text-gn-300 transition-colors">Shipping & Delivery</a></li>
+                        <li><a href="/returns" class="hover:text-gn-300 transition-colors">Returns & Refunds</a></li>
+                        <li><a href="/faq" class="hover:text-gn-300 transition-colors">Help & FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-gn-400 mb-6">Stay Connected</h3>
+                    <p class="text-[13px] text-gray-400 mb-5 leading-relaxed">Get exclusive offers and wellness tips
+                        delivered to your inbox.</p>
+
+                    <div
+                        class="relative flex items-center bg-white/5 border border-white/10 rounded-2xl p-1.5 focus-within:border-gn-500/50 focus-within:bg-white/10 transition-all duration-300 group shadow-inner">
+                        <input type="email" id="newsletter-email" placeholder="Your email address"
+                            class="flex-1 bg-transparent border-none px-4 py-2.5 text-xs outline-none text-white placeholder-gray-500 w-full">
+
+                        <button onclick="handleNewsletter()" id="newsletter-btn"
+                            class="w-10 h-10 bg-gradient-to-br from-gn-500 to-gn-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-gn-900/40 hover:scale-105 active:scale-95 transition-all flex-shrink-0">
+                            <i class="fas fa-arrow-right text-xs" id="newsletter-icon"></i>
+                        </button>
+                    </div>
+
+                    <div class="h-6">
+                        <p id="newsletter-msg"
+                            class="text-[10px] mt-3 font-semibold transition-all duration-500 opacity-0 flex items-center">
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-white/5">
+                <p class="text-[10px] font-medium text-gray-500">&copy; 2026 Green Naturals. All rights reserved.</p>
+                <div class="flex items-center gap-4">
+                    <a href="/admin-login"
+                        class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 group hover:border-gn-500/30 transition-all">
+                        <div class="w-1.5 h-1.5 rounded-full bg-gn-500 animate-pulse"></div>
+                        <span
+                            class="text-[9px] font-bold uppercase tracking-wider text-gray-500 group-hover:text-gn-400 transition-colors">Staff
+                            Portal</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Smooth Scroll for Shop links ---
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('a[href="/#shop"], a[href="#shop"], a[href="/shop"]').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    const shopSection = document.getElementById('shop');
+                    if (shopSection) {
+                        e.preventDefault();
+                        shopSection.scrollIntoView({ behavior: 'smooth' });
+                        if (window.location.pathname === '/' && window.location.hash !== '#shop') {
+                            history.pushState(null, null, '#shop');
+                        }
+                    }
+                });
+            });
+
+            if (window.location.hash === '#shop' || window.location.pathname === '/shop') {
+                setTimeout(function () {
+                    const shopSection = document.getElementById('shop');
+                    if (shopSection) {
+                        shopSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 200);
+            }
+        });
+
+        // --- Drawer Logic ---
+        function toggleDrawer() {
+            const drawer = document.getElementById('profile-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            drawer.classList.toggle('drawer-open');
+            overlay.classList.toggle('overlay-active');
+            document.body.style.overflow = drawer.classList.contains('drawer-open') ? 'hidden' : 'auto';
+        }
+
+        // --- Cart Logic ---
+        let cart = JSON.parse(localStorage.getItem('gn_cart')) || {};
+
+        function saveCart() {
+            localStorage.setItem('gn_cart', JSON.stringify(cart));
+            updateGlobalBadge();
+        }
+
+        function updateGlobalBadge() {
+            const badge = document.getElementById('cart-count-global');
+            let total = Object.values(cart).reduce((a, b) => a + b, 0);
+            if (badge) badge.innerText = total;
+        }
+
+        function initUIFromCart() {
+            Object.keys(cart).forEach(id => {
+                const addBtns = document.querySelectorAll(`[id="add-btn-${id}"]`);
+                const qtyCtrls = document.querySelectorAll(`[id="qty-ctrl-${id}"]`);
+                const countLbls = document.querySelectorAll(`[id="count-${id}"]`);
+
+                if (cart[id] > 0) {
+                    addBtns.forEach(btn => btn.classList.add('qty-hidden'));
+                    qtyCtrls.forEach(ctrl => ctrl.classList.remove('qty-hidden'));
+                    countLbls.forEach(lbl => lbl.innerText = cart[id]);
+                }
+            });
+            updateGlobalBadge();
+        }
+
+        // showToast is defined in the global script block at the bottom of this file
+
+        function handleAddToCart(id) {
+            cart[id] = 1;
+            const addBtns = document.querySelectorAll(`[id="add-btn-${id}"]`);
+            const qtyCtrls = document.querySelectorAll(`[id="qty-ctrl-${id}"]`);
+            const countLbls = document.querySelectorAll(`[id="count-${id}"]`);
+
+            addBtns.forEach(btn => btn.classList.add('qty-hidden'));
+            qtyCtrls.forEach(ctrl => ctrl.classList.remove('qty-hidden'));
+            countLbls.forEach(lbl => lbl.innerText = "1");
+
+            saveCart();
+            showToast('Added to Cart', 'Item successfully added to your shopping bag');
+
+            // Show Hint if first time
+            if (!localStorage.getItem('gn_cart_hint_shown')) {
+                const hint = document.getElementById('cart-hint');
+                if (hint) {
+                    hint.style.opacity = '1';
+                    hint.style.transform = 'translateY(0)';
+
+                    // Hide after 5 seconds
+                    setTimeout(() => {
+                        hint.style.opacity = '0';
+                        hint.style.transform = 'translateY(2px)';
+                        localStorage.setItem('gn_cart_hint_shown', 'true');
+                    }, 5000);
+                }
+            }
+        }
+
+        function changeQty(id, delta) {
+            cart[id] = (cart[id] || 0) + delta;
+            const addBtns = document.querySelectorAll(`[id="add-btn-${id}"]`);
+            const qtyCtrls = document.querySelectorAll(`[id="qty-ctrl-${id}"]`);
+            const countLbls = document.querySelectorAll(`[id="count-${id}"]`);
+
+            if (cart[id] <= 0) {
+                delete cart[id];
+                qtyCtrls.forEach(ctrl => ctrl.classList.add('qty-hidden'));
+                addBtns.forEach(btn => btn.classList.remove('qty-hidden'));
+                showToast('Removed from Cart', 'Item has been removed from your bag', 'info');
+            } else {
+                countLbls.forEach(lbl => lbl.innerText = cart[id]);
+                if (delta > 0) showToast('Cart Updated', 'Item quantity increased', 'info');
+                else showToast('Cart Updated', 'Item quantity decreased', 'info');
+            }
+            saveCart();
+        }
+
+        // --- Fast Unified Staggered Auto-Slide ---
+        function startSliders() {
+            setTimeout(() => {
+                document.querySelectorAll('.product-card').forEach((card, i) => {
+                    const slider = card.querySelector('.image-container');
+                    if (!slider) return;
+
+                    const imgs = slider.querySelectorAll('img');
+                    if (imgs.length <= 1) return;
+
+                    let idx = 0;
+                    // Much shorter initial delay (1-4 seconds)
+                    const initialDelay = Math.random() * 3000 + 1000;
+
+                    setTimeout(() => {
+                        // Immediate first slide
+                        idx = (idx + 1) % imgs.length;
+                        slider.style.transform = `translateX(-${idx * 100}%)`;
+
+                        // Followed by regular cycle
+                        setInterval(() => {
+                            idx = (idx + 1) % imgs.length;
+                            slider.style.transform = `translateX(-${idx * 100}%)`;
+                        }, 6000 + (Math.random() * 2000));
+                    }, initialDelay);
+                });
+            }, 500);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const splash = document.getElementById('splash-screen');
+            const loader = document.getElementById('global-loader');
+
+            // Hide Global Loader on Load
+            if (loader) {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    loader.style.pointerEvents = 'none';
+                }, 500);
+            }
+
+            try {
+                const lastSplash = localStorage.getItem('gn_splash_time');
+                const now = Date.now();
+                const twelveHours = 12 * 60 * 60 * 1000;
+
+                if (splash && (!lastSplash || (now - lastSplash) > twelveHours)) {
+                    const loader = document.getElementById('splash-loader');
+                    const logo = document.getElementById('splash-logo');
+                    const brandName = document.getElementById('splash-brand-name');
+                    const tagline = document.getElementById('splash-tagline');
+
+                    document.body.style.overflow = 'hidden';
+
+                    // Sequence Control
+                    setTimeout(() => { if (loader) loader.style.opacity = '0'; }, 800);
+                    setTimeout(() => {
+                        if (logo) { logo.style.opacity = '1'; logo.style.transform = 'scale(1)'; }
+                    }, 1200);
+                    setTimeout(() => { if (brandName) { brandName.style.opacity = '1'; brandName.style.transform = 'translateY(0)'; } }, 1600);
+                    setTimeout(() => { if (tagline) { tagline.style.opacity = '1'; tagline.style.transform = 'translateY(0)'; } }, 2000);
+
+                    // Final Exit
+                    setTimeout(() => {
+                        if (splash) {
+                            splash.style.opacity = '0';
+                            splash.style.filter = 'blur(20px)';
+                            splash.style.pointerEvents = 'none';
+                            document.body.style.overflow = '';
+                            localStorage.setItem('gn_splash_time', Date.now());
+                            setTimeout(() => splash.style.display = 'none', 1000);
+                        }
+                    }, 3500);
+                } else if (splash) {
+                    splash.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            } catch (err) {
+                console.error("Splash Error:", err);
+                const sp = document.getElementById('splash-screen');
+                if (sp) sp.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            initUIFromCart();
+            startSliders();
+            {% block extra_js %} {% endblock %}
+
+            // --- Newsletter Enter Key Support ---
+            const newsInput = document.getElementById('newsletter-email');
+            if (newsInput) {
+                newsInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') handleNewsletter();
+                });
+            }
+        });
+
+        // --- Newsletter Logic ---
+        async function handleNewsletter() {
+            const input = document.getElementById('newsletter-email');
+            const btn = document.getElementById('newsletter-btn');
+            const icon = document.getElementById('newsletter-icon');
+            const msg = document.getElementById('newsletter-msg');
+            const email = input.value.trim();
+
+            if (!email || !email.includes('@')) {
+                showNewsletterMsg('Please enter a valid email', 'text-rose-400');
+                return;
+            }
+
+            btn.disabled = true;
+            icon.className = 'fas fa-circle-notch fa-spin';
+
+            try {
+                const response = await fetch('/api/subscribe-newsletter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showNewsletterMsg(data.message, 'text-emerald-400');
+                    input.value = '';
+                } else if (data.status === 'info') {
+                    showNewsletterMsg(data.message, 'text-sky-400');
+                    input.value = '';
+                } else {
+                    showNewsletterMsg(data.message, 'text-rose-400');
+                }
+            } catch (err) {
+                showNewsletterMsg('Something went wrong', 'text-rose-400');
+            } finally {
+                btn.disabled = false;
+                icon.className = 'fas fa-arrow-right';
+            }
+        }
+
+        let newsletterTimeout = null;
+        function showNewsletterMsg(text, colorClass) {
+            const msg = document.getElementById('newsletter-msg');
+            if (!msg) return;
+
+            if (newsletterTimeout) clearTimeout(newsletterTimeout);
+
+            // Clear previous inline styles to let classes take over
+            msg.style.opacity = '';
+            msg.style.transform = '';
+
+            // Add icon based on status
+            let icon = '<i class="fas fa-check-circle mr-1.5"></i>';
+            if (colorClass.includes('rose')) icon = '<i class="fas fa-exclamation-circle mr-1.5"></i>';
+            if (colorClass.includes('sky')) icon = '<i class="fas fa-info-circle mr-1.5"></i>';
+
+            msg.innerHTML = icon + text;
+            msg.className = `text-[11px] mt-2 font-semibold transition-all duration-500 transform translate-y-0 opacity-100 ${colorClass} flex items-center animate-bounce-subtle`;
+
+            newsletterTimeout = setTimeout(() => {
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateY(5px)';
+                newsletterTimeout = null;
+            }, 5000);
+        }
+        // Smart Scroll Navbar Logic for Base
+        const mainNav = document.getElementById('main-nav');
+        let lastScrollTop = 0;
+
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop && scrollTop > 150) {
+                // Scrolling Down - Hide
+                if (mainNav) mainNav.style.transform = 'translateY(-100%)';
+            } else {
+                // Scrolling Up - Show
+                if (mainNav) mainNav.style.transform = 'translateY(0)';
+            }
+            lastScrollTop = scrollTop;
+        });
+
+        // Offline detection handled in the dedicated script block below
+
+        // --- Global Page Transition Logic (Disabled for Instant Navigation) ---
+        function showGlobalLoader() { return; }
+        function hideGlobalLoader() { return; }
+
+        // Handle browser back/forward (pageshow event)
+        window.addEventListener('pageshow', (event) => {
+            // event.persisted is true if the page was restored from the bfcache
+            hideGlobalLoader();
+        });
+
+        // Extra check for window load
+        window.addEventListener('load', hideGlobalLoader);
+
+        // --- Global Toast Notification System ---
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `flex flex-col gap-1 min-w-[280px] max-w-[340px] bg-white border-l-4 p-4 rounded-xl shadow-2xl animate-toast-in`;
+
+            const colors = {
+                success: 'border-emerald-500',
+                error: 'border-rose-500',
+                info: 'border-blue-500'
+            };
+            const icons = {
+                success: '<i class="fas fa-circle-check text-emerald-500"></i>',
+                error: '<i class="fas fa-circle-exclamation text-rose-500"></i>',
+                info: '<i class="fas fa-circle-info text-blue-500"></i>'
+            };
+
+            toast.classList.add(colors[type] || colors.info);
+
+            toast.innerHTML = `
+                <div class="flex items-center gap-3">
+                    ${icons[type] || icons.info}
+                    <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-800">${title}</h4>
+                </div>
+                <p class="text-[12px] text-slate-500 font-medium pl-7">${message}</p>
+            `;
+
+            container.appendChild(toast);
+
+            // Auto-remove after 4 seconds
+            setTimeout(() => {
+                toast.classList.replace('animate-toast-in', 'animate-toast-out');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+        window.showToast = showToast; // Make it global
+    </script>
+    <!-- Global Network Status Guard -->
+    <div id="offline-guard" class="fixed inset-0 z-[2147483647] pointer-events-none transition-all duration-700">
+        <!-- Professional Glassmorphic Connectivity Bar -->
+        <div class="absolute top-0 left-0 right-0 p-4 flex justify-center">
+            <div id="offline-banner"
+                class="flex items-center gap-4 bg-white/80 backdrop-blur-xl border border-slate-200/50 px-6 py-3 rounded-2xl shadow-[0_15px_40px_-10px_rgba(0,0,0,0.15)] translate-y-[-150%] transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+                <div class="relative flex items-center justify-center">
+                    <div class="absolute inset-0 bg-rose-500/20 rounded-full animate-ping"></div>
+                    <div class="relative w-2.5 h-2.5 bg-rose-600 rounded-full border-2 border-white shadow-sm"
+                        id="banner-dot"></div>
+                </div>
+                <div class="flex flex-col">
+                    <p class="text-[10px] font-black uppercase tracking-[0.15em] text-slate-900 leading-none mb-1"
+                        id="banner-title">No Connection</p>
+                    <p class="text-[9px] font-bold text-slate-400 leading-none" id="banner-subtitle">Some features may
+                        be limited</p>
+                </div>
+                <div class="w-px h-6 bg-slate-200 mx-2"></div>
+                <button onclick="window.location.reload()"
+                    class="text-[9px] font-black uppercase tracking-widest text-gn-700 hover:text-gn-900 transition-colors">
+                    Retry
+                </button>
+            </div>
+        </div>
+        <!-- Click Blocker (Transparent) -->
+        <div id="offline-click-blocker" class="absolute inset-0 bg-white/10 opacity-0 transition-all duration-1000">
+        </div>
+    </div>
+
+    <script>
+        // --- Premium Network Guard Logic ---
+        const guard = document.getElementById('offline-guard');
+        const banner = document.getElementById('offline-banner');
+        const bannerDot = document.getElementById('banner-dot');
+        const bannerTitle = document.getElementById('banner-title');
+        const bannerSubtitle = document.getElementById('banner-subtitle');
+        const fullOverlay = document.getElementById('offline-full-overlay');
+        const overlay = document.getElementById('offline-click-blocker');
+
+        function setOffline() {
+            if (!guard || !banner) return;
+
+            guard.classList.remove('pointer-events-none');
+            banner.classList.remove('translate-y-[-150%]');
+            overlay.classList.add('opacity-100');
+
+            // Full overlay shown only after 3 seconds of persistent offline
+            window.offlineTimeout = setTimeout(() => {
+                if (!navigator.onLine && fullOverlay) {
+                    fullOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                    fullOverlay.classList.add('opacity-100');
+                    document.body.style.overflow = 'hidden';
+                }
+            }, 3000);
+
+            console.warn("Network Status: OFFLINE");
+        }
+
+        function setOnline() {
+            if (!banner || !bannerDot) return;
+
+            clearTimeout(window.offlineTimeout);
+
+            // Success state in banner
+            banner.classList.add('border-emerald-200');
+            bannerDot.classList.remove('bg-rose-600', 'bg-rose-500/20');
+            bannerDot.classList.add('bg-emerald-500');
+            bannerDot.previousElementSibling.classList.replace('bg-rose-500/20', 'bg-emerald-500/20');
+
+            if (bannerTitle) bannerTitle.innerText = "Back Online";
+            if (bannerSubtitle) bannerSubtitle.innerText = "Syncing your experience...";
+
+            setTimeout(() => {
+                banner.classList.add('translate-y-[-150%]');
+                overlay.classList.remove('opacity-100');
+
+                if (fullOverlay) {
+                    fullOverlay.classList.add('opacity-0', 'pointer-events-none');
+                    fullOverlay.classList.remove('opacity-100');
+                    document.body.style.overflow = '';
+                }
+
+                guard.classList.add('pointer-events-none');
+
+                // Reset banner style after slide-out
+                setTimeout(() => {
+                    banner.classList.remove('border-emerald-200');
+                    bannerDot.classList.add('bg-rose-600');
+                    bannerDot.classList.remove('bg-emerald-500');
+                    bannerDot.previousElementSibling.classList.replace('bg-emerald-500/20', 'bg-rose-500/20');
+                    if (bannerTitle) bannerTitle.innerText = "No Connection";
+                    if (bannerSubtitle) bannerSubtitle.innerText = "Some features may be limited";
+                }, 700);
+            }, 2500);
+        }
+
+        window.addEventListener('offline', setOffline);
+        window.addEventListener('online', setOnline);
+    </script>
+    <!-- Toast container is already defined at line 535 -->
+</body>
+
+</html>

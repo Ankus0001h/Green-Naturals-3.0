@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin - Orders Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gn-primary: #059669;
+            /* Emerald 600 */
+            --gn-primary-dark: #047857;
+            /* Emerald 700 */
+            --gn-bg: #f8fafc;
+            --gn-card-bg: #ffffff;
+            --gn-text-main: #1e293b;
+            --gn-text-muted: #64748b;
+            --gn-border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--gn-bg);
+            color: var(--gn-text-main);
+            padding-bottom: 50px;
+        }
+
+        /* Header Styling */
+        .admin-header {
+            background: white;
+            border-bottom: 1px solid var(--gn-border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--gn-primary-dark);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Filter Section */
+        .filters-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gn-border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .gn-input {
+            border: 1px solid var(--gn-border);
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            font-size: 0.875rem;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .gn-input:focus {
+            border-color: var(--gn-primary);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+            outline: none;
+        }
+
+        .btn-gn {
+            background-color: var(--gn-primary) !important;
+            color: white !important;
+            border-radius: 10px;
+            padding: 0.6rem 1.25rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.2s;
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: inline-flex !important;
+            align-items: center;
+        }
+
+        .btn-gn:hover {
+            background-color: var(--gn-primary-dark) !important;
+            transform: translateY(-1px);
+            color: white !important;
+        }
+
+        /* Orders Display */
+        .order-card-mobile {
+            display: none;
+        }
+
+        .desktop-table-container {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--gn-border);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .gn-table th {
+            background: #f1f5f9;
+            padding: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gn-text-muted);
+            border-bottom: 1px solid var(--gn-border);
+        }
+
+        .gn-table td {
+            padding: 1rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--gn-border);
+            vertical-align: middle;
+        }
+
+        .gn-table tr:hover {
+            background-color: #f8fafc;
+            cursor: pointer;
+        }
+
+        /* Status Badges */
+        .badge-pill {
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-confirmed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-shipped {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-delivered {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-deleted {
+            background: #ef4444;
+            color: #ffffff;
+            border: 1px solid #b91c1c;
+            font-weight: 900;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .desktop-table-container {
+                display: none;
+            }
+
+            .filters-container {
+                padding: 1rem;
+                border-radius: 12px;
+            }
+
+            .order-card-mobile {
+                display: block;
+                background: white;
+                border-radius: 20px;
+                padding: 1.25rem;
+                margin-bottom: 1.25rem;
+                border: 1px solid var(--gn-border);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+            .order-card-mobile:active {
+                transform: scale(0.98);
+                box-shadow: none;
+            }
+
+            .mobile-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 1rem;
+                border-bottom: 1px solid #f1f5f9;
+                padding-bottom: 0.75rem;
+            }
+
+            .mobile-price {
+                font-size: 1.1rem;
+                font-weight: 800;
+                color: var(--gn-primary-dark);
+            }
+
+            .mobile-details {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                font-size: 0.8rem;
+            }
+
+            .mobile-label {
+                color: var(--gn-text-muted);
+                font-weight: 600;
+                font-size: 0.65rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 4px;
+            }
+
+            .mobile-value {
+                color: var(--gn-text-main);
+                font-weight: 700;
+            }
+
+            .admin-header {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Modal Customization */
+        .modal-content {
+            border-radius: 24px;
+            border: none;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: #f8fafc;
+            border-bottom: 1px solid var(--gn-border);
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--gn-border);
+        }
+
+        /* Stepper UI */
+        .stepper-item {
+            position: relative;
+            display: flex;
+            gap: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .stepper-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .stepper-line {
+            position: absolute;
+            left: 11px;
+            top: 24px;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+        }
+
+        .stepper-item:last-child .stepper-line {
+            display: none;
+        }
+
+        .stepper-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .stepper-item.completed .stepper-icon {
+            background: var(--gn-primary);
+            border-color: var(--gn-primary);
+            color: white;
+        }
+
+        .stepper-item.completed .stepper-line {
+            background: var(--gn-primary);
+        }
+
+        .stepper-item.current .stepper-icon {
+            border-color: var(--gn-primary);
+            color: var(--gn-primary);
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+        }
+
+        /* Loading Indicator */
+        .refreshing {
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .gn-table tbody tr.row-deleted {
+            background-color: #fef2f2 !important;
+            border-left: 4px solid #ef4444 !important;
+        }
+
+        .mobile-card.card-deleted {
+            border: 2px solid #ef4444 !important;
+            background: #fff5f5 !important;
+        }
+
+        /* Phone Friendly Stepper */
+        .v-stepper-item {
+            display: flex;
+            gap: 1.25rem;
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .v-stepper-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .v-stepper-line {
+            position: absolute;
+            left: 17px;
+            top: 36px;
+            bottom: 0;
+            width: 2px;
+            background: #f1f5f9;
+        }
+
+        .v-stepper-item.done .v-stepper-line {
+            background: var(--gn-primary);
+        }
+
+        .v-stepper-item:last-child .v-stepper-line {
+            display: none;
+        }
+
+        .v-stepper-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f8fafc;
+            border: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .v-stepper-item.done .v-stepper-icon {
+            background: var(--gn-primary);
+            border-color: var(--gn-primary);
+            color: white;
+        }
+
+        .v-stepper-item.active .v-stepper-icon {
+            border-color: var(--gn-primary);
+            color: var(--gn-primary);
+            box-shadow: 0 0 0 5px rgba(5, 150, 105, 0.1);
+        }
+
+        /* Live Blink Animation */
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            animation: live-blink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        }
+
+        @keyframes live-blink {
+            0% {
+                transform: scale(0.95);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.6;
+                box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="admin-header mb-4">
+        <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <h1 class="page-title mb-0">
+                <div class="bg-emerald-100 p-2 rounded-lg d-inline-flex">
+                    <i class="fas fa-box-open text-emerald-600"></i>
+                </div>
+                <span class="d-none d-sm-inline">Order Management</span>
+                <span class="d-inline d-sm-none" style="font-size: 1rem;">Orders</span>
+            </h1>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('admin_dashboard') }}"
+                    class="btn btn-light rounded-pill px-3 btn-sm fw-bold border border-slate-200">
+                    <i class="fas fa-home"></i> <span class="d-none d-md-inline ms-1">Home</span>
+                </a>
+                <button id="btnRefresh" class="btn btn-gn rounded-pill px-3 btn-sm d-flex align-items-center shadow-sm">
+                    <i class="fas fa-sync-alt"></i> <span class="ms-2 d-none d-md-inline">Refresh List</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid px-3 px-md-4">
+
+        <!-- Stats & Summary Bar -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total Orders</p>
+                    <h2 id="totalCount" class="mb-0 fw-black text-slate-800">0</h2>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="bg-white p-3 rounded-2xl border border-emerald-100 shadow-sm">
+                    <p class="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-1">Live Feed</p>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="live-dot"></div>
+                        <span class="text-sm font-bold text-slate-600">Active Monitoring</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Filters -->
+        <div class="filters-container">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label text-xs fw-bold text-slate-500">STATUS FILTER</label>
+                    <select id="filterStatus" class="gn-input">
+                        <option value="all">All Orders</option>
+                        <option value="returns">Returns & Exchanges</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="out_for_delivery">Out for Delivery</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="deleted">Deleted (History)</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label text-xs fw-bold text-slate-500">SEARCH ORDER</label>
+                    <div class="position-relative">
+                        <i
+                            class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-slate-400"></i>
+                        <input type="text" id="filterSearch" class="gn-input ps-5"
+                            placeholder="Order ID, Customer Phone or Name...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-xs fw-bold text-slate-500">SHOW</label>
+                    <select id="filterLimit" class="gn-input">
+                        <option value="20">20 Items</option>
+                        <option value="50" selected>50 Items</option>
+                        <option value="100">100 Items</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button id="btnExport" class="btn btn-outline-secondary w-100 rounded-pill fw-bold btn-sm">
+                        <i class="fas fa-download me-2"></i>Export
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Table (Desktop) -->
+        <div class="desktop-table-container">
+            <table class="gn-table w-100">
+                <thead>
+                    <tr>
+                        <th width="4%">S.No.</th>
+                        <th width="10%">Order</th>
+                        <th width="16%">Customer</th>
+                        <th width="18%">Email</th>
+                        <th width="10%">Total</th>
+                        <th width="8%">Fees</th>
+                        <th width="10%">Payment</th>
+                        <th width="11%">Status</th>
+                        <th width="10%">Date</th>
+                        <th width="3%" class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersBodyDesktop">
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-slate-400">Loading your secure order vault...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Orders List (Mobile) -->
+        <div id="ordersBodyMobile" class="order-card-mobile-container d-md-none">
+            <!-- Mobile cards go here -->
+        </div>
+
+    </div>
+
+    <!-- Export Options Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-block">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="modal-title fw-black text-slate-800"><i
+                                class="fas fa-file-export me-2 text-emerald-600"></i>Export Orders</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-4">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 d-block">1.
+                            Select Format</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exportFormat" id="formatExcel"
+                                    value="excel" checked>
+                                <label class="form-check-label fw-bold text-slate-700" for="formatExcel">
+                                    Excel (CSV)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exportFormat" id="formatPDF"
+                                    value="pdf">
+                                <label class="form-check-label fw-bold text-slate-700" for="formatPDF">
+                                    A4 PDF
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 d-block">2.
+                            Select Timeframe</label>
+                        <select id="exportTimeframe" class="gn-input mb-2">
+                            <option value="all">All Time</option>
+                            <option value="1_month">Last 1 Month</option>
+                            <option value="3_months">Last 3 Months</option>
+                            <option value="6_months">Last 6 Months</option>
+                            <option value="12_months">Last 12 Months</option>
+                            <option value="custom">Custom Date Range</option>
+                        </select>
+                        <div id="customDateRange" class="row g-2 mt-1" style="display: none;">
+                            <div class="col-6">
+                                <label class="text-[10px] fw-bold text-slate-500 mb-1">Start Date</label>
+                                <input type="date" id="exportStartDate" class="gn-input form-control-sm"
+                                    style="height: 35px;">
+                            </div>
+                            <div class="col-6">
+                                <label class="text-[10px] fw-bold text-slate-500 mb-1">End Date</label>
+                                <input type="date" id="exportEndDate" class="gn-input form-control-sm"
+                                    style="height: 35px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 d-block">3.
+                            Choose Action</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exportAction" id="actionDownload"
+                                    value="download" checked>
+                                <label class="form-check-label fw-bold text-slate-700" for="actionDownload">
+                                    Download to Device
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exportAction" id="actionEmail"
+                                    value="email">
+                                <label class="form-check-label fw-bold text-slate-700" for="actionEmail">
+                                    Send via Email
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="emailInputDiv" style="display: none;">
+                        <label
+                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 d-block">Enter
+                            Email Address</label>
+                        <input type="email" id="exportEmailAddress" class="gn-input"
+                            placeholder="e.g. admin@greennaturals.store">
+                    </div>
+                </div>
+                <div class="modal-footer bg-slate-50 border-top border-slate-100 p-3">
+                    <button class="btn btn-light rounded-pill px-4 fw-bold text-slate-600"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button id="btnConfirmExport" class="btn btn-gn rounded-pill px-4 fw-bold">Proceed Export <i
+                            class="fas fa-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div class="modal fade" id="orderModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header d-block">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="modal-title fw-black text-slate-800">Order Details</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div id="modalOrderMeta" class="text-xs font-bold text-slate-400 tracking-widest uppercase">
+                        <!-- ID and Date -->
+                    </div>
+                </div>
+                <div class="modal-body p-0" id="orderDetailBody">
+                    <!-- Dynamic Content -->
+                </div>
+                <div class="modal-footer bg-light border-top p-3">
+                    <div class="d-flex w-100 flex-column flex-md-row justify-content-between align-items-center gap-3">
+                        <a href="#" id="btnViewInvoice" class="btn btn-outline-secondary rounded-pill fw-bold btn-sm"
+                            target="_blank">
+                            <i class="fas fa-file-invoice me-2"></i>View Invoice
+                        </a>
+                        <button id="btnSaveChanges" class="btn btn-gn rounded-pill px-4 fw-bold shadow-sm">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentOrderId = null;
+        const API_BASE = '/admin/api/orders';
+
+        function statusBadge(status, legacyStatus) {
+            var map = {
+                'confirmed': { cls: 'status-confirmed', text: 'Confirmed' },
+                'packed': { cls: 'status-packed', text: 'Packed' },
+                'shipped': { cls: 'status-shipped', text: 'Shipped' },
+                'out_for_delivery': { cls: 'status-shipped', text: 'Out for Delivery' },
+                'delivered': { cls: 'status-delivered', text: 'Delivered' },
+                'cancelled': { cls: 'status-cancelled', text: 'Cancelled' },
+                'deleted': { cls: 'status-deleted', text: 'DELETED' }
+            };
+            var s = (status && map[status.toLowerCase()]) || (legacyStatus && map[legacyStatus.toLowerCase()]) || { cls: 'bg-secondary text-white', text: 'Unknown' };
+            return '<span class="badge-pill ' + s.cls + '">' + s.text + '</span>';
+        }
+
+        async function loadOrders() {
+            var tbody = document.getElementById('ordersBodyDesktop');
+            var mobile = document.getElementById('ordersBodyMobile');
+            if (!tbody || !mobile) { return; }
+
+            tbody.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-slate-400"><i class="fas fa-spinner fa-spin me-2"></i>Loading...</td></tr>';
+            mobile.innerHTML = '<div class="text-center py-4 text-slate-400"><i class="fas fa-spinner fa-spin me-2"></i>Loading...</div>';
+
+            var status = document.getElementById('filterStatus').value;
+            var search = document.getElementById('filterSearch').value.trim();
+            var limit = document.getElementById('filterLimit').value;
+            var url = API_BASE + '?status=' + encodeURIComponent(status) + '&search=' + encodeURIComponent(search) + '&limit=' + limit + '&_t=' + Date.now();
+
+            try {
+                var res = await fetch(url);
+                if (res.status === 401) {
+                    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-danger"><i class="fas fa-lock me-2"></i>Session expired. <a href="/admin-login">Login again</a></td></tr>';
+                    mobile.innerHTML = '<div class="text-center py-4 text-danger"><i class="fas fa-lock me-2"></i>Session expired.</div>';
+                    return;
+                }
+                var data = await res.json();
+                var orders = data.orders || [];
+
+                var totalEl = document.getElementById('totalCount');
+                if (totalEl) totalEl.textContent = data.total_count !== undefined ? data.total_count : orders.length;
+
+                if (!orders.length) {
+                    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-slate-400">No orders found.</td></tr>';
+                    mobile.innerHTML = '<div class="text-center py-4 text-slate-400">No orders found.</div>';
+                    return;
+                }
+
+                tbody.innerHTML = orders.map(function (o, i) {
+                    var total = parseFloat(o.total || 0).toFixed(2);
+                    var hfee = parseFloat(o.handling_fee || 0);
+                    var roff = parseFloat(o.round_off || 0);
+                    var dateStr = o.created_at ? new Date(o.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A';
+                    var custName = (o.customer && o.customer.name) || '-';
+                    var custEmail = (o.customer && o.customer.email) || '-';
+                    var delRow = o.order_status === 'deleted' ? 'row-deleted' : '';
+                    return '<tr class="' + delRow + '" onclick="openOrderDetail(\'' + o._id + '\')" style="cursor:pointer">'
+                        + '<td class="text-xs text-slate-400">' + (i + 1) + '</td>'
+                        + '<td><strong>#' + o.order_id + '</strong></td>'
+                        + '<td>' + custName + '</td>'
+                        + '<td class="text-xs">' + custEmail + '</td>'
+                        + '<td><strong class="text-emerald-700">&#8377;' + total + '</strong></td>'
+                        + '<td><div class="text-xs ' + (hfee > 0 ? 'text-slate-500' : 'text-emerald-600') + '">' + (hfee > 0 ? 'H:&#8377;' + hfee.toFixed(2) : 'FREE') + '</div>'
+                        + (roff > 0.001 ? '<div class="text-[10px] text-slate-400">R:&#8377;' + roff.toFixed(2) + '</div>' : '')
+                        + '</td>'
+                        + '<td class="text-xs text-uppercase">' + (o.payment_mode || 'COD') + '</td>'
+                        + '<td>' + statusBadge(o.order_status, o.status) + '</td>'
+                        + '<td class="text-xs text-slate-500">' + dateStr + '</td>'
+                        + '<td class="text-end"><button class="btn btn-light btn-sm rounded-circle" onclick="event.stopPropagation();openOrderDetail(\'' + o._id + '\')"><i class="fas fa-chevron-right text-slate-400"></i></button></td>'
+                        + '</tr>';
+                }).join('');
+
+                mobile.innerHTML = orders.map(function (o) {
+                    var total = parseFloat(o.total || 0).toFixed(2);
+                    var custName = (o.customer && o.customer.name) || 'Customer';
+                    var delCls = o.order_status === 'deleted' ? 'card-deleted' : '';
+                    return '<div class="order-card-mobile ' + delCls + '" id="card-' + o._id + '" onclick="openOrderDetail(\'' + o._id + '\')">'
+                        + '<div class="mobile-header"><div>'
+                        + '<span class="text-xs font-black text-slate-400">Order #' + o.order_id + '</span>'
+                        + '<div class="fw-bold text-slate-800">' + custName + '</div></div>'
+                        + '<div class="mobile-price">&#8377;' + total + '</div></div>'
+                        + '<div class="mobile-details mb-3">'
+                        + '<div><div class="mobile-label">STATUS</div><div>' + statusBadge(o.order_status, o.status) + '</div></div>'
+                        + '<div><div class="mobile-label">PAYMENT</div><div class="mobile-value">' + (o.payment_mode || 'COD') + '</div></div>'
+                        + '<div><div class="mobile-label">DATE</div><div class="mobile-value">' + (o.created_at ? new Date(o.created_at).toLocaleDateString('en-IN') : 'N/A') + '</div></div>'
+                        + '</div>'
+                        + '<div class="text-center"><span class="text-xs font-bold text-emerald-600">Tap to manage <i class="fas fa-arrow-right ms-1"></i></span></div>'
+                        + '</div>';
+                }).join('');
+
+                // Highlight logic
+                const urlParams = new URLSearchParams(window.location.search);
+                const highlightId = urlParams.get('highlight');
+                if (highlightId) {
+                    setTimeout(() => {
+                        const target = document.getElementById('card-' + highlightId) || document.querySelector(`tr[onclick*="${highlightId}"]`);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            target.style.backgroundColor = '#f0fdf4';
+                            target.style.borderColor = '#10b981';
+                            target.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.2)';
+                            setTimeout(() => {
+                                target.style.transition = 'all 1s';
+                                target.style.backgroundColor = '';
+                                target.style.borderColor = '';
+                                target.style.boxShadow = '';
+                            }, 3000);
+                        }
+                    }, 500);
+                }
+
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-danger"><i class="fas fa-exclamation-triangle me-2"></i>' + err.message + '</td></tr>';
+                mobile.innerHTML = '<div class="text-center py-4 text-danger"><i class="fas fa-exclamation-triangle me-2"></i>' + err.message + '</div>';
+            }
+        }
+
+        async function openOrderDetail(id) {
+            currentOrderId = id;
+            var saveBtn = document.getElementById('btnSaveChanges');
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = 'Save Changes'; saveBtn.style.backgroundColor = '#059669'; }
+
+            var res = await fetch(API_BASE + '/' + id);
+            var o = await res.json();
+            var cust = o.customer || {};
+
+            document.getElementById('modalOrderMeta').innerHTML = 'Order #' + o.order_id + ' &nbsp;&bull;&nbsp; ' + new Date(o.created_at).toLocaleString('en-IN');
+            var btnInv = document.getElementById('btnViewInvoice');
+            if (btnInv) btnInv.href = '/admin/invoice/' + o._id;
+
+            var itemsHtml = (o.items || []).map(function (it) {
+                return '<div class="d-flex align-items-center gap-3 p-3 border-bottom">'
+                    + '<div style="width:60px;height:60px;flex-shrink:0"><img src="' + (it.image || '') + '" style="width:100%;height:100%;object-fit:contain" onerror="this.src=\'/static/images/official_brand_logo.png\'"></div>'
+                    + '<div class="flex-grow-1"><div class="fw-bold text-sm">' + (it.name || 'Product') + '</div><div class="text-xs text-slate-400">' + (it.category || '') + '</div></div>'
+                    + '<div class="text-end"><div class="text-xs text-slate-500">' + (it.qty || 1) + ' x &#8377;' + (it.price || 0) + '</div>'
+                    + '<div class="fw-bold text-emerald-600">&#8377;' + ((it.qty || 1) * (it.price || 0)).toFixed(2) + '</div></div>'
+                    + '</div>';
+            }).join('');
+
+            var stages = ['confirmed', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'];
+            var labels = ['Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'];
+            var curStat = (o.order_status || 'confirmed').toLowerCase();
+            var curIdx = stages.indexOf(curStat);
+            var statusOpts = stages.map(function (s, i) {
+                var isCur = s === curStat, isDone = i < curIdx && curStat !== 'cancelled' && s !== 'cancelled';
+                var attr = isCur ? 'selected' : '';
+                if (isDone) attr += ' disabled style="color:#94a3b8"';
+                if ((curStat === 'delivered' || curStat === 'cancelled') && !isCur) attr += ' disabled';
+                return '<option value="' + s + '" ' + attr + '>' + (isDone ? '\u2714 ' : '') + labels[i] + '</option>';
+            }).join('');
+
+            var returnHtml = '';
+            if (o.return_requested) {
+                var retSteps = [1, 2, 3, 4];
+                var rType = String(o.return_type || 'Return').charAt(0).toUpperCase() + String(o.return_type || 'Return').slice(1);
+                var retLabels = ['Step 1: ' + rType + ' Approved', 'Step 2: Item Picked Up', 'Step 3: ' + rType + ' Processing', 'Step 4: ' + rType + ' Completed'];
+                var curRetStep = parseInt(o.return_step || 1);
+                var retOpts = retSteps.map(function (step, i) {
+                    var isCur = step === curRetStep;
+                    var isDone = step < curRetStep;
+                    var attr = isCur ? 'selected' : '';
+                    if (isDone) attr += ' disabled style="color:#94a3b8"';
+                    if (curRetStep === 4 && !isCur) attr += ' disabled';
+                    return '<option value="' + step + '" ' + attr + '>' + (isDone ? '\u2714 ' : '') + retLabels[i] + '</option>';
+                }).join('');
+
+                returnHtml = '<div class="mt-2 mb-3 p-3 rounded-2xl" style="background:#fff;border:1px solid #e2e8f0">'
+                    + '<label class="text-[10px] fw-bold text-slate-400 uppercase d-block mb-2">Return/Exchange Progress</label>'
+                    + '<select id="editReturnStep" class="gn-input mb-2">'
+                    + retOpts
+                    + '</select><p class="text-[9px] text-orange-600 font-bold italic">Customer sees this on their live tracking stepper.</p>'
+                    + '</div>';
+            }
+
+            var itemSum = (o.items || []).reduce(function (sum, it) { return sum + parseFloat(it.price || 0) * parseInt(it.qty || it.quantity || 1); }, 0);
+            var shipFee = parseFloat(o.shipping || 0);
+            var hndFee = parseFloat(o.handling_fee || 0);
+            var roundFee = parseFloat(o.round_off || 0);
+
+            var pmtStatus = o.payment_status ? o.payment_status.toUpperCase() : (String(o.payment_mode).toUpperCase() === 'COD' ? 'PENDING' : 'UNKNOWN');
+            var pmtBadge = pmtStatus === 'PAID' ? 'bg-success' : (pmtStatus === 'FAILED' ? 'bg-danger' : 'bg-warning text-dark');
+
+            var pmtHtml = '<div class="p-3 rounded-2xl mb-3" style="background:#f8fafc;border:1px solid #e2e8f0">'
+                + '<div class="d-flex justify-content-between align-items-center mb-2">'
+                + '<div class="text-[10px] fw-bold text-slate-400 uppercase">Payment Information</div>'
+                + '<span class="badge ' + pmtBadge + '">' + pmtStatus + '</span>'
+                + '</div>'
+                + '<div class="text-sm mb-2"><i class="fas fa-wallet text-slate-400 me-2"></i><b>Mode:</b> ' + String(o.payment_mode || 'COD').toUpperCase() + '</div>'
+                + '<div class="bg-white p-2 rounded border text-xs">'
+                + '<div class="d-flex justify-content-between mb-1 text-slate-600"><span>Items Subtotal:</span><span>&#8377;' + itemSum.toFixed(2) + '</span></div>'
+                + '<div class="d-flex justify-content-between mb-1 text-slate-600"><span>Shipping:</span><span class="' + (shipFee > 0 ? 'text-slate-600' : 'text-emerald-600 fw-bold') + '">' + (shipFee > 0 ? '&#8377;' + shipFee.toFixed(2) : 'FREE') + '</span></div>'
+                + (hndFee > 0 ? '<div class="d-flex justify-content-between mb-1 text-slate-600"><span>Handling Fee:</span><span>&#8377;' + hndFee.toFixed(2) + '</span></div>' : '')
+                + (roundFee > 0.001 ? '<div class="d-flex justify-content-between mb-1 text-slate-400" style="font-size:10px"><span>Round Off:</span><span>+&#8377;' + roundFee.toFixed(2) + '</span></div>' : '')
+                + '<div class="d-flex justify-content-between mt-2 pt-2 border-top fw-bold text-sm"><span>Grand Total:</span><span class="text-emerald-700">&#8377;' + parseFloat(o.total || 0).toFixed(2) + '</span></div>'
+                + '</div>';
+
+            if (o.razorpay_order_id) {
+                pmtHtml += '<div class="mt-2 text-[10px] text-slate-500 font-monospace"><b>RZP Order:</b> ' + o.razorpay_order_id + '</div>';
+            }
+            if (o.payment_id && o.payment_id !== 'COD_ORDER') {
+                pmtHtml += '<div class="mt-1 text-[10px] text-slate-500 font-monospace"><b>RZP Payment:</b> ' + o.payment_id + '</div>';
+            }
+            pmtHtml += '</div>';
+
+            var returnInfoHtml = '';
+            if (o.return_detail) {
+                var rd = o.return_detail;
+                returnInfoHtml = '<div class="p-3 rounded-2xl mb-3" style="background:#fff;border:1px solid #e2e8f0">'
+                    + '<div class="d-flex justify-content-between align-items-center mb-2">'
+                    + '<div class="text-[10px] fw-bold text-slate-400 uppercase">Return/Exchange Request</div>'
+                    + '<span class="badge bg-orange-100 text-orange-700 border border-orange-200">' + (rd.status || 'Pending') + '</span>'
+                    + '</div>'
+                    + '<div class="text-sm mb-2"><i class="fas fa-redo me-2 text-slate-400"></i><b>Type:</b> ' + (rd.type || 'N/A').toUpperCase() + '</div>'
+                    + '<div class="text-sm mb-2 text-slate-700"><b>Problem:</b> ' + (rd.problem || 'N/A') + '</div>'
+                    + (rd.items && rd.items.length ? 
+                        '<div class="text-[10px] fw-bold text-slate-400 uppercase mt-3 mb-2">Requested Items</div>' +
+                        '<div class="bg-slate-50 p-2 rounded-xl border mb-2">' +
+                        rd.items.map(function(item){
+                            return '<div class="d-flex justify-content-between text-xs mb-1"><span>' + item.name + '</span><span class="fw-bold text-slate-700">x' + (item.qty || 1) + '</span></div>';
+                        }).join('') + '</div>' : '')
+                    + (rd.notes ? '<div class="text-xs text-slate-500 bg-slate-50 p-2 rounded mb-2 border"><b>Customer Note:</b> ' + rd.notes + '</div>' : '')
+                    + (rd.photo_urls && rd.photo_urls.length ?
+                        '<div class="text-[10px] fw-bold text-orange-400 uppercase mt-3 mb-1">Attached Photos</div>' +
+                        '<div class="d-flex gap-2 overflow-x-auto pb-1">' + rd.photo_urls.map(url => '<a href="' + url + '" target="_blank" class="flex-shrink-0"><img src="' + url + '" class="rounded border" style="height:60px;width:60px;object-fit:cover"></a>').join('') + '</div>'
+                        : '')
+                    + '</div>';
+            }
+
+            var ratingHtml = '';
+            try {
+                var rVal = parseInt(o.rating);
+                if (!isNaN(rVal) && rVal > 0) {
+                    var stars = '';
+                    for (var i = 1; i <= 5; i++) {
+                        stars += '<i class="fas fa-star ' + (i <= rVal ? 'text-warning' : 'text-slate-200') + '"></i>';
+                    }
+                    ratingHtml = '<div class="p-3 rounded-2xl mb-3" style="background:#fffbeb;border:1px solid #fef3c7">'
+                        + '<div class="text-[10px] fw-bold text-amber-500 uppercase mb-2">Customer Rating & Review</div>'
+                        + '<div class="d-flex align-items-center mb-2">'
+                        + '<div class="me-3 fs-5">' + stars + '</div>'
+                        + '<span class="badge bg-amber-100 text-amber-700">' + rVal + ' / 5</span>'
+                        + '</div>'
+                        + (o.review ? '<div class="bg-white p-3 rounded-xl border text-sm text-slate-700 italic">"' + String(o.review).replace(/"/g, '&quot;') + '"</div>' : '<div class="text-xs text-slate-400 italic">No written review provided.</div>')
+                        + '</div>';
+                }
+            } catch (e) { console.error("Rating parse error:", e); }
+
+
+            var userBadge = o.user_id ? '<span class="badge bg-primary ms-2" style="font-size:0.65rem">Registered</span>' : '<span class="badge bg-secondary ms-2" style="font-size:0.65rem">Guest</span>';
+
+            var customerHtml = '<div class="p-3 rounded-2xl mb-3" style="background:#f8fafc;border:1px solid #e2e8f0">'
+                + '<div class="d-flex justify-content-between align-items-center mb-2">'
+                + '<div class="text-[10px] fw-bold text-slate-400 uppercase">Customer Information</div>'
+                + userBadge
+                + '</div>'
+                + '<div class="fw-bold text-slate-800 mb-2" style="font-size:1.1rem"><i class="fas fa-user-circle me-2 text-slate-400"></i>' + (cust.name || 'Guest') + '</div>'
+                + '<div class="text-sm text-slate-600 mb-1"><i class="fas fa-envelope me-2 text-slate-400" style="width:16px"></i><a href="mailto:' + (cust.email || '') + '" class="text-decoration-none text-slate-600">' + (cust.email || 'No Email Provided') + '</a></div>'
+                + '<div class="text-sm text-slate-600 mb-1"><i class="fas fa-phone me-2 text-slate-400" style="width:16px"></i><a href="tel:' + (cust.phone || '') + '" class="text-decoration-none text-slate-600">' + (cust.phone || 'N/A') + '</a></div>';
+
+            if (cust.alt_phone) {
+                customerHtml += '<div class="text-sm text-slate-600"><i class="fas fa-mobile-alt me-2 text-slate-400" style="width:16px"></i><a href="tel:' + cust.alt_phone + '" class="text-decoration-none text-slate-600">' + cust.alt_phone + ' (Alt)</a></div>';
+            }
+            customerHtml += '</div>';
+
+            var addressText = (cust.address || 'Address not provided');
+            var addressHtml = '<div class="p-3 rounded-2xl mb-3" style="background:#f8fafc;border:1px solid #e2e8f0">'
+                + '<div class="text-[10px] fw-bold text-slate-400 uppercase mb-2">Delivery Address</div>'
+                + '<div class="bg-white p-3 rounded-xl border text-sm text-slate-700">'
+                + '<div class="fw-bold mb-2"><i class="fas fa-map-marker-alt text-emerald-600 me-2"></i>' + (cust.name || 'Name N/A') + '</div>'
+                + '<div class="ms-4 ps-1">'
+                + '<div class="mb-2" style="line-height:1.5">' + addressText.replace(/\n/g, '<br>') + '</div>';
+
+            if (cust.landmark) {
+                addressHtml += '<div class="mb-2 text-xs text-slate-500"><i class="fas fa-map-signs me-1"></i> <b>Landmark:</b> ' + cust.landmark + '</div>';
+            }
+
+            addressHtml += '<div class="fw-bold mt-2 pt-2 border-top">' + (cust.city || '') + ', ' + (cust.state || '') + ' - ' + (cust.pincode || '') + '</div>'
+                + '</div></div></div>';
+
+            document.getElementById('orderDetailBody').innerHTML =
+                '<div class="p-3"><div class="row g-4">'
+                + '<div class="col-lg-7">'
+                + customerHtml
+                + '<hr class="border-dark opacity-25 my-4">'
+                + addressHtml
+                + '<hr class="border-dark opacity-25 my-4">'
+                + pmtHtml
+                + (returnInfoHtml ? '<hr class="border-dark opacity-25 my-4">' + returnInfoHtml : '')
+                + (ratingHtml ? '<hr class="border-dark opacity-25 my-4">' + ratingHtml : '')
+                + '<hr class="border-dark opacity-25 my-4">'
+                + '<div class="p-3 rounded-2xl" style="background:#fff;border:1px solid #e2e8f0">'
+                + '<div class="text-[10px] fw-bold text-slate-400 uppercase mb-2">Manage Status</div>'
+                + '<select id="editOrderStatus" class="gn-input mb-3">' + statusOpts + '</select>'
+                + returnHtml
+                + '<div class="text-[10px] fw-bold text-slate-400 uppercase mb-2">Admin Notes</div>'
+                + '<textarea id="editNotes" class="gn-input" rows="2" placeholder="Private notes...">' + (o.notes || '') + '</textarea>'
+                + '</div></div>'
+                + '<div class="col-lg-5">'
+                + '<div class="rounded-2xl overflow-hidden" style="border:1px solid #e2e8f0">'
+                + '<div class="p-2 text-center text-[10px] fw-bold text-slate-500 uppercase" style="background:#f8fafc;border-bottom:1px solid #e2e8f0">Items</div>'
+                + '<div style="max-height:500px;overflow-y:auto">' + itemsHtml + '</div>'
+                + '</div></div>'
+                + '</div></div>';
+
+            if (o.order_status === 'deleted') {
+                var es = document.getElementById('editOrderStatus');
+                var en = document.getElementById('editNotes');
+                if (es) es.disabled = true;
+                if (en) en.disabled = true;
+                if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Locked'; }
+            }
+
+            new bootstrap.Modal(document.getElementById('orderModal')).show();
+        }
+
+        window.onload = function () {
+            loadOrders();
+            // Instant Auto-open specific order if requested via URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const openOrderId = urlParams.get('open_order');
+            const searchId = urlParams.get('search');
+            
+            if (searchId) {
+                document.getElementById('filterSearch').value = searchId;
+            }
+
+            if (openOrderId) {
+                // Near-instant trigger (100ms) for professional feel
+                setTimeout(() => openOrderDetail(openOrderId), 100);
+                
+                // Cleanup URL when modal is closed so it doesn't re-open on reload
+                const modalEl = document.getElementById('orderModal');
+                if (modalEl) {
+                    modalEl.addEventListener('hidden.bs.modal', function () {
+                        const url = new URL(window.location);
+                        url.searchParams.delete('open_order');
+                        window.history.replaceState({}, '', url);
+                    });
+                }
+            }
+
+            document.getElementById('btnRefresh').onclick = loadOrders;
+            document.getElementById('filterStatus').onchange = loadOrders;
+            document.getElementById('filterLimit').onchange = loadOrders;
+            document.getElementById('filterSearch').onkeyup = function (e) { if (e.key === 'Enter') loadOrders(); };
+
+            var btnExp = document.getElementById('btnExport');
+            if (btnExp) btnExp.onclick = function () { new bootstrap.Modal(document.getElementById('exportModal')).show(); };
+
+            // Export Modal Logic
+            const tf = document.getElementById('exportTimeframe');
+            if (tf) tf.onchange = function () {
+                const customDiv = document.getElementById('customDateRange');
+                if (customDiv) customDiv.style.display = this.value === 'custom' ? 'flex' : 'none';
+            };
+
+            document.querySelectorAll('input[name="exportAction"]').forEach(radio => {
+                radio.onchange = function () {
+                    const emailDiv = document.getElementById('emailInputDiv');
+                    if (emailDiv) emailDiv.style.display = this.value === 'email' ? 'block' : 'none';
+                };
+            });
+
+            const btnConfirmExp = document.getElementById('btnConfirmExport');
+            if (btnConfirmExp) btnConfirmExp.onclick = async function () {
+                const btn = this;
+                const origText = btn.innerHTML;
+
+                const formatChecked = document.querySelector('input[name="exportFormat"]:checked');
+                const format = formatChecked ? formatChecked.value : 'excel';
+
+                const timeframe = document.getElementById('exportTimeframe').value;
+
+                const actionChecked = document.querySelector('input[name="exportAction"]:checked');
+                const action = actionChecked ? actionChecked.value : 'download';
+
+                const email = document.getElementById('exportEmailAddress').value;
+                const startDate = document.getElementById('exportStartDate').value;
+                const endDate = document.getElementById('exportEndDate').value;
+
+                const status = document.getElementById('filterStatus').value;
+                const search = document.getElementById('filterSearch').value.trim();
+
+                if (timeframe === 'custom' && (!startDate || !endDate)) {
+                    alert('Please select both start and end dates.');
+                    return;
+                }
+
+                if (action === 'email' && !email) {
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+
+                const params = new URLSearchParams({
+                    format: format,
+                    timeframe: timeframe,
+                    action: action,
+                    email: email,
+                    start_date: startDate,
+                    end_date: endDate,
+                    status: status,
+                    search: search,
+                    limit: 5000
+                });
+
+                try {
+                    if (action === 'download') {
+                        window.location.href = '/admin/api/orders/export?' + params.toString();
+                        setTimeout(() => {
+                            btn.disabled = false;
+                            btn.innerHTML = origText;
+                            const modalEl = document.getElementById('exportModal');
+                            const modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        }, 2000);
+                    } else {
+                        const res = await fetch('/admin/api/orders/export?' + params.toString(), { method: 'POST' });
+                        const result = await res.json();
+                        if (result.success) {
+                            alert('Success! Export has been sent to ' + email);
+                            const modalEl = document.getElementById('exportModal');
+                            const modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        } else {
+                            throw new Error(result.error || 'Export failed');
+                        }
+                    }
+                } catch (err) {
+                    alert('Export Error: ' + err.message);
+                } finally {
+                    if (action === 'email') {
+                        btn.disabled = false;
+                        btn.innerHTML = origText;
+                    }
+                }
+            };
+
+            document.getElementById('btnSaveChanges').onclick = async function () {
+                if (!currentOrderId) return;
+                var btn = document.getElementById('btnSaveChanges');
+                var origText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i>Updating...';
+
+                var payload = {
+                    order_status: document.getElementById('editOrderStatus').value,
+                    notes: document.getElementById('editNotes').value
+                };
+                var rse = document.getElementById('editReturnStep');
+
+                try {
+                    var res = await fetch(API_BASE + '/' + currentOrderId, {
+                        method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+                    });
+                    if (rse) {
+                        var meta = document.getElementById('modalOrderMeta').textContent;
+                        var match = meta.match(/#([A-Za-z0-9-]+)/);
+                        if (match) await fetch('/admin/api/update-return-step', {
+                            method: 'POST', headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ order_id: match[1], step: rse.value })
+                        });
+                    }
+                    var result = await res.json();
+                    if (result.message) {
+                        await loadOrders();
+                        btn.innerHTML = '<i class="fas fa-check me-2"></i>Success!';
+                        setTimeout(function () {
+                            var m = bootstrap.Modal.getInstance(document.getElementById('orderModal'));
+                            if (m) m.hide();
+                            document.querySelectorAll('.modal-backdrop').forEach(function (el) { el.remove(); });
+                            document.body.classList.remove('modal-open');
+                            document.body.style.overflow = '';
+                            document.body.style.paddingRight = '';
+                        }, 1000);
+                    } else { throw new Error(result.error || 'Server error'); }
+                } catch (err) {
+                    alert('Update Failed: ' + err.message);
+                    btn.disabled = false;
+                    btn.innerHTML = origText;
+                }
+            };
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,859 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin | Green Naturals{% endblock %}
+{% block page_title %}Management Hub{% endblock %}
+
+{% block content %}
+<style>
+    .action-card {
+        background: white;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        min-height: 280px;
+    }
+
+    .action-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+    }
+
+    .icon-box {
+        transition: transform 0.4s ease;
+    }
+
+    .action-card:hover .icon-box {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .shipping-input {
+        background: #f8fafc;
+        border: 2px solid #f1f5f9;
+        transition: all 0.3s ease;
+    }
+
+    .shipping-input:focus {
+        border-color: #0ea5e9;
+        background: white;
+        outline: none;
+    }
+
+    /* Modern Toggle Switch Fix */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        /* Off color - Greyish */
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    input:checked+.slider {
+        background-color: #10b981;
+    }
+
+    /* On color - Green */
+    input:checked+.slider:before {
+        transform: translateX(20px);
+    }
+</style>
+
+<div class="grid grid-cols-2 md:grid-cols-5 gap-6 mb-10">
+    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 flex items-center gap-4 shadow-sm">
+        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center"><i
+                class="fas fa-leaf"></i></div>
+        <div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Products</p>
+            <p class="text-2xl font-black text-slate-800">{{ products|length }}</p>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 flex items-center gap-4 shadow-sm">
+        <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center"><i
+                class="fas fa-users"></i></div>
+        <div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Users</p>
+            <p class="text-2xl font-black text-slate-800" id="user-count-stat">...</p>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 flex items-center gap-4 shadow-sm">
+        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center"><i
+                class="fas fa-truck-fast"></i></div>
+        <div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Shipping</p>
+            <p class="text-2xl font-black text-blue-600" id="current-shipping-display">₹{{ current_shipping|default('0')
+                }}</p>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 flex items-center gap-4 shadow-sm">
+        <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center"><i
+                class="fas fa-envelope"></i></div>
+        <div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Emails Left</p>
+            <p class="text-2xl font-black text-slate-800">{{ emails_left }}</p>
+        </div>
+    </div>
+    <div onclick="showOtpLogs()" class="col-span-2 md:col-span-1 bg-white p-5 sm:p-6 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 flex flex-col gap-3 sm:gap-4 shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-95 group">
+        <div class="flex items-center gap-3 sm:gap-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-amber-50 text-amber-600 rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-all"><i class="fas fa-comment-sms"></i></div>
+            <div>
+                <p class="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">Today's OTP</p>
+                <p class="text-xl sm:text-2xl font-black text-slate-800" id="otp-count-stat">...</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-3 gap-1 sm:gap-2 bg-slate-50/50 rounded-2xl p-2 sm:p-3 border border-slate-50">
+            <div class="text-center">
+                <p class="text-[7px] sm:text-[8px] font-black text-slate-400 uppercase">Yesterday</p>
+                <p class="text-[10px] sm:text-xs font-bold text-slate-600" id="otp-yesterday-stat">-</p>
+            </div>
+            <div class="text-center border-x border-slate-200/50 px-1">
+                <p class="text-[7px] sm:text-[8px] font-black text-slate-400 uppercase">Monthly</p>
+                <p class="text-[10px] sm:text-xs font-bold text-emerald-600" id="otp-month-stat">-</p>
+            </div>
+            <div class="text-center">
+                <p class="text-[7px] sm:text-[8px] font-black text-slate-400 uppercase">All Time</p>
+                <p class="text-[10px] sm:text-xs font-bold text-slate-600" id="otp-total-stat">-</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- OTP Logs Modal -->
+<div id="otp-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden items-start justify-center p-2 sm:p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-2xl rounded-2xl sm:rounded-[3rem] my-4 sm:my-16 overflow-hidden shadow-2xl animate-in zoom-in duration-300 relative">
+        <!-- Header -->
+        <div class="p-4 sm:p-6 border-b border-slate-100 bg-slate-50">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 text-amber-600 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-history text-lg sm:text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base sm:text-xl font-black text-slate-800 leading-tight">WhatsApp OTP Logs</h3>
+                        <div class="flex items-center gap-1.5 mt-0.5">
+                            <p class="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest">Verifications</p>
+                            <span class="w-0.5 h-0.5 bg-slate-300 rounded-full"></span>
+                            <p class="text-[8px] sm:text-[9px] font-black text-emerald-500 uppercase tracking-widest" id="server-time-display">Server: --:--</p>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="closeOtpModal()" class="w-8 h-8 sm:w-10 sm:h-10 bg-white border border-slate-200 text-slate-400 rounded-xl sm:rounded-2xl flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all flex-shrink-0">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleOtpView('logs')" id="btn-otp-logs" class="px-3 sm:px-4 py-1.5 sm:py-2 bg-emerald-500 text-white text-[8px] sm:text-[9px] font-black uppercase tracking-widest rounded-lg sm:rounded-xl shadow-sm transition-all">Logs</button>
+                <button onclick="toggleOtpView('stats')" id="btn-otp-stats" class="px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-slate-400 text-[8px] sm:text-[9px] font-black uppercase tracking-widest rounded-lg sm:rounded-xl border border-slate-200 transition-all">Weekly Trends</button>
+            </div>
+        </div>
+        <!-- Content -->
+        <div class="p-2 sm:p-4 max-h-[65vh] overflow-y-auto">
+            <div id="otp-logs-view">
+                <div id="otp-logs-container">
+                    <div class="flex flex-col items-center justify-center py-20 text-slate-300">
+                        <i class="fas fa-spinner fa-spin text-3xl mb-4"></i>
+                        <p class="text-xs font-bold uppercase tracking-widest">Fetching Logs...</p>
+                    </div>
+                </div>
+            </div>
+            <div id="otp-stats-view" class="hidden">
+                <div class="space-y-4 p-2 sm:p-4" id="otp-weekly-container">
+                </div>
+            </div>
+        </div>
+        <div class="p-4 sm:p-6 bg-slate-50 text-center border-t border-slate-100">
+            <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 italic">OTPs are logged automatically for administrator assistance.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Traffic Analytics Panel -->
+<div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-6 sm:p-8 mb-10">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h3 class="text-xl font-black text-slate-800 flex items-center gap-3">
+                <i class="fas fa-chart-line text-blue-500"></i> Traffic Analytics
+            </h3>
+            <p class="text-[10px] sm:text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Real-time Visitor Monitoring</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            <span class="text-[9px] font-black text-emerald-500 uppercase tracking-widest">System Active</span>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        <div class="bg-slate-50 p-5 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center text-center">
+            <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-3">
+                <i class="fas fa-eye"></i>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Live Now</p>
+            <p class="text-3xl font-black text-emerald-600">{{ traffic.live_now if traffic else 0 }}</p>
+        </div>
+        
+        <div class="bg-slate-50 p-5 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center text-center">
+            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-3">
+                <i class="fas fa-mouse-pointer"></i>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Today's Hits</p>
+            <p class="text-3xl font-black text-slate-800">{{ traffic.today_hits if traffic else 0 }}</p>
+        </div>
+        
+        <div class="bg-slate-50 p-5 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center text-center">
+            <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mb-3">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Unique (Today)</p>
+            <p class="text-3xl font-black text-slate-800">{{ traffic.today_unique if traffic else 0 }}</p>
+        </div>
+        
+        <div class="bg-slate-50 p-5 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center text-center">
+            <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center mb-3">
+                <i class="fas fa-globe"></i>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Traffic</p>
+            <p class="text-3xl font-black text-slate-800">{{ traffic.total_hits if traffic else 0 }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+    <a href="/admin/add-product" class="action-card p-10 rounded-[3.5rem] flex flex-col items-center text-center group">
+        <div
+            class="icon-box w-20 h-20 bg-emerald-50 text-emerald-600 rounded-[2rem] flex items-center justify-center mb-8 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
+            <i class="fas fa-plus text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-3">Add New Item</h3>
+        <p class="text-slate-400 text-[11px] font-medium mb-6">Launch new organic products.</p>
+        <div class="mt-auto"><span
+                class="px-6 py-2.5 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-full group-hover:bg-emerald-600 transition-colors">Launch
+                Editor</span></div>
+    </a>
+
+    <a href="/admin/orders" class="action-card p-10 rounded-[3.5rem] flex flex-col items-center text-center group">
+        <div
+            class="icon-box w-20 h-20 bg-amber-50 text-amber-600 rounded-[2rem] flex items-center justify-center mb-8 group-hover:bg-amber-600 group-hover:text-white transition-all duration-500">
+            <i class="fas fa-receipt text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-3">Customer Orders</h3>
+        <p class="text-slate-400 text-[11px] font-medium mb-6">Manage new receipts & GN IDs.</p>
+        <div class="mt-auto"><span
+                class="px-6 py-2.5 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-full group-hover:bg-amber-600 transition-colors">View
+                Orders</span></div>
+    </a>
+
+    <a href="/admin/returns" class="action-card p-10 rounded-[3.5rem] flex flex-col items-center text-center group" style="cursor: pointer;">
+        <div class="icon-box w-20 h-20 bg-rose-50 text-rose-600 rounded-[2rem] flex items-center justify-center mb-8 group-hover:bg-rose-600 group-hover:text-white transition-all duration-500">
+            <i class="fas fa-exchange-alt text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-3">Returns & Exchanges</h3>
+        <p class="text-slate-400 text-[11px] font-medium mb-6">Manage customer return requests.</p>
+        <div class="mt-auto"><span class="px-6 py-2.5 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-full group-hover:bg-rose-600 transition-colors">Review</span></div>
+    </a>
+
+    <div class="action-card p-10 rounded-[3.5rem] flex flex-col items-center text-center group">
+        <div
+            class="icon-box w-20 h-20 bg-slate-50 text-slate-600 rounded-[2rem] flex items-center justify-center mb-8 group-hover:bg-slate-900 group-hover:text-white transition-all duration-500">
+            <i class="fas fa-credit-card text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-6">Payment Status</h3>
+        <div class="w-full space-y-3">
+            <div class="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <span class="text-[10px] font-black uppercase text-slate-500">COD Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="cod-toggle" onchange="togglePayment('cod')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <span class="text-[10px] font-black uppercase text-slate-500">Online Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="online-toggle" onchange="togglePayment('online')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <span class="text-[10px] font-black uppercase text-slate-500">Fetch RZP Fee</span>
+                <label class="switch">
+                    <input type="checkbox" id="fetch_fee-toggle" onchange="togglePayment('fetch_fee')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- RZP Fee Configuration -->
+            <div id="rzp-fee-config" class="space-y-2 pt-2 border-t border-slate-100">
+                <p class="text-[10px] font-black uppercase text-emerald-600 mb-2">Razorpay Charges</p>
+                <div class="flex items-center justify-between gap-4">
+                    <span class="text-[9px] font-black uppercase text-slate-400">RZP Fee %</span>
+                    <input type="number" step="0.01" id="rzp-fee-percent"
+                        class="w-16 p-1 text-right text-xs font-bold bg-white border border-slate-200 rounded"
+                        placeholder="2.0">
+                </div>
+                <div class="flex items-center justify-between gap-4">
+                    <span class="text-[9px] font-black uppercase text-slate-400">RZP GST %</span>
+                    <input type="number" step="0.1" id="rzp-gst-percent"
+                        class="w-16 p-1 text-right text-xs font-bold bg-white border border-slate-200 rounded"
+                        placeholder="18.0">
+                </div>
+            </div>
+
+            <!-- Online Methods Granular Control -->
+            <div id="online-methods-config" class="space-y-2 pt-3 border-t border-slate-100">
+                <p class="text-[10px] font-black uppercase text-blue-600 mb-2">Online Methods</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="flex items-center justify-between bg-white p-2 rounded-xl border border-slate-100">
+                        <span class="text-[8px] font-black uppercase text-slate-500">UPI</span>
+                        <label class="switch scale-50">
+                            <input type="checkbox" id="upi-toggle" onchange="togglePayment('upi')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-2 rounded-xl border border-slate-100">
+                        <span class="text-[8px] font-black uppercase text-slate-500">Cards</span>
+                        <label class="switch scale-50">
+                            <input type="checkbox" id="card-toggle" onchange="togglePayment('card')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-2 rounded-xl border border-slate-100">
+                        <span class="text-[8px] font-black uppercase text-slate-500">Netbank</span>
+                        <label class="switch scale-50">
+                            <input type="checkbox" id="netbanking-toggle" onchange="togglePayment('netbanking')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-2 rounded-xl border border-slate-100">
+                        <span class="text-[8px] font-black uppercase text-slate-500">Wallet</span>
+                        <label class="switch scale-50">
+                            <input type="checkbox" id="wallet-toggle" onchange="togglePayment('wallet')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-2 rounded-xl border border-slate-100">
+                        <span class="text-[8px] font-black uppercase text-slate-500">EMI</span>
+                        <label class="switch scale-50">
+                            <input type="checkbox" id="emi-toggle" onchange="togglePayment('emi')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-2 rounded-xl border border-slate-100">
+                        <span class="text-[8px] font-black uppercase text-slate-500">Paylater</span>
+                        <label class="switch scale-50">
+                            <input type="checkbox" id="paylater-toggle" onchange="togglePayment('paylater')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COD Fee Configuration -->
+            <div id="cod-fee-config" class="space-y-2 pt-3 border-t border-slate-100">
+                <p class="text-[10px] font-black uppercase text-amber-600 mb-2">COD Surcharge</p>
+                <div class="flex items-center justify-between gap-4">
+                    <span class="text-[9px] font-black uppercase text-slate-400 italic">Charge COD Fee</span>
+                    <label class="switch scale-75">
+                        <input type="checkbox" id="cod_fee-toggle" onchange="togglePayment('cod_fee')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between gap-4">
+                    <span class="text-[9px] font-black uppercase text-slate-400">COD Fee ₹</span>
+                    <input type="number" id="cod-fee-amount"
+                        class="w-16 p-1 text-right text-xs font-bold bg-white border border-slate-200 rounded"
+                        placeholder="40">
+                </div>
+                <p class="text-[8px] text-slate-400 italic text-center mt-1">*If off, will show as "FREE" on checkout
+                </p>
+                <button onclick="updateRzpPercentages()"
+                    class="w-full py-2.5 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-lg hover:bg-emerald-600 transition-all mt-2 shadow-lg">Save
+                    Config</button>
+            </div>
+        </div>
+    </div>
+
+    <a href="/admin/products" class="action-card p-10 rounded-[3.5rem] flex flex-col items-center text-center group">
+        <div
+            class="icon-box w-20 h-20 bg-blue-50 text-blue-600 rounded-[2rem] flex items-center justify-center mb-8 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
+            <i class="fas fa-boxes-stacked text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-3">Inventory</h3>
+        <p class="text-slate-400 text-[11px] font-medium mb-6">Stock levels and pricing.</p>
+        <div class="mt-auto"><span
+                class="px-6 py-2.5 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-full group-hover:bg-blue-600 transition-colors">Open
+                Vault</span></div>
+    </a>
+
+    <div class="action-card p-10 rounded-[3.5rem] flex flex-col items-center text-center group">
+        <div
+            class="icon-box w-20 h-20 bg-blue-50 text-blue-500 rounded-[2rem] flex items-center justify-center mb-8 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
+            <i class="fas fa-truck-ramp-box text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-2">Shipping Fee</h3>
+        <div class="relative w-full mb-6 mt-2">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
+            <input type="number" id="shipping-input-field"
+                class="shipping-input w-full pl-8 pr-4 py-3 rounded-2xl text-center font-bold text-slate-700"
+                value="{{ current_shipping|default('') }}">
+        </div>
+        <div class="mt-auto w-full">
+            <button onclick="updateShipping()" id="ship-update-btn"
+                class="w-full py-4 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-full hover:bg-blue-500 transition-all flex items-center justify-center gap-2"><i
+                    class="fas fa-save"></i> Update Fee</button>
+        </div>
+    </div>
+
+    <a href="/admin/manage-users"
+        class="action-card p-10 rounded-[3.5rem] flex flex-col items-center text-center group">
+        <div
+            class="icon-box w-20 h-20 bg-purple-50 text-purple-600 rounded-[2rem] flex items-center justify-center mb-8 group-hover:bg-purple-600 group-hover:text-white transition-all duration-500">
+            <i class="fas fa-users-gear text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-3">User Base</h3>
+        <p class="text-slate-400 text-[11px] font-medium mb-6">Security & credentials.</p>
+        <div class="mt-auto"><span
+                class="px-6 py-2.5 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-full group-hover:bg-purple-600 transition-colors">Manage
+                Users</span></div>
+    </a>
+
+    <!-- WhatsApp Support Update -->
+    <div class="action-card p-10 rounded-[3.5rem] flex flex-col items-center text-center group">
+        <div
+            class="icon-box w-20 h-20 bg-green-50 text-green-600 rounded-[2rem] flex items-center justify-center mb-8 group-hover:bg-green-600 group-hover:text-white transition-all duration-500">
+            <i class="fab fa-whatsapp text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-2">WhatsApp Support</h3>
+        <div class="relative w-full mb-6 mt-2">
+            <div
+                class="absolute left-0 top-0 bottom-0 px-4 bg-slate-100 flex items-center justify-center rounded-l-2xl border-r border-slate-200 text-slate-500 font-bold text-sm">
+                +91
+            </div>
+            <input type="text" id="whatsapp-input-field" maxlength="10"
+                class="shipping-input w-full pl-16 pr-4 py-3 rounded-2xl text-left font-bold text-slate-700"
+                placeholder="98XXXXXXXX" value="">
+        </div>
+        <div class="mt-auto w-full">
+            <button onclick="updateWhatsApp()" id="wa-update-btn"
+                class="w-full py-4 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-full hover:bg-green-500 transition-all flex items-center justify-center gap-2"><i
+                    class="fas fa-save"></i> Save Number</button>
+        </div>
+    </div>
+
+    <!-- Email Support Update -->
+    <div class="action-card p-10 rounded-[3.5rem] flex flex-col items-center text-center group">
+        <div
+            class="icon-box w-20 h-20 bg-indigo-50 text-indigo-600 rounded-[2rem] flex items-center justify-center mb-8 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
+            <i class="fas fa-envelope text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-2">Email Support</h3>
+        <div class="relative w-full mb-6 mt-2">
+            <input type="email" id="email-input-field"
+                class="shipping-input w-full px-6 py-3 rounded-2xl text-left font-bold text-slate-700"
+                placeholder="support@domain.com" value="">
+        </div>
+        <div class="mt-auto w-full">
+            <button onclick="updateEmailSupport()" id="email-update-btn"
+                class="w-full py-4 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-full hover:bg-indigo-600 transition-all flex items-center justify-center gap-2"><i
+                    class="fas fa-save"></i> Save Email</button>
+        </div>
+    </div>
+
+    <!-- Marketing Banner Hub -->
+    <div
+        class="action-card p-8 rounded-[3.5rem] flex flex-col items-center text-center group col-span-1 md:col-span-2 lg:col-span-1">
+        <div
+            class="icon-box w-16 h-16 bg-rose-50 text-rose-600 rounded-[1.5rem] flex items-center justify-center mb-6 group-hover:bg-rose-600 group-hover:text-white transition-all duration-500">
+            <i class="fas fa-bullhorn text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-black text-slate-800 mb-4">Marketing Banner</h3>
+        <div class="w-full space-y-3">
+            <input type="text" id="banner-tag-input"
+                class="shipping-input w-full px-5 py-2.5 rounded-xl text-xs font-bold text-slate-700"
+                placeholder="Banner Tag (e.g. EXCLUSIVE OFFERS)">
+            <input type="text" id="banner-title-input"
+                class="shipping-input w-full px-5 py-2.5 rounded-xl text-xs font-bold text-slate-700"
+                placeholder="Banner Title (e.g. Get 20% Off)">
+            <textarea id="banner-desc-input" rows="2"
+                class="shipping-input w-full px-5 py-2.5 rounded-xl text-xs font-bold text-slate-700 resize-none"
+                placeholder="Banner Description..."></textarea>
+        </div>
+        <div class="mt-6 w-full">
+            <button onclick="updateMarketingBanner()" id="banner-update-btn"
+                class="w-full py-3.5 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-full hover:bg-rose-600 transition-all flex items-center justify-center gap-2"><i
+                    class="fas fa-magic"></i> Update Banner</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = async () => {
+        // Load User Count
+        try {
+            const res = await fetch('/admin/api/users');
+            const data = await res.json();
+            document.getElementById('user-count-stat').innerText = data.length;
+        } catch (e) { document.getElementById('user-count-stat').innerText = '0'; }
+        
+        // Load OTP Stats
+        try {
+            const res = await fetch('/admin/api/otp-stats');
+            const data = await res.json();
+            document.getElementById('otp-count-stat').innerText = data.today;
+            document.getElementById('otp-yesterday-stat').innerText = data.yesterday;
+            document.getElementById('otp-month-stat').innerText = data.month;
+            document.getElementById('otp-total-stat').innerText = data.total;
+        } catch (e) { document.getElementById('otp-count-stat').innerText = '0'; }
+
+        // Load Payment Settings to set toggle positions
+        try {
+            const res = await fetch('/admin/api/get-payment-settings');
+            const data = await res.json();
+            document.getElementById('cod-toggle').checked = data.cod_enabled;
+            document.getElementById('online-toggle').checked = data.online_enabled;
+            document.getElementById('fetch_fee-toggle').checked = data.fetch_razorpay_fee;
+            document.getElementById('cod_fee-toggle').checked = data.charge_cod_fee;
+
+            // Online Methods
+            document.getElementById('upi-toggle').checked = data.upi_enabled;
+            document.getElementById('card-toggle').checked = data.card_enabled;
+            document.getElementById('netbanking-toggle').checked = data.netbanking_enabled;
+            document.getElementById('wallet-toggle').checked = data.wallet_enabled;
+            document.getElementById('emi-toggle').checked = data.emi_enabled;
+            document.getElementById('paylater-toggle').checked = data.paylater_enabled;
+
+            // Set percentages and COD fee
+            document.getElementById('rzp-fee-percent').value = data.rzp_fee_percent || 2.0;
+            document.getElementById('rzp-gst-percent').value = data.rzp_gst_percent || 18.0;
+            document.getElementById('cod-fee-amount').value = data.cod_fee || 40;
+
+            // Toggle config visibility
+            document.getElementById('rzp-fee-config').style.display = data.fetch_razorpay_fee ? 'block' : 'none';
+            document.getElementById('online-methods-config').style.display = data.online_enabled ? 'block' : 'none';
+        } catch (e) { console.error("Could not fetch payment settings"); }
+
+        // Load Support Settings
+        try {
+            const res = await fetch('/admin/api/get-support-settings');
+            const data = await res.json();
+
+            // Handle WhatsApp
+            let displayNum = data.whatsapp_num || "";
+            if (displayNum.startsWith('91') && displayNum.length > 10) {
+                displayNum = displayNum.substring(2);
+            }
+            document.getElementById('whatsapp-input-field').value = displayNum;
+
+            // Handle Email
+            document.getElementById('email-input-field').value = data.support_email || "";
+
+            // Handle Banner
+            document.getElementById('banner-tag-input').value = data.banner_tag || "";
+            document.getElementById('banner-title-input').value = data.banner_title || "";
+            document.getElementById('banner-desc-input').value = data.banner_desc || "";
+        } catch (e) { console.error("Could not fetch support settings"); }
+    }
+
+    async function togglePayment(method) {
+        const isEnabled = document.getElementById(`${method}-toggle`).checked;
+
+        // Show/Hide config
+        if (method === 'fetch_fee') {
+            document.getElementById('rzp-fee-config').style.display = isEnabled ? 'block' : 'none';
+        }
+        if (method === 'online') {
+            document.getElementById('online-methods-config').style.display = isEnabled ? 'block' : 'none';
+        }
+
+        try {
+            await fetch('/admin/api/update-payment-methods', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ method: method, enabled: isEnabled })
+            });
+        } catch (e) { alert("Update failed"); }
+    }
+
+    async function updateRzpPercentages() {
+        const fee = document.getElementById('rzp-fee-percent').value;
+        const gst = document.getElementById('rzp-gst-percent').value;
+        const cod = document.getElementById('cod-fee-amount').value;
+
+        try {
+            const res = await fetch('/admin/api/update-payment-percentages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    rzp_fee_percent: parseFloat(fee),
+                    rzp_gst_percent: parseFloat(gst),
+                    cod_fee: parseFloat(cod)
+                })
+            });
+            if (res.ok) alert("Payment config updated!");
+        } catch (e) { alert("Failed to update config"); }
+    }
+
+    async function updateShipping() {
+        const amount = document.getElementById('shipping-input-field').value;
+        const btn = document.getElementById('ship-update-btn');
+        if (!amount || amount < 0) return alert("Enter valid amount");
+
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/admin/api/update-shipping', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shipping_charge: amount })
+            });
+            if (res.ok) {
+                document.getElementById('current-shipping-display').innerText = '₹' + amount;
+                btn.classList.replace('bg-slate-900', 'bg-emerald-500');
+                btn.innerHTML = '<i class="fas fa-check"></i> Updated!';
+                setTimeout(() => {
+                    btn.classList.replace('bg-emerald-500', 'bg-slate-900');
+                    btn.innerHTML = '<i class="fas fa-save"></i> Update Fee';
+                    btn.disabled = false;
+                }, 2000);
+            }
+        } catch (e) { alert("Failed"); btn.disabled = false; }
+    }
+    async function updateWhatsApp() {
+        const rawNum = document.getElementById('whatsapp-input-field').value;
+        const btn = document.getElementById('wa-update-btn');
+        if (rawNum.length !== 10) return alert("Enter exactly 10 digits");
+
+        const fullNum = "91" + rawNum;
+
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/admin/api/update-support-settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ whatsapp_num: fullNum })
+            });
+            if (res.ok) {
+                btn.classList.replace('bg-slate-900', 'bg-emerald-500');
+                btn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                setTimeout(() => {
+                    btn.classList.replace('bg-emerald-500', 'bg-slate-900');
+                    btn.innerHTML = '<i class="fas fa-save"></i> Save Number';
+                    btn.disabled = false;
+                }, 2000);
+            }
+        } catch (e) { alert("Failed"); btn.disabled = false; }
+    }
+    async function updateEmailSupport() {
+        const email = document.getElementById('email-input-field').value;
+        const btn = document.getElementById('email-update-btn');
+        if (!email || !email.includes('@')) return alert("Enter valid email");
+
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/admin/api/update-support-settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ support_email: email })
+            });
+            if (res.ok) {
+                btn.classList.replace('bg-slate-900', 'bg-emerald-500');
+                btn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                setTimeout(() => {
+                    btn.classList.replace('bg-emerald-500', 'bg-slate-900');
+                    btn.innerHTML = '<i class="fas fa-save"></i> Save Email';
+                    btn.disabled = false;
+                }, 2000);
+            }
+        } catch (e) { alert("Failed"); btn.disabled = false; }
+    }
+    async function updateMarketingBanner() {
+        const tag = document.getElementById('banner-tag-input').value;
+        const title = document.getElementById('banner-title-input').value;
+        const desc = document.getElementById('banner-desc-input').value;
+        const btn = document.getElementById('banner-update-btn');
+
+        if (!tag || !title || !desc) return alert("Please fill all banner fields");
+
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/admin/api/update-support-settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    banner_tag: tag,
+                    banner_title: title,
+                    banner_desc: desc
+                })
+            });
+            if (res.ok) {
+                btn.classList.replace('bg-slate-900', 'bg-emerald-500');
+                btn.innerHTML = '<i class="fas fa-check"></i> Banner Updated!';
+                setTimeout(() => {
+                    btn.classList.replace('bg-emerald-500', 'bg-slate-900');
+                    btn.innerHTML = '<i class="fas fa-magic"></i> Update Banner';
+                    btn.disabled = false;
+                }, 2000);
+            }
+        } catch (e) { alert("Failed"); btn.disabled = false; }
+    }
+
+    async function showOtpLogs() {
+        const modal = document.getElementById('otp-modal');
+        const container = document.getElementById('otp-logs-container');
+        const weeklyContainer = document.getElementById('otp-weekly-container');
+        modal.classList.replace('hidden', 'flex');
+        document.body.style.overflow = 'hidden'; // Lock scroll
+        
+        // Reset to logs view
+        toggleOtpView('logs');
+        
+        try {
+            // Fetch Stats (for weekly) and Logs
+            const [logsRes, statsRes] = await Promise.all([
+                fetch('/admin/api/otp-logs'),
+                fetch('/admin/api/otp-stats')
+            ]);
+            
+            const logsData = await logsRes.json();
+            const stats = await statsRes.json();
+            
+            const logs = logsData.logs;
+            document.getElementById('server-time-display').innerText = `Server (IST): ${logsData.server_time}`;
+
+            // Render Logs
+            if (logs.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-20 text-slate-300">
+                        <i class="fas fa-comment-slash text-3xl mb-4"></i>
+                        <p class="text-xs font-bold uppercase tracking-widest">No SMS OTPs sent today yet</p>
+                    </div>
+                `;
+            } else {
+                let html = '<div class="space-y-2">';
+                logs.forEach(log => {
+                    const typeColor = log.type.includes('login') ? 'blue' : (log.type.includes('signup') ? 'emerald' : 'purple');
+                    html += `
+                        <div class="p-3 sm:p-4 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-100 hover:bg-white hover:shadow-sm transition-all group">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                                    <div class="hidden sm:flex w-10 h-10 bg-white rounded-xl items-center justify-center shadow-sm text-slate-400 flex-shrink-0">
+                                        <i class="fas fa-phone text-xs"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs sm:text-sm font-black text-slate-700 truncate">${log.identifier}</p>
+                                        <div class="flex flex-wrap items-center gap-1 sm:gap-2 mt-0.5">
+                                            <span class="px-1.5 sm:px-2 py-0.5 bg-${typeColor}-50 text-${typeColor}-600 text-[7px] sm:text-[8px] font-black uppercase rounded-md border border-${typeColor}-100">
+                                                ${log.type.replace(/_/g, ' ')}
+                                            </span>
+                                            ${log.status === 'verified' ? '<span class="px-1.5 py-0.5 bg-emerald-50 text-emerald-600 text-[7px] sm:text-[8px] font-black uppercase rounded-md border border-emerald-100"><i class="fas fa-check mr-0.5"></i>OK</span>' : ''}
+                                            <span class="text-[8px] sm:text-[9px] font-bold text-slate-400">${log.display_date || ''} ${log.time}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right flex-shrink-0">
+                                    <p class="text-sm sm:text-lg font-black text-emerald-600 tracking-wider">${log.otp_code || '---'}</p>
+                                    <p class="text-[7px] sm:text-[8px] font-bold text-slate-300 uppercase">Code</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            }
+
+            // Render Weekly Stats
+            let weeklyHtml = '<div class="space-y-2 sm:space-y-3">';
+            // Get current date in YYYY-MM-DD format (local time)
+            const localToday = new Date().toLocaleDateString('en-CA'); 
+            
+            stats.weekly.forEach(day => {
+                const isToday = day.date === localToday;
+                weeklyHtml += `
+                    <div class="flex items-center justify-between p-3 sm:p-4 bg-white border border-slate-100 rounded-xl sm:rounded-2xl">
+                        <div>
+                            <p class="text-[10px] sm:text-xs font-black text-slate-700 uppercase tracking-tighter">${new Date(day.date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}</p>
+                            <p class="text-[8px] sm:text-[9px] font-bold ${isToday ? 'text-emerald-500' : 'text-slate-400'} uppercase">${isToday ? 'Today' : ''}</p>
+                        </div>
+                        <div class="flex items-center gap-2 sm:gap-4">
+                            <div class="text-right">
+                                <p class="text-lg sm:text-xl font-black text-slate-800">${day.count}</p>
+                                <p class="text-[7px] sm:text-[8px] font-black text-slate-400 uppercase">OTPs</p>
+                            </div>
+                            <div class="w-8 h-8 sm:w-12 sm:h-12 bg-slate-50 rounded-lg sm:rounded-xl flex items-center justify-center text-gn-500 font-black text-xs">
+                                ${day.count > 0 ? '✓' : '○'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            weeklyHtml += '</div>';
+            weeklyContainer.innerHTML = weeklyHtml;
+
+        } catch (e) {
+            container.innerHTML = '<p class="text-center py-10 text-rose-500 font-bold">Failed to load data</p>';
+        }
+    }
+
+    function toggleOtpView(view) {
+        const logsView = document.getElementById('otp-logs-view');
+        const statsView = document.getElementById('otp-stats-view');
+        const logsBtn = document.getElementById('btn-otp-logs');
+        const statsBtn = document.getElementById('btn-otp-stats');
+        
+        if (view === 'logs') {
+            logsView.classList.remove('hidden');
+            statsView.classList.add('hidden');
+            logsBtn.className = 'px-3 sm:px-4 py-1.5 sm:py-2 bg-emerald-500 text-white text-[8px] sm:text-[9px] font-black uppercase tracking-widest rounded-lg sm:rounded-xl shadow-sm transition-all';
+            statsBtn.className = 'px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-slate-400 text-[8px] sm:text-[9px] font-black uppercase tracking-widest rounded-lg sm:rounded-xl border border-slate-200 transition-all';
+        } else {
+            logsView.classList.add('hidden');
+            statsView.classList.remove('hidden');
+            logsBtn.className = 'px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-slate-400 text-[8px] sm:text-[9px] font-black uppercase tracking-widest rounded-lg sm:rounded-xl border border-slate-200 transition-all';
+            statsBtn.className = 'px-3 sm:px-4 py-1.5 sm:py-2 bg-emerald-500 text-white text-[8px] sm:text-[9px] font-black uppercase tracking-widest rounded-lg sm:rounded-xl shadow-sm transition-all';
+        }
+    }
+
+    function closeOtpModal() {
+        document.getElementById('otp-modal').classList.replace('flex', 'hidden');
+        document.body.style.overflow = ''; // Unlock scroll
+    }
+</script>
+
+{% endblock %}

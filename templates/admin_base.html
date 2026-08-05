@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="/static/images/official_brand_logo.png">
+    <title>{% block title %}Admin | Green Naturals{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --sidebar-width: 280px;
+            --emerald-primary: #10b981;
+            --slate-dark: #0f172a;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .main-wrapper {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }        .content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            height: 100vh;
+            -webkit-overflow-scrolling: touch;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+
+
+        /* Sidebar Glassmorphism */
+        .sidebar {
+            background: var(--slate-dark);
+            color: #94a3b8;
+            position: relative;
+            z-index: 50;
+        }
+
+        .sidebar-link {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            margin-bottom: 0.5rem;
+            color: #64748b;
+            font-weight: 600;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.03);
+            border-left-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .sidebar-link.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: white;
+            border-left-color: var(--emerald-primary);
+        }
+
+        .sidebar-link.active i {
+            color: var(--emerald-primary);
+        }
+
+        /* Modern Top Bar */
+        .top-bar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        /* Floating Bottom Nav - Ultra Modern */
+        .bottom-nav-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 48px);
+            max-width: 500px;
+            height: 72px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 12px;
+            z-index: 100;
+        }
+
+        .nav-pill {
+            transition: all 0.3s ease;
+            color: #64748b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 48px;
+        }
+
+        .nav-pill.active {
+            color: var(--emerald-primary);
+        }
+
+        .nav-pill i {
+            font-size: 1.25rem;
+        }
+
+        .add-btn-float {
+            width: 56px;
+            height: 56px;
+            background: var(--emerald-primary);
+            color: white;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -36px;
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.5);
+            transform: rotate(45deg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .add-btn-float i {
+            transform: rotate(-45deg);
+        }
+
+        .add-btn-float:active {
+            transform: rotate(45deg) scale(0.9);
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-animate {
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Custom Scrollbar */
+        .content-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .content-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        @keyframes toast-in {
+            0% { transform: translateY(100%) scale(0.9); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes toast-out {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(20px) scale(0.95); opacity: 0; }
+        }
+        .animate-toast-in { animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .animate-toast-out { animation: toast-out 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+    </style>
+</head>
+
+<body class="text-slate-900">
+    <!-- Admin Global Transition Loader -->
+    <div id="admin-loader"
+        class="fixed inset-0 z-[10000] bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500">
+        <div class="relative">
+            <div class="w-16 h-16 border-2 border-white/10 border-t-emerald-500 rounded-full animate-spin"></div>
+            <img src="/static/images/official_brand_logo.png"
+                class="absolute inset-0 m-auto w-10 h-10 object-contain animate-pulse">
+        </div>
+        <p class="mt-6 text-[9px] font-black uppercase tracking-[0.4em] text-white/40">Terminal Transition</p>
+    </div>
+
+    <div class="main-wrapper">
+
+        <!-- Sidebar -->
+        <aside class="sidebar w-72 hidden md:flex flex-col flex-shrink-0">
+            <div class="p-10 flex items-center gap-4">
+                <div
+                    class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-500/20 transform -rotate-6 p-1 overflow-hidden">
+                    <img src="/static/images/official_brand_logo.png" class="w-full h-full object-contain" alt="GN">
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-black tracking-tight text-white">GN <span
+                            class="text-emerald-400">Hub</span></span>
+                    <span class="text-[8px] font-black text-slate-500 uppercase tracking-[0.3em]">Administrator</span>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-8 mt-6">
+                <p class="text-[9px] font-black text-slate-600 uppercase tracking-[0.4em] mb-8">Main Controls</p>
+
+                <div class="space-y-1">
+                    <a href="/admin-dashboard"
+                        class="sidebar-link flex items-center gap-4 py-4 px-5 rounded-2xl text-sm">
+                        <i class="fas fa-grip-vertical w-6"></i> Overview
+                    </a>
+
+                    <a href="/admin/orders" class="sidebar-link flex items-center gap-4 py-4 px-5 rounded-2xl text-sm">
+                        <i class="fas fa-shopping-bag w-6"></i> Orders
+                    </a>
+
+                    <a href="/admin/products"
+                        class="sidebar-link flex items-center gap-4 py-4 px-5 rounded-2xl text-sm">
+                        <i class="fas fa-shapes w-6"></i> Inventory
+                    </a>
+
+                    <a href="/admin/manage-users"
+                        class="sidebar-link flex items-center gap-4 py-4 px-5 rounded-2xl text-sm">
+                        <i class="fas fa-user-group w-6"></i> User Base
+                    </a>
+
+                    <a href="/admin/add-product"
+                        class="sidebar-link flex items-center gap-4 py-4 px-5 rounded-2xl text-sm">
+                        <i class="fas fa-square-plus w-6"></i> Launch
+                    </a>
+                </div>
+            </nav>
+
+            <div class="p-8">
+                <div class="bg-white/5 rounded-3xl p-6 border border-white/5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Live Syncing</span>
+                    </div>
+                    <a href="/admin-logout"
+                        class="flex items-center justify-center gap-2 py-3.5 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white rounded-2xl transition-all text-[10px] font-black uppercase tracking-widest">
+                        <i class="fas fa-power-off"></i> Logout Terminal
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content-scroll">
+            <header id="admin-header" class="top-bar h-24 sticky top-0 z-40 transition-all duration-500">
+                <div class="w-full mx-auto px-6 sm:px-10 flex justify-between items-center h-full">
+                    <div class="flex flex-col max-w-[60%] sm:max-w-none">
+                        <h2 class="text-lg sm:text-2xl font-black text-slate-900 tracking-tight truncate">
+                            <span class="hidden sm:inline">Green Naturals <span class="text-emerald-600">|</span> </span>{%
+                            block page_title %}Hub{% endblock %}
+                        </h2>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                            <p class="text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-widest">Live
+                                Terminal</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-6">
+                        <!-- Notification Center -->
+                        <div class="relative">
+                            <button onclick="toggleNotifications()" class="relative w-10 h-10 flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all group">
+                                <i class="fas fa-bell text-xl"></i>
+                                <span id="notif-badge" class="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full hidden animate-pulse"></span>
+                            </button>
+
+                            <!-- Notif Dropdown: Premium & Responsive -->
+                            <div id="notif-dropdown" class="fixed sm:absolute right-4 sm:right-0 top-20 sm:top-auto sm:mt-4 w-[calc(100%-32px)] sm:w-96 bg-white/95 backdrop-blur-xl rounded-[32px] shadow-[0_20px_70px_rgba(0,0,0,0.15)] border border-slate-100 opacity-0 pointer-events-none translate-y-4 transition-all duration-500 z-[100] overflow-hidden">
+                                <div class="p-6 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
+                                    <div class="flex flex-col">
+                                        <h3 class="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em]">Live Activity</h3>
+                                        <span id="notif-count" class="text-[9px] font-bold text-emerald-600 mt-1 uppercase tracking-wider">SYNCING...</span>
+                                    </div>
+                                    <button onclick="markAllAsRead()" class="px-4 py-2 bg-white hover:bg-slate-50 border border-slate-100 rounded-full text-[10px] font-black text-slate-400 hover:text-emerald-600 uppercase tracking-widest transition-all shadow-sm">
+                                        Mark All Read
+                                    </button>
+                                </div>
+                                
+                                <div id="notif-items" class="max-h-[60vh] sm:max-h-[450px] overflow-y-auto p-3 space-y-1 custom-scrollbar">
+                                    <!-- Items injected here -->
+                                    <div class="p-4 space-y-4 animate-pulse">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 bg-slate-100 rounded-2xl"></div>
+                                            <div class="flex-1 space-y-2">
+                                                <div class="h-3 bg-slate-100 rounded w-1/2"></div>
+                                                <div class="h-2 bg-slate-100 rounded w-3/4"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 bg-slate-50/50 border-t border-slate-50">
+                                    <a href="/admin/orders" class="flex items-center justify-center gap-2 py-4 rounded-2xl bg-white border border-slate-100 text-[11px] font-black text-slate-900 uppercase tracking-[0.2em] hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all group shadow-sm">
+                                        View Order History
+                                        <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-5 border-l border-slate-200 pl-8">
+                            <div class="hidden sm:flex flex-col text-right">
+                                <p class="text-[11px] font-black text-slate-900">Root Administrator</p>
+                                <p class="text-[9px] font-bold text-emerald-600 uppercase tracking-widest mt-1">Full Access
+                                </p>
+                            </div>
+                            <div
+                                class="w-11 h-11 flex items-center justify-center transform transition-all hover:scale-110 active:scale-95">
+                                <img src="/static/images/official_brand_logo.png" class="w-full h-full object-contain"
+                                    alt="GN">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 sm:p-10 pb-24 md:pb-8 bg-transparent content-animate w-full mx-auto">
+                {% block content %}{% endblock %}
+            </div>
+
+            {% block extra_content %}{% endblock %}
+
+            <!-- Mobile Ultra-Modern Bottom Nav -->
+            <div id="mobile-nav" class="md:hidden bottom-nav-container transition-all duration-500">
+                <a href="/admin-dashboard" class="nav-pill">
+                    <i class="fas fa-house-chimney-window"></i>
+                </a>
+                <a href="/admin/orders" class="nav-pill">
+                    <i class="fas fa-receipt"></i>
+                </a>
+
+                <a href="/admin/add-product" class="add-btn-float">
+                    <i class="fas fa-plus"></i>
+                </a>
+
+                <a href="/admin/products" class="nav-pill">
+                    <i class="fas fa-layer-group"></i>
+                </a>
+                <a href="/admin/manage-users" class="nav-pill">
+                    <i class="fas fa-user-group"></i>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.sidebar-link, .nav-pill').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Smart Scroll Navbar & Header Logic
+            const mobileNav = document.getElementById('mobile-nav');
+            const adminHeader = document.getElementById('admin-header');
+            const scrollContainer = document.querySelector('.content-scroll');
+            let lastScrollTop = 0;
+
+            if (scrollContainer) {
+                scrollContainer.addEventListener('scroll', () => {
+                    let scrollTop = scrollContainer.scrollTop;
+
+                    if (scrollTop > lastScrollTop && scrollTop > 100) {
+                        // Scrolling Down - Hide Header & Nav
+                        if (adminHeader) adminHeader.style.transform = 'translateY(-100%)';
+                        if (mobileNav) {
+                            mobileNav.style.transform = 'translate(-50%, 150%)';
+                            mobileNav.style.opacity = '0';
+                        }
+                    } else {
+                        // Scrolling Up - Show Header & Nav
+                        if (adminHeader) adminHeader.style.transform = 'translateY(0)';
+                        if (mobileNav) {
+                            mobileNav.style.transform = 'translate(-50%, 0)';
+                            mobileNav.style.opacity = '1';
+                        }
+                    }
+                    lastScrollTop = scrollTop;
+                });
+            }
+
+            // --- Admin Global Transition Logic ---
+            const adminLoader = document.getElementById('admin-loader');
+
+            function showAdminLoader() {
+                if (adminLoader) {
+                    adminLoader.style.opacity = '1';
+                    adminLoader.style.pointerEvents = 'auto';
+                }
+            }
+
+            function hideAdminLoader() {
+                if (adminLoader) {
+                    adminLoader.style.opacity = '0';
+                    adminLoader.style.pointerEvents = 'none';
+                }
+            }
+
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                if (link) {
+                    const href = link.getAttribute('href');
+                    const target = link.getAttribute('target');
+                    if (href && !href.startsWith('#') && !href.startsWith('javascript:') && !target && !link.hasAttribute('download')) {
+                        showAdminLoader();
+                    }
+                }
+            });
+
+            window.addEventListener('pageshow', hideAdminLoader);
+            window.addEventListener('load', hideAdminLoader);
+
+            // --- Notification Logic ---
+            const notifDropdown = document.getElementById('notif-dropdown');
+            const notifBadge = document.getElementById('notif-badge');
+            const notifItems = document.getElementById('notif-items');
+            const notifCount = document.getElementById('notif-count');
+            let lastNotifTime = localStorage.getItem('last_notif_check') || new Date().toISOString();
+
+            window.toggleNotifications = function() {
+                const isOpen = !notifDropdown.classList.contains('pointer-events-none');
+                if (isOpen) {
+                    notifDropdown.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                } else {
+                    notifDropdown.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    fetchNotifications();
+                }
+            };
+
+            window.markAllAsRead = function() {
+                localStorage.setItem('last_notif_check', new Date().toISOString());
+                notifBadge.classList.add('hidden');
+                notifCount.innerText = '0 NEW ALERTS';
+                // Re-render items to remove green dots
+                fetchNotifications();
+            };
+
+            async function fetchNotifications() {
+                try {
+                    const res = await fetch('/api/admin/notifications');
+                    const data = await res.json();
+                    
+                    const notifBadge = document.getElementById('notif-badge');
+                    const notifCount = document.getElementById('notif-count');
+                    const notifItems = document.getElementById('notif-items');
+                    
+                    if (data.notifications && data.notifications.length > 0) {
+                        let html = '';
+                        let newCount = 0;
+                        // Use a fallback if localStorage is empty
+                        const lastReadStr = localStorage.getItem('last_notif_check');
+                        const lastRead = lastReadStr ? new Date(lastReadStr) : new Date(Date.now() - 24 * 60 * 60 * 1000); // Default to 24h ago
+                        
+                        data.notifications.forEach(n => {
+                            const nTime = new Date(n.timestamp);
+                            const isNew = nTime > lastRead;
+                            if (isNew) newCount++;
+                            
+                            const icon = n.type === 'order' ? 'fa-shopping-cart text-blue-500 bg-blue-50' : 
+                                         n.type === 'user' ? 'fa-user-plus text-emerald-500 bg-emerald-50' : 
+                                         'fa-bell text-amber-500 bg-amber-50';
+                            
+                            html += `
+                                <a href="${n.link}" class="flex items-center gap-5 p-4 rounded-[24px] hover:bg-slate-50 transition-all cursor-pointer group active:scale-[0.98]">
+                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 text-lg ${icon.split(' ').slice(1).join(' ')} shadow-sm group-hover:shadow-md transition-all">
+                                        <i class="fas ${icon.split(' ')[0]}"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex justify-between items-start mb-1">
+                                            <p class="text-[12px] font-black text-slate-900 truncate group-hover:text-emerald-600 transition-colors">${n.title}</p>
+                                            <p class="text-[9px] font-bold text-slate-400 whitespace-nowrap ml-2 bg-white px-2 py-1 rounded-full border border-slate-100">${n.time_ago}</p>
+                                        </div>
+                                        <p class="text-[10px] font-medium text-slate-500 line-clamp-2 leading-relaxed">${n.subtitle}</p>
+                                    </div>
+                                    ${isNew ? '<div class="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse border-2 border-white"></div>' : ''}
+                                </a>
+                            `;
+                        });
+                        
+                        notifItems.innerHTML = html;
+                        notifCount.innerText = `${newCount} NEW ALERTS`;
+                        
+                        // Force Red Dot Visibility - Aggressive Display
+                        if (newCount > 0) {
+                            notifBadge.style.setProperty('display', 'block', 'important');
+                            notifBadge.classList.remove('hidden');
+                        } else {
+                            notifBadge.style.setProperty('display', 'none', 'important');
+                            notifBadge.classList.add('hidden');
+                        }
+                    } else {
+                        notifItems.innerHTML = `
+                            <div class="py-12 flex flex-col items-center justify-center text-center opacity-40">
+                                <i class="fas fa-bell-slash text-4xl mb-4"></i>
+                                <p class="text-[10px] font-black uppercase tracking-widest">No New Alerts</p>
+                            </div>
+                        `;
+                        notifCount.innerText = 'NO NEW ALERTS';
+                        notifBadge.style.setProperty('display', 'none', 'important');
+                        notifBadge.classList.add('hidden');
+                    }
+                } catch (e) { 
+                    console.error("Notif Error:", e);
+                    const notifCount = document.getElementById('notif-count');
+                    if(notifCount) notifCount.innerText = 'SYNC ERROR';
+                }
+            }
+
+            // Initial check and set interval
+            setTimeout(fetchNotifications, 1000); // Check 1s after load
+            setInterval(fetchNotifications, 15000); // Faster polling (15s)
+        });
+
+        // --- Global Admin Toast System ---
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `flex flex-col gap-1 min-w-[280px] max-w-[340px] bg-white border-l-4 p-4 rounded-xl shadow-2xl animate-toast-in z-[100002]`;
+            const colors = { success: 'border-emerald-500', error: 'border-rose-500', info: 'border-blue-500' };
+            const icons = { 
+                success: '<i class="fas fa-circle-check text-emerald-500"></i>', 
+                error: '<i class="fas fa-circle-exclamation text-rose-500"></i>', 
+                info: '<i class="fas fa-circle-info text-blue-500"></i>' 
+            };
+            toast.classList.add(colors[type] || colors.info);
+            toast.innerHTML = `
+                <div class="flex items-center gap-3">
+                    ${icons[type] || icons.info}
+                    <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-800">${title}</h4>
+                </div>
+                <p class="text-[12px] text-slate-500 font-medium pl-7">${message}</p>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.replace('animate-toast-in', 'animate-toast-out');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+        window.showToast = showToast;
+    </script>
+    <!-- Admin Network Status Guard -->
+    <div id="offline-guard" class="fixed inset-0 z-[2147483647] pointer-events-none transition-all duration-500">
+        <div id="offline-banner" class="absolute top-0 left-0 right-0 py-3 bg-rose-600 text-white text-center shadow-2xl translate-y-[-100%] transition-transform duration-500 flex items-center justify-center gap-3">
+            <div class="animate-pulse w-2 h-2 bg-white rounded-full"></div>
+            <p class="text-[11px] font-black uppercase tracking-[0.2em]">Dashboard Offline: Connectivity Lost</p>
+        </div>
+        <div id="offline-overlay" class="absolute inset-0 bg-slate-900/10 backdrop-blur-[2px] opacity-0 transition-opacity duration-500"></div>
+    </div>
+
+    <script>
+        const guard = document.getElementById('offline-guard');
+        const banner = document.getElementById('offline-banner');
+        const overlay = document.getElementById('offline-overlay');
+
+        function setOffline() {
+            guard.classList.remove('pointer-events-none');
+            banner.classList.remove('translate-y-[-100%]');
+            overlay.classList.add('opacity-100');
+        }
+
+        function setOnline() {
+            banner.classList.add('bg-emerald-500');
+            banner.querySelector('p').innerText = "Dashboard Back Online";
+            setTimeout(() => {
+                banner.classList.add('translate-y-[-100%]');
+                overlay.classList.remove('opacity-100');
+                guard.classList.add('pointer-events-none');
+                setTimeout(() => {
+                    banner.classList.remove('bg-emerald-500');
+                    banner.classList.add('bg-rose-600');
+                    banner.querySelector('p').innerText = "Dashboard Offline: Connectivity Lost";
+                }, 500);
+            }, 2000);
+        }
+
+        window.addEventListener('offline', setOffline);
+        window.addEventListener('online', setOnline);
+        if (!navigator.onLine) setOffline();
+    </script>
+    <!-- Global Admin Toast Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[100001] flex flex-col gap-4 pointer-events-none"></div>
+</body>
+
+</html>

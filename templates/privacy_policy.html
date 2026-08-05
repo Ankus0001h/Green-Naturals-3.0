@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Policy | Green Naturals - Pure Herbal Excellence{% endblock %}
+
+{% block extra_css %}
+.policy-hero {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.policy-content-card {
+    background: white;
+    border-radius: 2rem;
+    padding: 3rem;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+    border: 1px solid #f1f5f9;
+}
+
+.policy-h2 {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #0f172a;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.policy-h2 i {
+    color: #10b981;
+}
+
+.policy-text {
+    font-size: 0.875rem;
+    color: #475569;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+.policy-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.policy-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: #475569;
+}
+
+.policy-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #10b981;
+    font-weight: bold;
+}
+{% endblock %}
+
+{% block content %}
+<section class="policy-hero py-24 md:py-32">
+    <div class="container mx-auto px-6 text-center">
+        <h1 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">Privacy Policy</h1>
+        <p class="text-emerald-100/70 max-w-2xl mx-auto font-medium">Your trust is our priority. We keep your data simple, secure, and private.</p>
+    </div>
+</section>
+
+<section class="py-20 bg-slate-50">
+    <div class="container mx-auto px-6 max-w-4xl">
+        <div class="policy-content-card">
+            
+            <div class="mb-12 border-b border-slate-100 pb-8">
+                <h2 class="policy-h2"><i class="fas fa-database"></i> 1. Information We Collect</h2>
+                <p class="policy-text">We only collect the essentials needed to deliver your products and provide a secure experience:</p>
+                <ul class="policy-list">
+                    <li>Contact details (Name, Phone Number, Email)</li>
+                    <li>Delivery details (Shipping & Billing Address)</li>
+                    <li>Order history and basic account preferences</li>
+                </ul>
+            </div>
+
+            <div class="mb-12 border-b border-slate-100 pb-8">
+                <h2 class="policy-h2"><i class="fas fa-shield-alt"></i> 2. How We Protect You</h2>
+                <p class="policy-text">We use industry-standard security measures to safeguard your information from unauthorized access. Your payment details are processed through secure, encrypted gateways and are never stored on our servers.</p>
+            </div>
+
+            <div class="mb-12 border-b border-slate-100 pb-8">
+                <h2 class="policy-h2"><i class="fas fa-check-circle"></i> 3. No Third-Party Sales</h2>
+                <p class="policy-text">Green Naturals does not sell, rent, or trade your personal information to third parties for marketing purposes. Your data is only shared with trusted delivery partners to fulfill your orders.</p>
+            </div>
+
+            <div class="mb-12 border-b border-slate-100 pb-8">
+                <h2 class="policy-h2"><i class="fas fa-user-lock"></i> 4. Your Control</h2>
+                <p class="policy-text">You have full control over your data. You can update your profile, view your order history, or request account deletion at any time through our Support Hub.</p>
+            </div>
+
+            <div class="text-center">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Last Updated: April 22, 2026</p>
+                <a href="/contact" class="inline-block bg-gn-600 text-white px-10 py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-gn-700 transition-all shadow-lg">Contact Support</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
