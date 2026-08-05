@@ -15,5 +15,3 @@ reportlab==4.1.0
 Pillow>=10.0.0
 email-validator
 gunicorn
-
-ankushsachan255@gmail.com
