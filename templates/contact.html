@@ -1,0 +1,727 @@
+{% extends "base.html" %}
+
+{% block title %}Support Hub | Green Naturals - Pure Herbal Excellence{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-50 pt-10 pb-20 relative">
+    <!-- Standardized Support Loader -->
+    <div id="support-loader" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="relative">
+            <!-- Spinner -->
+            <div class="animate-spin border-2 border-slate-100 border-t-emerald-500 rounded-full" style="width: 80px; height: 80px;"></div>
+            <!-- Logo in center -->
+            <img src="/static/images/official_brand_logo.png" class="absolute inset-0 m-auto animate-pulse" style="width: 40px; height: 40px; object-fit: contain;">
+        </div>
+        <div class="mt-8 flex flex-col items-center gap-2">
+            <span class="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-900 animate-pulse">Support Hub</span>
+            <div class="flex gap-1">
+                <div class="animate-bounce bg-emerald-400 rounded-full" style="width: 4px; height: 4px; animation-delay: -0.3s;"></div>
+                <div class="animate-bounce bg-emerald-400 rounded-full" style="width: 4px; height: 4px; animation-delay: -0.15s;"></div>
+                <div class="animate-bounce bg-emerald-400 rounded-full" style="width: 4px; height: 4px;"></div>
+            </div>
+        </div>
+    </div>
+    <style>
+        @keyframes page-flip {
+            0% {
+                opacity: 0;
+                transform: translateX(40px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .animate-flip {
+            animation: page-flip 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
+    <div class="container mx-auto px-4 md:px-6">
+        {% if session.user_id %}
+        <!-- Amazon Style Header -->
+        <div class="max-w-6xl mx-auto pt-4 pb-12">
+            <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8 overflow-x-auto whitespace-nowrap pb-2">
+                <a href="/" class="hover:text-gn-600 font-bold transition-all">Home</a>
+                <i class="fas fa-chevron-right text-[10px]"></i>
+                <span class="text-slate-800 font-black">Customer Service</span>
+            </nav>
+
+            <div class="mb-10">
+                <h1 class="text-3xl md:text-4xl font-black text-slate-900 mb-2">Hello. What can we help you with?</h1>
+                <p class="text-slate-500 font-bold text-sm">Find solutions to common issues or get in touch with our
+                    team.</p>
+            </div>
+
+            <!-- Primary Action Grid (Amazon Style) -->
+            <div id="bot-options" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Track Orders Card -->
+                <button onclick="botTrackOrders()"
+                    class="flex items-center gap-6 p-8 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-left group shadow-sm hover:shadow-md">
+                    <div class="w-16 h-16 flex-shrink-0"><img
+                            src="https://cdn-icons-png.flaticon.com/512/709/709790.png" alt="Orders"
+                            class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all">
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800 mb-1">Your Orders</h3>
+                        <p class="text-xs text-slate-500 font-bold leading-relaxed">Track packages, view details or
+                            cancel orders.</p>
+                    </div>
+                </button>
+
+                <!-- Returns & Refunds Card -->
+                <button onclick="botTrackOrders('Return/Refund')"
+                    class="flex items-center gap-6 p-8 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-left group shadow-sm hover:shadow-md">
+                    <div class="w-16 h-16 flex-shrink-0"><img
+                            src="https://cdn-icons-png.flaticon.com/512/1585/1585141.png" alt="Returns"
+                            class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all">
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800 mb-1">Returns & Refunds</h3>
+                        <p class="text-xs text-slate-500 font-bold leading-relaxed">Return items and check refund
+                            status.</p>
+                    </div>
+                </button>
+
+                <!-- My Tickets Card -->
+                {% if user_tickets %}
+                <button onclick="botShowTickets()"
+                    class="flex items-center gap-6 p-8 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-left group shadow-sm hover:shadow-md">
+                    <div class="w-16 h-16 flex-shrink-0"><img
+                            src="https://cdn-icons-png.flaticon.com/512/1067/1067557.png" alt="Tickets"
+                            class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all">
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800 mb-1">Support History</h3>
+                        <p class="text-xs text-slate-500 font-bold leading-relaxed">Check your previous tickets and
+                            responses.</p>
+                    </div>
+                </button>
+                {% endif %}
+
+                <!-- Product Query Card -->
+                <button onclick="revealHumanSupport('Product Question')"
+                    class="flex items-center gap-6 p-8 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-left group shadow-sm hover:shadow-md">
+                    <div class="w-16 h-16 flex-shrink-0"><img
+                            src="https://cdn-icons-png.flaticon.com/512/3208/3208726.png" alt="Query"
+                            class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all">
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800 mb-1">Product Help</h3>
+                        <p class="text-xs text-slate-500 font-bold leading-relaxed">Questions about ingredients or
+                            usage.</p>
+                    </div>
+                </button>
+
+                <!-- Help with something else Card -->
+                <button onclick="revealHumanSupport('General Support')"
+                    class="flex items-center gap-6 p-8 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-left group shadow-sm hover:shadow-md">
+                    <div class="w-16 h-16 flex-shrink-0"><img
+                            src="https://cdn-icons-png.flaticon.com/512/1067/1067566.png" alt="Human"
+                            class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all">
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800 mb-1">Contact Us</h3>
+                        <p class="text-xs text-slate-500 font-bold leading-relaxed">Talk to our team for anything else.
+                        </p>
+                    </div>
+                </button>
+            </div>
+
+            <div id="bot-chat-flow" class="mt-12 space-y-8">
+                <!-- Dynamic Content Will Appear Here (Orders, Tickets, Form) -->
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto">
+            <!-- Bot logic containers are now integrated above -->
+
+            <!-- Human Support (Hidden initially) -->
+            <div id="human-support"
+                class="hidden opacity-0 translate-y-10 transition-all duration-700 mt-12 bg-white border border-slate-200 rounded-xl shadow-sm max-w-4xl">
+                <div class="border-b border-slate-100 p-6 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-black text-slate-900">Tell us more</h2>
+                        <p class="text-xs text-slate-400 font-bold mt-1">Please provide details to help us assist you
+                            faster.</p>
+                    </div>
+                    <button onclick="showMainMenu()"
+                        class="text-[11px] font-black text-slate-400 hover:text-slate-800 uppercase tracking-widest transition-all">
+                        <i class="fas fa-times mr-1"></i> Cancel
+                    </button>
+                </div>
+                <div class="p-6 md:p-10">
+
+                    <form id="contact-form" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" name="name" required placeholder="Full Name"
+                                value="{{ user_data.username if user_data else '' }}" {{ 'readonly' if user_data else ''
+                                }}
+                                class="w-full px-6 py-5 bg-slate-50 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-gn-500 transition-all outline-none text-sm font-bold {{ 'opacity-70 cursor-not-allowed bg-slate-100/50' if user_data else '' }}">
+                            <input type="email" name="email" required placeholder="Email Address"
+                                value="{{ user_data.email if user_data else '' }}" {{ 'readonly' if user_data else '' }}
+                                class="w-full px-6 py-5 bg-slate-50 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-gn-500 transition-all outline-none text-sm font-bold {{ 'opacity-70 cursor-not-allowed bg-slate-100/50' if user_data else '' }}">
+                        </div>
+
+                        <select id="form-subject" name="subject" required
+                            class="w-full px-6 py-5 bg-slate-50 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-gn-500 transition-all outline-none text-sm font-bold appearance-none cursor-pointer">
+                            <option value="Order Status">Order Status Inquiry</option>
+                            <option value="Product Question">Product Information</option>
+                            <option value="Return/Refund">Return or Refund</option>
+                            <option value="Business">Business Partnership</option>
+                            <option value="Other">Other</option>
+                        </select>
+
+                        <textarea id="form-message" name="message" required rows="4"
+                            placeholder="Briefly describe your issue..."
+                            class="w-full px-6 py-5 bg-slate-50 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-gn-500 transition-all outline-none text-sm font-bold resize-none leading-relaxed"></textarea>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-dashed border-slate-300">
+                            <div class="flex items-center gap-4">
+                                <label for="contact_image"
+                                    class="cursor-pointer bg-white border border-slate-300 px-4 py-2.5 rounded-xl text-[11px] font-black text-slate-700 shadow-sm hover:bg-slate-50 transition-all active:scale-95">
+                                    <i class="fas fa-camera mr-2 text-gn-600"></i> Attach Photo
+                                </label>
+                                <input type="file" id="contact_image" name="contact_image" accept="image/*"
+                                    class="hidden" onchange="previewImage(event)">
+                                <div id="preview-container" class="hidden relative ml-auto">
+                                    <img id="image-preview" src="#" alt="Preview"
+                                        class="w-12 h-12 rounded-xl object-cover border-2 border-white shadow-md">
+                                    <button type="button" onclick="removePreview()"
+                                        class="absolute -top-2 -right-2 bg-rose-500 text-white w-4 h-4 rounded-full text-[10px] flex items-center justify-center border-white border shadow-sm">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="submit-btn"
+                            class="w-full bg-gn-600 text-white px-8 py-5 rounded-2xl font-black text-sm hover:bg-gn-700 transition-all flex items-center justify-center gap-4 active:scale-[0.98] shadow-xl shadow-gn-900/20">
+                            <span id="btn-text">Submit Request</span>
+                            <div id="btn-loader"
+                                class="hidden w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin">
+                            </div>
+                        </button>
+                    </form>
+
+
+                    <!-- Success Message -->
+                    <div id="success-message" class="hidden text-center py-6 animate-fade-in">
+                        <div
+                            class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                            <i class="fas fa-check text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-800 mb-1">Request Submitted!</h3>
+                        <div
+                            class="inline-block px-4 py-1.5 bg-slate-100 rounded-full text-[11px] font-black text-slate-500 uppercase tracking-widest mb-6">
+                            Ticket <span id="display-ticket-id" class="text-gn-600">#TK-XXXXXX</span>
+                        </div>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-8 max-w-sm mx-auto">
+                            We've received your request. Our team usually responds within <strong>24-48 hours</strong>.
+                        </p>
+
+                        <div id="success-wa-container" class="space-y-4">
+                            <!-- Dynamic WA Link with Timer -->
+                        </div>
+                        <button onclick="location.reload()"
+                            class="mt-6 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] hover:text-gn-600 transition-colors">Go
+                            Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Login Required View -->
+        <div class="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl shadow-gn-900/5 border border-slate-100 text-center animate-fade-in">
+            <div class="w-20 h-20 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-8">
+                <i class="fas fa-user-lock text-3xl"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-4">Login Required</h2>
+            <p class="text-slate-500 mb-8 max-w-sm mx-auto">To provide personalized support and track your orders, please login to your account first.</p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="/login?next=/contact" class="px-10 py-4 bg-gn-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-gn-900/10 hover:bg-gn-700 transition-all w-full sm:w-auto">
+                    Login Now
+                </a>
+                <a href="/signup" class="px-10 py-4 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all w-full sm:w-auto">
+                    Create Account
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+</div>
+
+<style>
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fade-in 0.4s ease forwards;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+
+<script>
+    const userTickets = {{ user_tickets | tojson | safe }};
+
+    function clearChatFlow() {
+        const flow = document.getElementById('bot-chat-flow');
+        flow.innerHTML = '';
+    }
+
+    function showMainMenu() {
+        clearChatFlow();
+
+        // Show original Amazon-style cards
+        const mainOptions = document.getElementById('bot-options');
+        if (mainOptions) {
+            mainOptions.classList.remove('hidden');
+            mainOptions.classList.add('grid');
+        }
+
+        // Hide human support if open
+        const human = document.getElementById('human-support');
+        if (human) {
+            human.classList.add('hidden', 'opacity-0', 'translate-y-10');
+        }
+
+        // Scroll to top of support section
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function appendBotOptions() {
+        const flow = document.getElementById('bot-chat-flow');
+        const optionsDiv = document.createElement('div');
+        optionsDiv.id = 'bot-options';
+        optionsDiv.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in';
+
+        let optionsHtml = `
+        <button onclick="botTrackOrders()" class="flex items-center gap-6 p-8 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-left group shadow-sm hover:shadow-md">
+            <div class="w-16 h-16 flex-shrink-0"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" alt="Orders" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all"></div>
+            <div>
+                <h3 class="text-lg font-black text-slate-800 mb-1">Your Orders</h3>
+                <p class="text-xs text-slate-500 font-bold leading-relaxed">Track packages, view details or cancel orders.</p>
+            </div>
+        </button>
+
+        <button onclick="botTrackOrders('Return/Refund')" class="flex items-center gap-6 p-8 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-left group shadow-sm hover:shadow-md">
+            <div class="w-16 h-16 flex-shrink-0"><img src="https://cdn-icons-png.flaticon.com/512/1585/1585141.png" alt="Returns" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all"></div>
+            <div>
+                <h3 class="text-lg font-black text-slate-800 mb-1">Returns & Refunds</h3>
+                <p class="text-xs text-slate-500 font-bold leading-relaxed">Return items and check refund status.</p>
+            </div>
+        </button>
+    `;
+
+        if (userTickets && userTickets.length > 0) {
+            optionsHtml += `
+            <button onclick="botShowTickets()" class="flex items-center gap-6 p-8 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-left group shadow-sm hover:shadow-md">
+                <div class="w-16 h-16 flex-shrink-0"><img src="https://cdn-icons-png.flaticon.com/512/1067/1067557.png" alt="Tickets" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all"></div>
+                <div>
+                    <h3 class="text-lg font-black text-slate-800 mb-1">Support History</h3>
+                    <p class="text-xs text-slate-500 font-bold leading-relaxed">Check your previous tickets and responses.</p>
+                </div>
+            </button>
+        `;
+        }
+
+        optionsHtml += `
+        <button onclick="revealHumanSupport('Product Question')" class="flex items-center gap-6 p-8 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-left group shadow-sm hover:shadow-md">
+            <div class="w-16 h-16 flex-shrink-0"><img src="https://cdn-icons-png.flaticon.com/512/3208/3208726.png" alt="Query" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all"></div>
+            <div>
+                <h3 class="text-lg font-black text-slate-800 mb-1">Product Help</h3>
+                <p class="text-xs text-slate-500 font-bold leading-relaxed">Questions about ingredients or usage.</p>
+            </div>
+        </button>
+
+        <button onclick="revealHumanSupport('General Support')" class="flex items-center gap-6 p-8 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-left group shadow-sm hover:shadow-md">
+            <div class="w-16 h-16 flex-shrink-0"><img src="https://cdn-icons-png.flaticon.com/512/1067/1067566.png" alt="Human" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all"></div>
+            <div>
+                <h3 class="text-lg font-black text-slate-800 mb-1">Contact Us</h3>
+                <p class="text-xs text-slate-500 font-bold leading-relaxed">Talk to our team for anything else.</p>
+            </div>
+        </button>
+    `;
+
+        optionsDiv.innerHTML = optionsHtml;
+        flow.appendChild(optionsDiv);
+
+        // Also hide human support if open
+        const human = document.getElementById('human-support');
+        human.classList.add('hidden', 'opacity-0', 'translate-y-10');
+    }
+
+    function appendBotMessage(text, showSupport = false, customHtml = null) {
+        const flow = document.getElementById('bot-chat-flow');
+
+        // Bot Message Container
+        const msg = document.createElement('div');
+        msg.className = 'flex items-start gap-4 animate-fade-in';
+        msg.innerHTML = `
+        <div class="w-10 h-10 rounded-2xl bg-gn-600 flex items-center justify-center text-white flex-shrink-0">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="bg-slate-50 p-5 rounded-2xl rounded-tl-none border border-slate-100 max-w-[85%]">
+            <p class="text-sm font-bold text-slate-700 leading-relaxed">${text}</p>
+            ${customHtml ? `<div class="mt-4">${customHtml}</div>` : ''}
+        </div>
+    `;
+        flow.appendChild(msg);
+
+        // Scroll to new message
+        setTimeout(() => {
+            msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+
+        if (showSupport) revealHumanSupport('General Support');
+    }
+
+    function botShowTickets() {
+        // Hide main options
+        const mainOptions = document.getElementById('bot-options');
+        if (mainOptions) mainOptions.classList.add('hidden');
+
+        clearChatFlow();
+        appendBotMessage("Fetching your ticket history...");
+
+        setTimeout(() => {
+            clearChatFlow();
+            if (userTickets.length === 0) {
+                appendBotMessage("You haven't created any tickets yet. Would you like to create one?", true);
+                const flow = document.getElementById('bot-chat-flow');
+                const backBtn = document.createElement('button');
+                backBtn.onclick = showMainMenu;
+                backBtn.className = "mt-6 px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg flex items-center gap-3";
+                backBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Back to Main Menu`;
+                flow.appendChild(backBtn);
+                return;
+            }
+
+            let ticketsHtml = '<div class="relative group"><div class="flex overflow-x-auto pb-6 gap-5 snap-x scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">';
+            userTickets.forEach((ticket, index) => {
+                const created = new Date(ticket.created_at_iso);
+                const now = new Date();
+                const diff = now - created;
+                const hoursLeft = 24 - (diff / (1000 * 60 * 60));
+                const isLocked = hoursLeft > 0;
+                const waText = encodeURIComponent(`Hi Green Support, \n\nI am following up on my ticket #${ticket.ticket_id}.\n\nSubject: ${ticket.subject}\nMessage: ${ticket.message}\n\nPlease help.`);
+                const waLink = `https://wa.me/{{ whatsapp_num }}?text=${waText}`;
+
+                ticketsHtml += `
+                <div class="flex-shrink-0 w-[300px] bg-white border border-slate-300 rounded-[2rem] shadow-sm overflow-hidden snap-center animate-flip" style="animation-delay: ${index * 0.15}s">
+                    <div class="p-5 bg-slate-100/30 border-b border-slate-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active</span>
+                            </div>
+                            <p class="text-xs font-black text-gn-600">#${ticket.ticket_id}</p>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-[9px] text-slate-400 uppercase tracking-wider font-bold">Created on (IST)</p>
+                            <p class="text-[10px] font-bold text-slate-700">${new Date(ticket.created_at_iso).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' })}</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h4 class="text-[13px] font-black text-slate-800 mb-2 line-clamp-1">${ticket.subject}</h4>
+                            <p class="text-[11px] text-slate-500 leading-relaxed line-clamp-3 font-bold">${ticket.message}</p>
+                        </div>
+                        <div id="timer-container-${ticket.ticket_id}">
+                            ${isLocked ? `
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex items-center justify-between px-3 py-2 bg-amber-50 rounded-xl border border-amber-100">
+                                        <span class="text-[9px] font-bold text-amber-700 uppercase tracking-wider">Unlocks In</span>
+                                        <span class="text-[11px] font-black text-amber-700 font-mono" id="timer-${ticket.ticket_id}" data-created="${ticket.created_at_iso}" data-wa-link="${waLink}">Calculating...</span>
+                                    </div>
+                                    <p class="text-[9px] text-slate-400 font-bold text-center italic">WhatsApp chat for response will unlock soon</p>
+                                </div>
+                            ` : `
+                                <a href="${waLink}" target="_blank" class="w-full py-3 bg-[#25D366] text-white rounded-xl text-[10px] font-bold flex items-center justify-center gap-2 hover:bg-[#20bd5a] transition-all shadow-lg shadow-green-100">
+                                    <i class="fab fa-whatsapp text-lg"></i> Follow up on WhatsApp
+                                </a>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+            });
+            ticketsHtml += '</div><div class="flex items-center justify-center gap-2 mt-2"><span class="text-[10px] font-bold text-slate-400">Swipe to browse tickets</span></div></div>';
+
+
+            appendBotMessage("Here is your recent ticket history:", false, ticketsHtml);
+
+            const flow = document.getElementById('bot-chat-flow');
+            const backBtn = document.createElement('button');
+            backBtn.onclick = showMainMenu;
+            backBtn.className = "mt-6 px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg flex items-center gap-3";
+            backBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Back to Main Menu`;
+            flow.appendChild(backBtn);
+
+            startGlobalTimers();
+        }, 500);
+    }
+
+    async function botTrackOrders(context = 'Track Order') {
+        // Hide main options to prevent duplication
+        const mainOptions = document.getElementById('bot-options');
+        if (mainOptions) mainOptions.classList.add('hidden');
+
+        clearChatFlow();
+        appendBotMessage(context === 'Return/Refund' ? "Loading your delivered orders for return/refund..." : "Checking your recent orders...");
+
+        try {
+            const res = await fetch('/api/support/orders');
+            let data = await res.json();
+
+            // Filter for Delivered if context is Return/Refund
+            if (context === 'Return/Refund' && data.orders) {
+                data.orders = data.orders.filter(o => o.status === 'Delivered');
+            }
+
+            setTimeout(() => {
+                clearChatFlow();
+                if (data.error || !data.orders || data.orders.length === 0) {
+                    appendBotMessage(context === 'Return/Refund' ? "I couldn't find any delivered orders eligible for return/refund." : "I couldn't find any recent orders for you.", true);
+                    const flow = document.getElementById('bot-chat-flow');
+                    const backBtn = document.createElement('button');
+                    backBtn.onclick = showMainMenu;
+                    backBtn.className = "mt-6 px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg flex items-center gap-3";
+                    backBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Back to Main Menu`;
+                    flow.appendChild(backBtn);
+                    return;
+                }
+
+                let ordersHtml = `<div class="relative group"><div class="flex overflow-x-auto pb-4 gap-4 snap-x scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">`;
+                data.orders.forEach((order, index) => {
+                    const moreItems = order.total_qty > 1 ? ` <span class="text-gn-600 font-bold">+ ${order.total_qty - 1}</span>` : '';
+
+                    // Label logic based on status
+                    let dateLabel = "Expected Delivery";
+                    let displayDate = order.expected;
+
+                    if (order.status.toLowerCase() === 'delivered') {
+                        dateLabel = "Delivered On";
+                        displayDate = order.date;
+                    } else if (order.status.toLowerCase() === 'cancelled') {
+                        dateLabel = "Cancelled On";
+                        displayDate = order.date;
+                    }
+
+                    ordersHtml += `
+                    <div class="flex-shrink-0 w-[280px] bg-white border-2 border-slate-300 rounded-2xl overflow-hidden hover:shadow-xl hover:border-gn-600 transition-all animate-flip flex flex-col snap-center shadow-md" style="animation-delay: ${index * 0.1}s;">
+                        <div class="flex items-center p-3 border-b border-slate-50">
+                            <div class="w-16 h-16 flex-shrink-0 bg-slate-50 p-1">
+                                <img src="${order.product_image}" class="w-full h-full object-contain rounded" onerror="this.src='/static/images/logo.jpg'">
+                            </div>
+                            <div class="ml-3 flex-grow min-w-0">
+                                <div class="flex justify-between items-start">
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase truncate">${order.order_id}</p>
+                                    <span class="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-[8px] font-black uppercase tracking-tighter">${order.status}</span>
+                                </div>
+                                <h4 class="text-[12px] font-black text-slate-800 leading-tight truncate mt-1">
+                                    ${order.product_name}${moreItems}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-50/50 flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-[8px] font-bold text-slate-400 uppercase leading-none mb-1">${dateLabel}</span>
+                                <span class="text-[10px] font-black text-slate-700">${displayDate}</span>
+                            </div>
+                            <button onclick="revealHumanSupport('${context}', '${order.order_id}')" class="px-4 py-1.5 bg-gn-600 text-white rounded-lg text-[9px] font-black hover:bg-gn-700 shadow-sm transition-colors">
+                                ${context === 'Return/Refund' ? 'SELECT' : 'HELP'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                });
+                ordersHtml += `</div><div class="flex items-center justify-center gap-2 mt-2"><span class="text-[10px] font-bold text-slate-400">Swipe left to browse orders</span></div></div>`;
+
+                appendBotMessage(context === 'Return/Refund' ? "Please select the delivered order you wish to return/refund:" : "I found your recent orders:", false, ordersHtml);
+
+                const flow = document.getElementById('bot-chat-flow');
+                const backBtn = document.createElement('button');
+                backBtn.onclick = showMainMenu;
+                backBtn.className = "mt-6 px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg flex items-center gap-3";
+                backBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Back to Main Menu`;
+                flow.appendChild(backBtn);
+            }, 500);
+        } catch (e) {
+            appendBotMessage("Sorry, I'm having trouble connecting. Please try again later.", true);
+        }
+    }
+
+    function startGlobalTimers() {
+        setInterval(() => {
+            document.querySelectorAll('[id^="timer-"]').forEach(timerSpan => {
+                const created = new Date(timerSpan.getAttribute('data-created'));
+                const now = new Date();
+                const totalMs = 24 * 60 * 60 * 1000;
+                const diff = now - created;
+                const remaining = totalMs - diff;
+
+                if (remaining <= 0) {
+                    const ticketId = timerSpan.id.replace('timer-', '');
+                    const waLink = timerSpan.getAttribute('data-wa-link');
+                    const container = document.getElementById(`timer-container-${ticketId}`);
+                    if (container && !container.innerHTML.includes('bg-[#25D366]')) {
+                        container.innerHTML = `
+                        <a href="${waLink}" target="_blank" class="w-full py-3 bg-[#25D366] text-white rounded-xl text-[10px] font-bold flex items-center justify-center gap-2 hover:bg-[#20bd5a] transition-all shadow-lg shadow-green-100">
+                            <i class="fab fa-whatsapp text-lg"></i> Follow up on WhatsApp
+                        </a>
+                    `;
+                    }
+                } else {
+                    const h = Math.floor(remaining / (1000 * 60 * 60)).toString().padStart(2, '0');
+                    const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                    const s = Math.floor((remaining % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                    timerSpan.innerText = `${h}:${m}:${s}`;
+                }
+            });
+        }, 1000);
+    }
+
+    function revealHumanSupport(subject, orderId = null) {
+        // Hide main options
+        const mainOptions = document.getElementById('bot-options');
+        if (mainOptions) mainOptions.classList.add('hidden');
+
+        // Reset Form visibility in case it was hidden by a previous success
+        document.getElementById('contact-form').classList.remove('hidden');
+        const formHeader = document.querySelector('#human-support h2').parentElement;
+        if (formHeader) formHeader.classList.remove('hidden');
+        document.getElementById('success-message').classList.add('hidden');
+        document.getElementById('contact-form').reset();
+
+        if (subject) document.getElementById('form-subject').value = subject;
+        if (orderId) {
+            document.getElementById('form-message').value = `Hi, I need help with my Order: ${orderId}. \n\n[Describe your issue here]`;
+        }
+
+        const human = document.getElementById('human-support');
+        human.classList.remove('hidden');
+        setTimeout(() => {
+            human.classList.remove('opacity-0', 'translate-y-10');
+            human.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    }
+
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const output = document.getElementById('image-preview');
+            output.src = reader.result;
+            document.getElementById('preview-container').classList.remove('hidden');
+        };
+        if (event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function removePreview() {
+        document.getElementById('contact_image').value = "";
+        document.getElementById('preview-container').classList.add('hidden');
+    }
+
+    document.getElementById('contact-form').onsubmit = async function (e) {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnLoader = document.getElementById('btn-loader');
+        const formData = new FormData(this);
+
+        btn.disabled = true;
+        btnText.innerText = 'Submitting...';
+        btnLoader.classList.remove('hidden');
+
+        try {
+            const response = await fetch('/contact', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Hide form, show success
+                document.getElementById('contact-form').classList.add('hidden');
+                // Hide the header section of the form panel
+                const headerDiv = document.querySelector('#human-support .border-b');
+                if (headerDiv) headerDiv.classList.add('hidden');
+
+                document.getElementById('display-ticket-id').innerText = '#' + result.ticket_id;
+
+                const waText = encodeURIComponent(`Hi Green Support, \n\nI am following up on my ticket #${result.ticket_id}.\n\n(Follow-up for newly created ticket)`);
+                const waLink = `https://wa.me/{{ whatsapp_num }}?text=${waText}`;
+                const successContainer = document.getElementById('success-wa-container');
+
+                successContainer.innerHTML = `
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center justify-between px-4 py-2.5 bg-amber-50 rounded-xl border border-amber-100">
+                        <span class="text-[10px] font-bold text-amber-700 uppercase tracking-widest">WhatsApp Follow-up</span>
+                        <span class="text-[11px] font-black text-amber-800 font-mono" id="timer-SUCCESS" data-created="${result.created_at_iso}" data-wa-link="${waLink}">Calculating...</span>
+                    </div>
+                    <button disabled class="w-full py-4 bg-slate-100 text-slate-400 rounded-xl font-bold text-sm cursor-not-allowed flex items-center justify-center gap-3">
+                        <i class="fab fa-whatsapp text-xl"></i> Chat Locked
+                    </button>
+                </div>
+            `;
+
+                document.getElementById('success-message').classList.remove('hidden');
+                startGlobalTimers();
+            } else {
+                alert(result.message || "Something went wrong. Please try again.");
+                btn.disabled = false;
+                btnText.innerText = 'Submit Request';
+                btnLoader.classList.add('hidden');
+            }
+        } catch (error) {
+            console.error("Submission Error:", error);
+            alert("Failed to send message. Please check your connection.");
+            btn.disabled = false;
+            btnText.innerText = 'Submit Request';
+            btnLoader.classList.add('hidden');
+        }
+    };
+</script>
+
+<script>
+    window.addEventListener('load', () => {
+        const loader = document.getElementById('support-loader');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 700);
+        }
+    });
+</script>
+{% endblock %}

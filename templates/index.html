@@ -1,0 +1,1213 @@
+{% extends "base.html" %}
+
+{% block title %}Green Naturals | Best Ayurvedic Health & Herbal Products{% endblock %}
+{% block meta_description %}Shop premium Ayurvedic formulations at Green Naturals. Discover the power of pure Moringa and Neem for your holistic well-being. Fast Pan-India delivery.{% endblock %}
+{% block meta_keywords %}Best Ayurvedic Products India, Organic Moringa Supplements, Pure Neem Supplements, Herbal Wellness Store, Green Naturals Store{% endblock %}
+
+{% block extra_head %}
+<!-- Premium Typography -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block extra_css %}
+:root {
+    --gn-50: #f0fdf4;
+    --gn-100: #dcfce7;
+    --gn-200: #bbf7d0;
+    --gn-300: #86efac;
+    --gn-400: #4ade80;
+    --gn-500: #22c55e;
+    --gn-600: #16a34a;
+    --gn-700: #15803d;
+    --gn-800: #166534;
+    --gn-900: #14532d;
+    --luxury-black: #0f172a;
+    --luxury-grey: #64748b;
+    --soft-shadow: 0 4px 20px -1px rgba(0, 0, 0, 0.05), 0 2px 10px -1px rgba(0, 0, 0, 0.03);
+    --premium-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fbfbfc;
+    color: var(--luxury-black);
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* --- Hero --- */
+.hero-section {
+background: linear-gradient(135deg, rgba(11,58,30,0.85) 0%, rgba(26,107,60,0.75) 50%, rgba(45,139,78,0.65) 100%),
+url('/static/images/hero.png');
+background-size: cover;
+background-position: center;
+position: relative;
+}
+.hero-section::after {
+content: '';
+position: absolute;
+bottom: 0;
+left: 0;
+right: 0;
+height: 120px;
+background: linear-gradient(to top, #f8faf9, transparent);
+}
+
+/* --- Trust Bar Icons --- */
+.trust-card {
+background: white;
+border: 1px solid rgba(0,0,0,0.04);
+transition: all 0.3s ease;
+}
+.trust-card:hover {
+transform: translateY(-4px);
+box-shadow: 0 12px 32px rgba(45,139,78,0.08);
+border-color: rgba(45,139,78,0.1);
+}
+
+/* --- Category Filter --- */
+.cat-pill {
+    background: white;
+    border: 1.5px solid #e5e7eb;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.cat-pill:hover, .cat-pill.active {
+    border-color: #2d8b4e;
+    background: #edfcf2;
+    color: #1a6b3c;
+}
+
+.pill-container-wrapper { position: relative; width: 100%; }
+.pill-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px 0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.pill-scroll-container::-webkit-scrollbar { display: none; }
+.fade-overlay {
+    position: absolute; top: 0; right: 0; bottom: 0; width: 60px;
+    background: linear-gradient(to right, transparent, #ffffff);
+    pointer-events: none; z-index: 5;
+}
+.scroll-indicator {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    z-index: 6; background: white; width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); color: #2d8b4e; font-size: 14px;
+    cursor: pointer; opacity: 0.8; transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+    .pill-scroll-container { justify-content: center; overflow: visible; }
+    .fade-overlay, .scroll-indicator { display: none; }
+}
+
+/* --- Animations --- */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.8s ease forwards; }
+.fade-up-d1 { animation-delay: 0.1s; opacity: 0; }
+.fade-up-d2 { animation-delay: 0.2s; opacity: 0; }
+.fade-up-d3 { animation-delay: 0.3s; opacity: 0; }
+.fade-up-d4 { animation-delay: 0.4s; opacity: 0; }
+
+@keyframes revealText {
+    from { opacity: 0; transform: translateY(40px) skewY(2deg); }
+    to { opacity: 1; transform: translateY(0) skewY(0); }
+}
+.headline-reveal { animation: revealText 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards; opacity: 0; }
+
+@keyframes textShine {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+.text-shine {
+    background: linear-gradient(90deg, #6dd47e 0%, #ffffff 50%, #6dd47e 100%);
+    background-size: 200% auto; -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; animation: textShine 4s linear infinite;
+}
+
+/* Perfectionist Retail Product Card */
+.product-card {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 14px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+    border-color: var(--gn-200);
+}
+
+.image-slider-wrapper {
+    background: #fcfcfc;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+
+@media (min-width: 768px) {
+    .product-card:hover {
+        border-color: #2d8b4e;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+        transform: translateY(-2px);
+    }
+}
+
+.image-slider-wrapper {
+    background: #f7f7f7;
+    border-bottom: 1px solid #f1f1f1;
+    margin: 0;
+    border-radius: 0;
+}
+
+.product-card:hover .image-container img {
+    transform: none; /* Keep it simple like Amazon */
+}
+
+/* Amazon Style Price Refinement */
+.price-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.price-main {
+    display: flex;
+    align-items: flex-start;
+    color: #0f1111;
+}
+
+.price-symbol { 
+    font-size: 12px; 
+    font-weight: 400;
+    margin-top: 3px;
+}
+
+.price-whole { 
+    font-size: 22px; 
+    font-weight: 700;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    .price-whole { font-size: 16px; }
+    .price-symbol, .price-fraction { font-size: 10px; }
+}
+
+.mrp-container {
+    font-size: 12px;
+    color: #565959;
+}
+
+@media (max-width: 768px) {
+    .mrp-container { font-size: 10px; }
+}
+
+.mrp-text {
+    text-decoration: line-through;
+}
+
+.savings-highlight {
+    background: transparent;
+    color: #CC0C39;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .savings-highlight { font-size: 10px; }
+}
+
+.amazon-badge {
+    background: var(--gn-50);
+    color: var(--gn-700);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--gn-100);
+}
+
+@media (max-width: 768px) {
+    .amazon-badge { font-size: 9px; padding: 3px 8px; }
+}
+
+/* High-Conversion Action Buttons (Amazon Yellow) */
+.btn-amazon-add {
+    background: #FFD814;
+    border: 1px solid #F7CA00;
+    border-radius: 20px; /* Amazon style more rounded */
+    color: #0F1111;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(213,217,217,.5);
+}
+
+.btn-amazon-add:hover {
+    background: #F7CA00;
+    border-color: #F2C200;
+}
+
+@media (max-width: 768px) {
+    .btn-amazon-add { font-size: 11px; padding: 10px 0; border-radius: 10px; }
+}
+
+.btn-amazon-view {
+    background: #ffffff;
+    border: 1px solid #d5d9d9;
+    border-radius: 20px;
+    color: #0f1111;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 0;
+    box-shadow: 0 2px 5px rgba(213,217,217,.5);
+}
+.btn-amazon-view:hover { background: #f7f8f8; }
+
+/* Refined Sidebar Styling */
+.filter-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+}
+
+.filter-group {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.03);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--soft-shadow);
+}
+
+.filter-title {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--luxury-black);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.filter-title::after {
+    content: '';
+    flex-grow: 1;
+    h-px: 1px;
+    height: 1px;
+    background: #f1f5f9;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--luxury-grey);
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filter-option:hover {
+    color: var(--gn-600);
+    transform: translateX(4px);
+}
+
+.filter-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 5px;
+    accent-color: var(--gn-600);
+}
+
+.sort-select {
+    appearance: none;
+    background: white;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    padding: 10px 36px 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--luxury-black);
+    box-shadow: var(--soft-shadow);
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='m1 1 4 4 4-4' stroke='%230F172A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    transition: all 0.2s;
+    width: 100%;
+    max-width: 100%;
+    /* Prevents iOS Safari auto-zoom on tap */
+    font-size: max(13px, 16px);
+    touch-action: manipulation;
+}
+
+@media (max-width: 1023px) {
+    .sort-select {
+        /* 16px prevents iOS Safari zoom on select focus */
+        font-size: 16px;
+        padding: 0 36px 0 42px;
+    }
+}
+
+.cat-tag {
+    color: #565959;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+/* --- CTA Banner --- */
+.cta-banner { background: linear-gradient(135deg, #0b3a1e 0%, #1a6b3c 50%, #2d8b4e 100%); position: relative; overflow: hidden; }
+.cta-banner::before {
+    content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(109,212,126,0.15) 0%, transparent 70%); border-radius: 50%;
+}
+
+/* Premium Shop Controls */
+.mobile-controls-bar {
+    background: white;
+    padding: 0 0 12px 0;
+    margin: 0;
+}
+
+@media (min-width: 1024px) {
+    .mobile-controls-bar {
+        padding: 0 0 32px 0;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 24px;
+    }
+}
+/* Mobile Fixes */
+@media (max-width: 1023px) {
+    .sort-select {
+        font-size: 16px !important;
+        padding: 0 40px 0 48px !important;
+        text-align-last: center;
+        background-position: right 12px center;
+    }
+    .mobile-filter-drawer {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        width: 82%;
+        max-width: 300px;
+        height: 100vh;
+        background: white;
+        z-index: 1050;
+        padding: 20px;
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(-100%);
+        display: block !important;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.12);
+        overflow-y: auto;
+    }
+    .filter-drawer-open {
+        transform: translateX(0%) !important;
+    }
+}
+
+.tab-active { color: #1a6b3c !important; border-bottom: 2px solid #2d8b4e !important; }
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ======== HERO SECTION ======== -->
+<section class="hero-section min-h-[70vh] md:min-h-[85vh] flex items-center pt-24 md:pt-32 pb-12 relative">
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-2xl">
+            <div class="flex items-center gap-3 mb-6 fade-up fade-up-d1">
+                <div class="h-px w-10 bg-gn-300"></div>
+                <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-gn-200">Ayurvedic Wellness Since
+                    2024</span>
+            </div>
+
+            <h1
+                class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-[1.05] tracking-tight headline-reveal">
+                <span class="sr-only">Best Ayurvedic Products in India</span>
+                Nature's Healing,<br>
+                <span id="typewriter" class="text-shine">Reimagined.</span><span class="text-gn-300 animate-pulse">|</span>
+            </h1>
+
+            <p class="text-base md:text-lg text-white/70 font-medium mb-10 max-w-lg leading-relaxed fade-up fade-up-d3">
+                Discover the <strong>best Ayurvedic products</strong> in India. Premium formulations powered by pure organic Moringa & Neem for holistic well-being.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-5 fade-up fade-up-d4">
+                <a href="#shop"
+                    class="group inline-flex items-center justify-center gap-3 bg-white text-luxury-black px-10 py-4 rounded-full font-bold text-sm hover:bg-gn-600 hover:text-white transition-all duration-300 shadow-xl">
+                    Explore Collection <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                </a>
+                <a href="/about"
+                    class="inline-flex items-center justify-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 text-white px-10 py-4 rounded-full font-bold text-sm hover:bg-white/20 transition-all duration-300">
+                    <i class="fas fa-leaf text-[10px]"></i> Our Philosophy
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="flex items-center gap-8 md:gap-12 mt-14 fade-up fade-up-d4">
+                <div class="flex flex-col">
+                    <p class="text-2xl md:text-3xl font-extrabold text-white flex items-center"><span class="counter min-w-[3.5ch]" data-target="5000">0</span>+</p>
+                    <p class="text-[10px] text-white/50 font-medium uppercase tracking-wider">Happy Customers</p>
+                </div>
+                <div class="w-px h-10 bg-white/15"></div>
+                <div class="flex flex-col">
+                    <p class="text-2xl md:text-3xl font-extrabold text-white flex items-center"><span class="counter min-w-[2.2ch]" data-target="100">0</span>%</p>
+                    <p class="text-[10px] text-white/50 font-medium uppercase tracking-wider">Natural</p>
+                </div>
+                <div class="w-px h-10 bg-white/15"></div>
+                <div class="flex flex-col">
+                    <p class="text-2xl md:text-3xl font-extrabold text-white flex items-center"><span class="counter min-w-[2.2ch]" data-target="{{ [product_count - 1, 0]|max if product_count else 50 }}">0</span>+</p>
+                    <p class="text-[10px] text-white/50 font-medium uppercase tracking-wider">Products</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======== TRUST BAR ======== -->
+<section class="py-6 md:py-10 relative z-10">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto">
+            <!-- 100% Natural -->
+            <div class="trust-card fade-up-d1 group rounded-2xl p-4 md:p-6 text-center flex flex-col items-center border border-gray-100 hover:border-gn-200 transition-all duration-500">
+                <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gn-50 flex items-center justify-center mb-3 group-hover:bg-gn-100 transition-colors duration-500">
+                    <i class="fas fa-leaf text-gn-600 text-xl md:text-2xl group-hover:rotate-12 transition-transform duration-500"></i>
+                </div>
+                <h4 class="text-[12px] md:text-sm font-bold text-gray-900 leading-tight">100% Natural</h4>
+                <p class="text-[10px] md:text-xs text-gray-400 mt-1.5 font-medium">Pure Ayurvedic herbs</p>
+            </div>
+            <!-- Lab Tested -->
+            <div class="trust-card fade-up-d2 group rounded-2xl p-4 md:p-6 text-center flex flex-col items-center border border-gray-100 hover:border-gn-200 transition-all duration-500">
+                <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gn-50 flex items-center justify-center mb-3 group-hover:bg-gn-100 transition-colors duration-500">
+                    <i class="fas fa-vial text-gn-600 text-xl md:text-2xl group-hover:rotate-12 transition-transform duration-500"></i>
+                </div>
+                <h4 class="text-[12px] md:text-sm font-bold text-gray-900 leading-tight">Lab Tested</h4>
+                <p class="text-[10px] md:text-xs text-gray-400 mt-1.5 font-medium">Quality & Purity assured</p>
+            </div>
+            <!-- Fast Delivery -->
+            <div class="trust-card fade-up-d3 group rounded-2xl p-4 md:p-6 text-center flex flex-col items-center border border-gray-100 hover:border-gn-200 transition-all duration-500">
+                <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gn-50 flex items-center justify-center mb-3 group-hover:bg-gn-100 transition-colors duration-500">
+                    <i class="fas fa-truck text-gn-600 text-xl md:text-2xl group-hover:rotate-12 transition-transform duration-500"></i>
+                </div>
+                <h4 class="text-[12px] md:text-sm font-bold text-gray-900 leading-tight">Fast Delivery</h4>
+                <p class="text-[10px] md:text-xs text-gray-400 mt-1.5 font-medium">Express Pan India shipping</p>
+            </div>
+            <!-- Secure Payment -->
+            <div class="trust-card fade-up-d4 group rounded-2xl p-4 md:p-6 text-center flex flex-col items-center border border-gray-100 hover:border-gn-200 transition-all duration-500">
+                <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gn-50 flex items-center justify-center mb-3 group-hover:bg-gn-100 transition-colors duration-500">
+                    <i class="fas fa-shield-alt text-gn-600 text-xl md:text-2xl group-hover:rotate-12 transition-transform duration-500"></i>
+                </div>
+                <h4 class="text-[12px] md:text-sm font-bold text-gray-900 leading-tight">Secure Payment</h4>
+                <p class="text-[10px] md:text-xs text-gray-400 mt-1.5 font-medium">100% encrypted checkout</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======== PRODUCT SECTION ======== -->
+<section id="shop" class="container mx-auto px-2 sm:px-4 md:px-6 pt-10 pb-8 overflow-hidden scroll-mt-20 md:scroll-mt-24">
+    <div class="flex flex-col lg:flex-row gap-4 lg:gap-8">
+        <!-- Sidebar Filter (Desktop & Mobile Drawer) -->
+        <aside id="filter-sidebar" class="filter-sidebar hidden lg:block mobile-filter-drawer">
+            <div class="lg:hidden flex items-center justify-between mb-6 pt-2">
+                <h2 class="text-lg font-bold text-gray-900">Filters</h2>
+                <button onclick="window.closeFilterDrawerFn ? window.closeFilterDrawerFn() : toggleFilterDrawer()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-times text-xs text-gray-600"></i>
+                </button>
+            </div>
+            <div class="filter-group">
+                <h3 class="filter-title">Category</h3>
+                <div class="space-y-1" id="sidebar-categories">
+                    <label class="filter-option">
+                        <input type="radio" name="cat" class="filter-checkbox" checked onchange="filterProducts('all')">
+                        <span>All Products</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h3 class="filter-title">Price Range</h3>
+                <div class="space-y-2">
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" onchange="filterByPrice(0, 500, this)">
+                        <span>Under ₹500</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" onchange="filterByPrice(500, 1000, this)">
+                        <span>₹500 - ₹1,000</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" onchange="filterByPrice(1000, 10000, this)">
+                        <span>Over ₹1,000</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-group border-none">
+                <h3 class="filter-title">Availability</h3>
+                <label class="filter-option">
+                    <input type="checkbox" class="filter-checkbox" checked>
+                    <span>In Stock Only</span>
+                </label>
+            </div>
+        </aside>
+        <div class="flex-grow">
+    <!-- Minimalist Shop Header -->
+    <div class="mobile-controls-bar">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100 mb-8">
+            <div class="flex flex-col items-center md:items-start group fade-up-d1 pt-2">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-6 md:w-8 h-[1.5px] bg-gn-200"></span>
+                    <span class="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-gn-500">Premium Collection</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tighter leading-none text-center md:text-left">
+                    Premium <span class="text-gn-700 font-serif italic">Ayurvedic</span> Shop
+                </h2>
+                <div class="h-1 w-10 bg-gn-50 mt-4 rounded-full md:hidden"></div>
+            </div>
+            
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <!-- Mobile Filter Trigger -->
+                <button onclick="toggleFilterDrawer()" class="flex-1 md:hidden h-11 flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl text-[12px] font-bold text-slate-800 active:bg-slate-50 transition-all">
+                    <i class="fas fa-sliders-h text-gn-600 text-[11px]"></i> Filter
+                </button>
+                
+                <!-- Sort Controls -->
+                <div class="relative flex-1 md:flex-none h-11">
+                    <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none md:hidden">
+                        <i class="fas fa-sort-amount-down text-gn-600 text-[11px]"></i>
+                    </div>
+                    <select class="sort-select w-full md:w-auto h-full pl-10 md:pl-4 pr-10 bg-slate-50/50 border-transparent hover:bg-white hover:border-slate-200 transition-all text-[12px] font-bold rounded-xl" id="sort-select" onchange="sortProducts(this.value)">
+                        <option value="featured">Featured</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="newest">Newest Arrivals</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Product Grid: Compact Retail Style -->
+    <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4 mt-4 md:mt-6">
+        {% if products %}
+        {% for product in products %}
+
+        <div class="product-card group flex flex-col h-full cursor-pointer"
+            data-id="{{ product._id }}" data-category="{{ product.category }}" data-price="{{ product.d_price }}"
+            onclick="window.location.href='/product/{{ product._id }}'">
+            
+            <!-- Image Area: Compact Square -->
+            <div class="relative aspect-square image-slider-wrapper">
+                <div class="image-container" id="slider-{{ loop.index }}">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy" class="w-full h-full object-cover">
+                    {% if product.images %}
+                    {% for img in product.images %}
+                    <img src="{{ img }}" alt="{{ product.name }}" loading="lazy" class="w-full h-full object-cover">
+                    {% endfor %}
+                    {% endif %}
+                </div>
+
+                {% if product.discount_pct %}
+                <div class="absolute top-0 left-0 bg-red-600 text-white text-[10px] font-bold px-2 py-1 z-10">
+                    {{ product.discount_pct }}% OFF
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-3 flex flex-col flex-grow">
+                <span class="cat-tag">{{ product.category }}</span>
+                
+                <h4 class="text-[13px] font-medium text-[#0F1111] mb-2 line-clamp-2 leading-tight hover:text-[#007185] transition-colors cursor-pointer">
+                    {{ product.name }}
+                </h4>
+
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="amazon-badge">
+                        <i class="fas fa-check text-[7px]"></i>
+                        <span>GN Assured</span>
+                    </div>
+                </div>
+                
+                <!-- Proper Price Display -->
+                <div class="price-container mt-auto">
+                    <div class="price-main">
+                        <span class="price-symbol">₹</span>
+                        <span class="price-whole">{{ product.d_price|int }}</span>
+                    </div>
+                    <div class="mrp-container">
+                        M.R.P: <span class="mrp-text">₹{{ product.o_price|int }}</span>
+                    </div>
+                    {% if product.o_price > product.d_price %}
+                    <div class="savings-highlight w-full">
+                        (Save ₹{{ (product.o_price - product.d_price)|int }})
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Action Buttons -->
+                <div id="btn-container-{{ product._id }}" class="mt-auto pt-3">
+                    <button onclick="event.stopPropagation(); handleAddToCart('{{ product._id }}')" id="add-btn-{{ product._id }}"
+                        class="w-full btn-amazon-add text-[11px] py-2.5">
+                        Add to Cart
+                    </button>
+
+                    <div id="qty-ctrl-{{ product._id }}"
+                        class="qty-hidden flex items-center justify-between bg-gray-50 rounded-full p-1 border border-gray-200">
+                        <button onclick="event.stopPropagation(); changeQty('{{ product._id }}', -1)"
+                            class="w-8 h-8 flex items-center justify-center bg-white rounded-full text-gray-600 shadow-sm hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-minus text-[9px]"></i>
+                        </button>
+                        <span id="count-{{ product._id }}" class="text-sm font-bold text-gray-900">1</span>
+                        <button onclick="event.stopPropagation(); changeQty('{{ product._id }}', 1)"
+                            class="w-8 h-8 flex items-center justify-center bg-white rounded-full text-gray-600 shadow-sm hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-plus text-[9px]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <div class="col-span-full py-24 text-center">
+            <div class="w-20 h-20 rounded-full bg-gn-50 flex items-center justify-center mx-auto mb-5">
+                <i class="fas fa-seedling text-3xl text-gn-300"></i>
+            </div>
+            <h4 class="text-xl font-extrabold text-gray-800 mb-2">Coming Soon</h4>
+            <p class="text-sm text-gray-400 font-medium">We're preparing premium batches for you. Stay tuned!</p>
+        </div>
+        {% endif %}
+    </div> <!-- End product-grid -->
+</div> <!-- End flex-grow -->
+</div> <!-- End flex gap-8 -->
+</section>
+
+<!-- ======== INSTAGRAM REEL SPOTLIGHT SECTION ======== -->
+<section id="instagram-reel-spotlight" class="py-10 md:py-16 bg-gradient-to-b from-transparent via-gn-50/40 to-transparent relative overflow-hidden">
+    <div class="container mx-auto px-4 md:px-6">
+        
+        <!-- Header -->
+        <div class="text-center max-w-2xl mx-auto mb-8 md:mb-14">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-amber-500/10 border border-pink-500/20 text-pink-600 text-[11px] font-extrabold uppercase tracking-widest mb-3 sm:mb-4 shadow-sm">
+                <i class="fab fa-instagram text-sm"></i> Featured Reel &bull; Instagram
+            </div>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gn-950 tracking-tight mb-2 sm:mb-3">
+                As Seen On <span class="bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 bg-clip-text text-transparent">Instagram</span>
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed max-w-lg mx-auto">
+                Watch how our pure Moringa & Neem herbal formulations bring daily vitality and natural wellness into thousands of lives.
+            </p>
+        </div>
+
+        <!-- Reel Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center max-w-5xl mx-auto">
+            
+            <!-- Left: Authentic iPhone 15 Pro Mockup Frame with Live Reel Embed -->
+            <div class="lg:col-span-5 flex justify-center">
+                
+                <!-- iPhone Outer Metallic Body -->
+                <div class="relative w-full max-w-[280px] xs:max-w-[310px] sm:max-w-[330px] aspect-[9/19] bg-slate-950 rounded-[48px] p-2.5 sm:p-3 shadow-[0_25px_70px_-15px_rgba(236,72,153,0.35)] border-[3px] border-slate-700/60 ring-1 ring-slate-500/20 group">
+                    
+                    <!-- Hardware Buttons (Side Ridges) -->
+                    <div class="absolute -left-[5px] top-24 w-[3px] h-8 bg-slate-600 rounded-l-md"></div>
+                    <div class="absolute -left-[5px] top-36 w-[3px] h-10 bg-slate-600 rounded-l-md"></div>
+                    <div class="absolute -left-[5px] top-48 w-[3px] h-10 bg-slate-600 rounded-l-md"></div>
+                    <div class="absolute -right-[5px] top-32 w-[3px] h-14 bg-slate-600 rounded-r-md"></div>
+
+                    <!-- Inner iPhone Screen Container -->
+                    <div class="relative w-full h-full rounded-[40px] overflow-hidden bg-black border-[2px] border-black">
+                        
+                        <!-- Dynamic Island (Top Capsule) -->
+                        <div class="absolute top-3 left-1/2 -translate-x-1/2 w-28 h-6 bg-black rounded-full z-30 flex items-center justify-between px-2.5 shadow-md pointer-events-none opacity-90">
+                            <div class="w-3 h-3 rounded-full bg-slate-950 border border-slate-800 flex items-center justify-center">
+                                <div class="w-1 h-1 rounded-full bg-blue-900/60"></div>
+                            </div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-800"></div>
+                        </div>
+
+                        <!-- Instagram Reel Embed - CSS cropped to show ONLY the video portion -->
+                        <div class="absolute inset-0 overflow-hidden rounded-[38px]">
+                            <iframe src="https://www.instagram.com/reel/DbqbXmWt_XB/embed/?hidecaption=true" 
+                                    style="width: 100%; height: 185%; border: none; position: absolute; top: 0; left: 0; transform: scale(1.02);"
+                                    frameborder="0" 
+                                    scrolling="no" 
+                                    allowtransparency="true"
+                                    loading="eager"></iframe>
+                        </div>
+
+                        <!-- Home Indicator Bar -->
+                        <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-white/50 rounded-full z-20"></div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Details & Call to Action Cards -->
+            <div class="lg:col-span-7 space-y-5 text-center lg:text-left">
+                
+                <div class="bg-white/80 backdrop-blur-xl border border-gn-100 p-5 sm:p-7 md:p-8 rounded-3xl shadow-xl space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-amber-500/10 text-pink-600 flex items-center justify-center text-xl font-bold border border-pink-500/20 mx-auto lg:mx-0">
+                        <i class="fab fa-instagram"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-gn-950">"Nature has always been a part of our everyday routine. 🌿"</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+                        Featured Reel: <strong>Green Naturals Neem Tablets</strong> &ndash; Crafted with 500 mg pure Neem Leaf Extract for your daily wellness routine (60 Vegetarian Tablets).
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-3 sm:gap-4 pt-2">
+                        <div class="p-3 sm:p-4 rounded-2xl bg-gn-50/70 border border-gn-100/60 text-center">
+                            <p class="text-base sm:text-lg font-black text-gn-900">500 mg</p>
+                            <p class="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider">Neem Leaf Extract</p>
+                        </div>
+                        <div class="p-3 sm:p-4 rounded-2xl bg-pink-50/70 border border-pink-100/60 text-center">
+                            <p class="text-base sm:text-lg font-black text-pink-900">6 Likes &bull; 1 Comment</p>
+                            <p class="text-[10px] sm:text-[11px] font-bold text-pink-600 uppercase tracking-wider">Reel Activity</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2">
+                    <a href="https://www.instagram.com/reel/DbqbXmWt_XB/" target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 text-white px-7 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-pink-500/20 hover:shadow-xl transition-all hover:scale-105 active:scale-95">
+                        <i class="fab fa-instagram text-sm"></i> Watch Reel on Instagram
+                    </a>
+                    <a href="#shop" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-gn-50 border border-gn-200 text-gn-800 px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-sm hover:shadow-md transition-all">
+                        <i class="fas fa-shopping-bag text-xs"></i> Shop Neem Tablets
+                    </a>
+                  </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- ======== PREMIUM BRAND BANNERS CAROUSEL ======== -->
+<section class="w-full px-3 sm:px-4 py-6 md:py-8">
+    <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl" id="brand-banner-carousel">
+
+        <!-- Slide 1: Lab-Certified Purity -->
+        <div class="brand-banner-slide active" style="background: url('/static/images/banner_lab.png') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
+            <div class="relative z-10 text-center px-6 py-14 md:py-20">
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 mb-5">
+                    <i class="fas fa-flask text-emerald-300 text-xs"></i>
+                    <span class="text-[10px] font-bold text-emerald-200 uppercase tracking-[0.2em]">Lab Certified</span>
+                </div>
+                <h2 class="text-xl md:text-3xl font-extrabold text-white mb-3 tracking-tight">Every Batch is Lab-Tested for Purity</h2>
+                <p class="text-xs md:text-sm text-white/60 font-medium max-w-lg mx-auto mb-6">Third-party verified. Zero fillers. Zero chemicals. Just pure botanical extracts you can trust.</p>
+                <a href="#shop" class="inline-flex items-center gap-2.5 bg-white text-emerald-800 px-6 py-3.5 rounded-full font-bold text-xs hover:bg-emerald-100 transition-all shadow-xl">
+                    Explore Products <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Slide 2: 100% Vegetarian & Natural -->
+        <div class="brand-banner-slide" style="background: url('/static/images/banner_veg.png') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
+            <div class="relative z-10 text-center px-6 py-14 md:py-20">
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 mb-5">
+                    <i class="fas fa-leaf text-green-300 text-xs"></i>
+                    <span class="text-[10px] font-bold text-sky-200 uppercase tracking-[0.2em]">100% Vegetarian</span>
+                </div>
+                <h2 class="text-xl md:text-3xl font-extrabold text-white mb-3 tracking-tight">Pure Ayurvedic Wellness, Rooted in Nature</h2>
+                <p class="text-xs md:text-sm text-white/60 font-medium max-w-lg mx-auto mb-6">Crafted with ancient Ayurvedic wisdom. Every tablet is 100% vegetarian, made from premium botanical ingredients.</p>
+                <a href="#shop" class="inline-flex items-center gap-2.5 bg-white text-blue-900 px-6 py-3.5 rounded-full font-bold text-xs hover:bg-sky-100 transition-all shadow-xl">
+                    Shop Wellness <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Slide 3: Trusted by Thousands -->
+        <div class="brand-banner-slide" style="background: url('/static/images/banner_community.png') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
+            <div class="relative z-10 text-center px-6 py-14 md:py-20">
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 mb-5">
+                    <i class="fas fa-users text-purple-300 text-xs"></i>
+                    <span class="text-[10px] font-bold text-purple-200 uppercase tracking-[0.2em]">Growing Community</span>
+                </div>
+                <h2 class="text-xl md:text-3xl font-extrabold text-white mb-3 tracking-tight">Trusted by 10,000+ Happy Families</h2>
+                <p class="text-xs md:text-sm text-white/60 font-medium max-w-lg mx-auto mb-6">Real people, real results. Join the Green Naturals family and experience the power of nature in every capsule.</p>
+                <a href="#shop" class="inline-flex items-center gap-2.5 bg-white text-purple-900 px-6 py-3.5 rounded-full font-bold text-xs hover:bg-purple-100 transition-all shadow-xl">
+                    Join the Family <i class="fas fa-heart text-[10px] text-pink-500"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Slide 4: Farm to Tablet -->
+        <div class="brand-banner-slide" style="background: url('/static/images/banner_farm.png') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
+            <div class="relative z-10 text-center px-6 py-14 md:py-20">
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 mb-5">
+                    <i class="fas fa-seedling text-amber-300 text-xs"></i>
+                    <span class="text-[10px] font-bold text-amber-200 uppercase tracking-[0.2em]">Farm to Tablet</span>
+                </div>
+                <h2 class="text-xl md:text-3xl font-extrabold text-white mb-3 tracking-tight">From Indian Farms, Straight to Your Wellness</h2>
+                <p class="text-xs md:text-sm text-white/60 font-medium max-w-lg mx-auto mb-6">Sourced from organic farms across India. Cold-processed and packed with care to preserve every ounce of goodness.</p>
+                <a href="#shop" class="inline-flex items-center gap-2.5 bg-white text-amber-900 px-6 py-3.5 rounded-full font-bold text-xs hover:bg-amber-100 transition-all shadow-xl">
+                    Discover Origins <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Navigation Dots -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+            <button onclick="goToBannerSlide(0)" class="banner-dot active w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white/80 transition-all" aria-label="Slide 1"></button>
+            <button onclick="goToBannerSlide(1)" class="banner-dot w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white/80 transition-all" aria-label="Slide 2"></button>
+            <button onclick="goToBannerSlide(2)" class="banner-dot w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white/80 transition-all" aria-label="Slide 3"></button>
+            <button onclick="goToBannerSlide(3)" class="banner-dot w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white/80 transition-all" aria-label="Slide 4"></button>
+        </div>
+
+        <!-- Prev/Next Arrows -->
+        <button onclick="prevBannerSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/30 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-black/50 transition-all text-xs" aria-label="Previous">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button onclick="nextBannerSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/30 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-black/50 transition-all text-xs" aria-label="Next">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+    </div>
+
+    <style>
+        .brand-banner-slide {
+            display: none;
+            position: relative;
+            animation: bannerFadeIn 0.6s ease-out;
+        }
+        .brand-banner-slide.active {
+            display: block;
+        }
+        .banner-dot.active {
+            background: rgba(255,255,255,0.95) !important;
+            transform: scale(1.3);
+        }
+        @keyframes bannerFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+// --- Brand Banner Carousel ---
+let currentBannerSlide = 0;
+const bannerSlides = document.querySelectorAll('.brand-banner-slide');
+const bannerDots = document.querySelectorAll('.banner-dot');
+
+window.goToBannerSlide = function(index) {
+    bannerSlides.forEach(s => s.classList.remove('active'));
+    bannerDots.forEach(d => d.classList.remove('active'));
+    currentBannerSlide = index;
+    bannerSlides[currentBannerSlide].classList.add('active');
+    bannerDots[currentBannerSlide].classList.add('active');
+};
+
+window.nextBannerSlide = function() {
+    window.goToBannerSlide((currentBannerSlide + 1) % bannerSlides.length);
+};
+
+window.prevBannerSlide = function() {
+    window.goToBannerSlide((currentBannerSlide - 1 + bannerSlides.length) % bannerSlides.length);
+};
+
+// Auto-rotate every 5 seconds
+let bannerAutoPlay = setInterval(window.nextBannerSlide, 5000);
+document.getElementById('brand-banner-carousel')?.addEventListener('mouseenter', () => clearInterval(bannerAutoPlay));
+document.getElementById('brand-banner-carousel')?.addEventListener('mouseleave', () => { bannerAutoPlay = setInterval(window.nextBannerSlide, 5000); });
+
+// --- Grid Initialization & Shuffle ---
+const grid = document.getElementById('product-grid');
+if (grid && grid.children.length > 0) {
+    const cards = Array.from(grid.children);
+    // shuffle cards
+    cards.sort(() => Math.random() - 0.5);
+    cards.forEach(card => grid.appendChild(card));
+}
+
+// --- Dynamic Category Population (Sidebar & Pills) ---
+(function() {
+    const pills = document.getElementById('category-pills');
+    const sidebarCats = document.getElementById('sidebar-categories');
+    if (!grid) return;
+
+    const categories = new Set();
+    grid.querySelectorAll('[data-category]').forEach(card => {
+        const cat = card.getAttribute('data-category');
+        if (cat) categories.add(cat);
+    });
+
+    categories.forEach(cat => {
+        // Add to Pills (Mobile)
+        if (pills) {
+            const btn = document.createElement('button');
+            btn.className = 'cat-pill rounded-full px-6 py-2.5 text-[13px] font-bold text-gray-600';
+            btn.setAttribute('data-cat', cat);
+            btn.textContent = cat;
+            btn.onclick = () => filterProducts(cat);
+            pills.appendChild(btn);
+        }
+
+        // Add to Sidebar (Desktop)
+        if (sidebarCats) {
+            const label = document.createElement('label');
+            label.className = 'filter-option';
+            label.innerHTML = `<input type="radio" name="cat" class="filter-checkbox" onchange="filterProducts('${cat}')"> <span>${cat}</span>`;
+            sidebarCats.appendChild(label);
+        }
+    });
+})();
+
+// --- Unified Filter State ---
+let activeCategory = 'all';
+let activePriceRange = { min: 0, max: Infinity };
+
+window.filterProducts = function(category) {
+    activeCategory = category;
+    
+    // Update Radio buttons in sidebar
+    document.querySelectorAll('#sidebar-categories input').forEach(input => {
+        const label = input.closest('label');
+        const catText = label.querySelector('span').textContent;
+        input.checked = (category === 'all' && catText === 'All Products') || (catText === category);
+    });
+
+    applyFilters();
+};
+
+window.filterByPrice = function(min, max, checkbox) {
+    // Uncheck other price boxes for simplicity (Radio-like behavior for price)
+    document.querySelectorAll('.filter-group input[onchange*="filterByPrice"]').forEach(input => {
+        if (input !== checkbox) input.checked = false;
+    });
+
+    if (checkbox && !checkbox.checked) {
+        activePriceRange = { min: 0, max: Infinity };
+    } else {
+        activePriceRange = { min, max };
+    }
+    
+    applyFilters();
+};
+
+function applyFilters() {
+    const cards = grid.querySelectorAll('[data-category]');
+    grid.style.opacity = '0.3';
+    
+    // Update Active Pill (Mobile)
+    document.querySelectorAll('.cat-pill').forEach(p => {
+        p.classList.toggle('active', p.getAttribute('data-cat') === activeCategory);
+    });
+
+    setTimeout(() => {
+        cards.forEach(card => {
+            const cat = card.getAttribute('data-category');
+            const price = parseFloat(card.getAttribute('data-price'));
+            
+            const catMatch = activeCategory === 'all' || cat === activeCategory;
+            const priceMatch = price >= activePriceRange.min && price <= activePriceRange.max;
+            
+            card.style.display = (catMatch && priceMatch) ? '' : 'none';
+        });
+        grid.style.opacity = '1';
+    }, 300);
+}
+
+// --- Sort Logic ---
+window.sortProducts = function(value) {
+    const cards = Array.from(grid.children);
+    
+    grid.style.opacity = '0.3';
+    
+    setTimeout(() => {
+        cards.sort((a, b) => {
+            if (value === 'price-low') return parseFloat(a.getAttribute('data-price')) - parseFloat(b.getAttribute('data-price'));
+            if (value === 'price-high') return parseFloat(b.getAttribute('data-price')) - parseFloat(a.getAttribute('data-price'));
+            if (value === 'newest') return 1; // Simulation
+            return 0;
+        });
+        
+        cards.forEach(card => grid.appendChild(card));
+        grid.style.opacity = '1';
+    }, 300);
+};
+
+
+
+// --- Typewriter Effect ---
+const words = ["Reimagined.", "Perfected.", "Delivered.", "Pure.", "Natural."];
+let i = 0, j = 0, currentWord = "", isDeleting = false;
+function type() {
+    currentWord = words[i];
+    let typingSpeed = isDeleting ? 80 : 150;
+
+    if (isDeleting) {
+        if(document.getElementById("typewriter")) document.getElementById("typewriter").textContent = currentWord.substring(0, j - 1);
+        j--;
+        if (j == 0) { 
+            isDeleting = false; 
+            i = (i + 1) % words.length; 
+            typingSpeed = 500; // Gap before typing next word
+        }
+    } else {
+        if(document.getElementById("typewriter")) document.getElementById("typewriter").textContent = currentWord.substring(0, j + 1);
+        j++;
+        if (j == currentWord.length) {
+            isDeleting = true;
+            typingSpeed = 2500; // Long gap (2.5s) after word is fully typed
+        }
+    }
+    setTimeout(type, typingSpeed);
+}
+setTimeout(type, 1500);
+
+// --- Mobile Filter Drawer Logic ---
+(function() {
+    // Create a dedicated overlay for the filter drawer (separate from hamburger menu)
+    const filterOverlay = document.createElement('div');
+    filterOverlay.id = 'filter-overlay';
+    filterOverlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);z-index:1049;opacity:0;pointer-events:none;transition:opacity 0.3s ease;';
+    document.body.appendChild(filterOverlay);
+
+    filterOverlay.addEventListener('click', closeFilterDrawer);
+
+    function closeFilterDrawer() {
+        const sidebar = document.getElementById('filter-sidebar');
+        if (sidebar) sidebar.classList.remove('filter-drawer-open');
+        filterOverlay.style.opacity = '0';
+        filterOverlay.style.pointerEvents = 'none';
+        document.body.style.overflow = '';
+    }
+
+    window.toggleFilterDrawer = function() {
+        const sidebar = document.getElementById('filter-sidebar');
+        const isOpen = sidebar.classList.contains('filter-drawer-open');
+        if (isOpen) {
+            closeFilterDrawer();
+        } else {
+            sidebar.classList.add('filter-drawer-open');
+            filterOverlay.style.opacity = '1';
+            filterOverlay.style.pointerEvents = 'auto';
+            document.body.style.overflow = 'hidden';
+        }
+    };
+
+    // Allow the close button inside the drawer to work
+    window.closeFilterDrawerFn = closeFilterDrawer;
+})();
+
+
+function animateCounters() {
+    const counters = document.querySelectorAll('.counter');
+    const duration = 2500; // Total duration of the animation in ms
+
+    counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        const start = 0;
+        let startTime = null;
+
+        const step = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const currentCount = Math.floor(progress * (target - start) + start);
+            
+            counter.innerText = currentCount;
+
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                counter.innerText = target;
+            }
+        };
+
+        window.requestAnimationFrame(step);
+    });
+}
+
+// --- Scroll Fade-in & Counter Observer ---
+const observerOptions = { threshold: 0.1 };
+const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { 
+        if(e.isIntersecting) { 
+            e.target.classList.add('fade-up'); 
+            
+            // If it's the stats section, start counting
+            if(e.target.contains(document.querySelector('.counter'))) {
+                animateCounters();
+            }
+            
+            sectionObserver.unobserve(e.target); 
+        } 
+    });
+}, observerOptions);
+
+document.querySelectorAll('.trust-card, .product-card, [class*="fade-up-d"]').forEach(el => sectionObserver.observe(el));
+
+// --- Smart Scroll Logic for Category Pills ---
+(function() {
+    const scrollContainer = document.getElementById('category-pills');
+    const fadeOverlay = document.querySelector('.fade-overlay');
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+
+    if (!scrollContainer || !fadeOverlay || !scrollIndicator) return;
+
+    function updateIndicators() {
+        const scrollLeft = scrollContainer.scrollLeft;
+        const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+        
+        // Hide indicators if we've reached the end
+        if (scrollLeft >= maxScroll - 10) {
+            if(fadeOverlay) fadeOverlay.style.opacity = '0';
+            if(scrollIndicator) scrollIndicator.style.opacity = '0';
+        } else {
+            if(fadeOverlay) fadeOverlay.style.opacity = '1';
+            if(scrollIndicator) scrollIndicator.style.opacity = '0.8';
+        }
+    }
+
+    scrollContainer.addEventListener('scroll', updateIndicators);
+    window.addEventListener('resize', updateIndicators);
+    
+    // Make indicator clickable to scroll
+    scrollIndicator.onclick = (e) => {
+        e.stopPropagation();
+        scrollContainer.scrollBy({ left: 150, behavior: 'smooth' });
+    };
+
+    // Initial check
+    setTimeout(updateIndicators, 500);
+})();
+
+{% endblock %}

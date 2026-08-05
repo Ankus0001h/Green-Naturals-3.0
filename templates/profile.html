@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Green Naturals - Pure Herbal Excellence</title>
+    <link rel="icon" type="image/png" href="/static/images/official_brand_logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .soft-card {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid #e5e7eb;
+        }
+
+        .drawer-shadow {
+            box-shadow: -18px 0 44px rgba(15, 23, 42, 0.2);
+        }
+
+        .profile-shell {
+            position: relative;
+        }
+
+        .profile-shell::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            background: linear-gradient(120deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+            z-index: -1;
+        }
+
+        .upload-spinner {
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .avatar-spinner {
+            display: flex;
+            gap: 6px;
+        }
+
+        .avatar-spinner .dot {
+            width: 12px;
+            height: 12px;
+            background-color: #10b981;
+            border-radius: 50%;
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        .avatar-spinner .dot:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .avatar-spinner .dot:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-12px);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* --- Standardized Page Loader Styles --- */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10002;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        @keyframes spin-loader {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-loader { animation: spin-loader 1s linear infinite; }
+        
+        @keyframes pulse-loader {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+        .animate-pulse-loader { animation: pulse-loader 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        @keyframes bounce-loader {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-bounce-loader { animation: bounce-loader 1s infinite; }
+
+        @keyframes list-fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .address-sync-fade { animation: list-fade-in 0.4s ease-out forwards; }
+
+        @keyframes count-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); color: #059669; }
+            100% { transform: scale(1); }
+        }
+        .animate-count-pulse { animation: count-pulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+        @keyframes puffer {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                filter: blur(0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                opacity: 0;
+                filter: blur(4px);
+                max-height: 0;
+                margin-bottom: 0;
+                padding-top: 0;
+                padding-bottom: 0;
+                border-width: 0;
+            }
+        }
+
+        .address-exit-active {
+            animation: puffer 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            pointer-events: none;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-cyan-50 text-slate-800">
+    <!-- Standardized Page Loader -->
+    <div id="page-loader">
+        <div class="relative">
+            <!-- Spinner -->
+            <div class="animate-spin-loader border-2 border-emerald-50 border-t-emerald-500 rounded-full" style="width: 80px; height: 80px;"></div>
+            <!-- Logo in center -->
+            <img src="/static/images/official_brand_logo.png" class="absolute inset-0 m-auto animate-pulse-loader" style="width: 40px; height: 40px; object-fit: contain;">
+        </div>
+        <div class="mt-8 flex flex-col items-center gap-2">
+            <p class="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-900" id="loader-text">Green Naturals</p>
+            <div class="flex gap-1">
+                <div class="animate-bounce-loader bg-emerald-400 rounded-full" style="width: 4px; height: 4px; animation-delay: -0.3s;"></div>
+                <div class="animate-bounce-loader bg-emerald-400 rounded-full" style="width: 4px; height: 4px; animation-delay: -0.15s;"></div>
+                <div class="animate-bounce-loader bg-emerald-400 rounded-full" style="width: 4px; height: 4px;"></div>
+            </div>
+        </div>
+    </div>
+    <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-4">
+            <div class="flex items-center gap-3">
+                <a href="/"
+                    class="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold hover:bg-slate-100">
+                    <i class="fas fa-arrow-left mr-2"></i>Home
+                </a>
+                <h1 class="text-lg font-semibold">My Profile</h1>
+            </div>
+            <button id="menuBtn"
+                class="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold hover:bg-slate-100 transition-all duration-300 opacity-100 scale-100">
+                <i class="fas fa-bars mr-2"></i>Addresses
+            </button>
+        </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-5xl px-4 py-8">
+        <section class="soft-card mb-8 rounded-3xl p-8 shadow-sm">
+            <div class="flex flex-col items-center gap-6 md:flex-row md:items-center">
+                <!-- Profile Picture with Edit Button -->
+                <div class="relative group">
+                    <div id="profileImageShell"
+                        class="rounded-full p-1 bg-gradient-to-tr from-emerald-400 via-green-500 to-teal-600 shadow-md">
+                        <img src="{{ get_avatar(user.username, user.profile_image) }}" alt="Profile image"
+                            class="h-32 w-32 rounded-full border-4 border-white object-cover bg-white">
+                        <div id="profileSpinner"
+                            class="absolute inset-1 hidden items-center justify-center rounded-full bg-white/80 backdrop-blur-sm">
+                            <div class="avatar-spinner">
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Edit Pen -->
+                    <button onclick="document.getElementById('profile_image').click()"
+                        class="absolute bottom-2 right-2 z-10 flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-white bg-slate-800 text-white shadow-lg transition-transform hover:scale-110 hover:bg-emerald-600">
+                        <i class="fas fa-pen text-sm"></i>
+                    </button>
+
+                    {% if user.profile_image %}
+                    <!-- Floating Remove Photo Bin -->
+                    <button id="deletePhotoBtn" type="button"
+                        class="absolute top-0 right-0 z-10 flex h-8 w-8 items-center justify-center rounded-full border-[3px] border-white bg-rose-500 text-white shadow-lg transition-transform hover:scale-110 hover:bg-rose-600">
+                        <i class="fas fa-trash text-xs"></i>
+                    </button>
+                    {% endif %}
+                </div>
+
+                <div class="text-center md:text-left flex-grow max-w-full">
+                    <!-- Display Name Section -->
+                    <div id="displayNameContainer" class="flex items-center justify-center md:justify-start gap-3 mb-2 group">
+                        <h2 id="currentDisplayName" class="text-2xl md:text-3xl font-extrabold text-slate-800 break-words">{{ user.username }}</h2>
+                        <button onclick="toggleNameEdit(true)" class="p-2 rounded-xl bg-slate-50 text-indigo-600 transition-all hover:bg-indigo-100 focus:outline-none" title="Edit Name">
+                            <i class="fas fa-pen-to-square text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- Edit Name Form (Hidden) -->
+                    <div id="editNameContainer" class="hidden mb-3 animate-in fade-in slide-in-from-left-2 duration-300">
+                        <div class="flex flex-col md:flex-row items-center gap-2">
+                            <input type="text" id="newNameInput" value="{{ user.username }}" maxlength="30"
+                                class="w-full md:w-64 rounded-xl border border-emerald-500 bg-white px-4 py-2.5 text-lg font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            <div class="flex items-center gap-2 w-full md:w-auto">
+                                <button onclick="saveNewName()" id="saveNameBtn" class="flex-1 md:flex-none px-5 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200">Save</button>
+                                <button onclick="toggleNameEdit(false)" class="flex-1 md:flex-none px-5 py-2.5 bg-slate-200 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-slate-300 transition-all">Cancel</button>
+                            </div>
+                        </div>
+                        <p id="nameEditError" class="hidden text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider px-1">Name cannot be empty</p>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-y-1 gap-x-2 mb-2">
+                        <p
+                            class="text-slate-500 font-medium flex items-center justify-center md:justify-start gap-1.5 max-w-full">
+                            <i class="fas fa-envelope opacity-50 text-xs"></i>
+                            <span class="text-[13px] tracking-tight">{{ user.email }}</span>
+                            <span
+                                class="inline-flex items-center justify-center rounded-full bg-emerald-500 h-4 w-4 text-[9px] text-white shadow-sm"
+                                title="Verified Email">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </p>
+                        <button onclick="openEmailModal()"
+                            class="text-xs text-indigo-600 hover:text-indigo-800 transition p-1" title="Change Email">
+                            <i class="fas fa-pen-to-square"></i>
+                        </button>
+                    </div>
+                    <p class="text-slate-500 font-medium flex items-center justify-center md:justify-start gap-1.5">
+                        <i class="fas fa-phone opacity-50 text-xs"></i>
+                        <span class="text-[13px] tracking-tight">{{ user.phone or 'Add mobile number' }}</span>
+                        {% if user.phone %}
+                        <span
+                            class="inline-flex items-center justify-center rounded-full bg-emerald-500 h-4 w-4 text-[9px] text-white shadow-sm"
+                            title="Verified Phone">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <!-- Hidden form for auto upload -->
+                <form id="profileUploadForm" action="/profile/upload-photo" method="POST" enctype="multipart/form-data"
+                    class="hidden">
+                    <input id="profile_image" name="profile_image" type="file" accept="image/*">
+                </form>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div class="soft-card rounded-2xl p-5 text-center">
+                <p id="totalOrderCount" class="text-2xl font-bold text-emerald-600">
+                    <i class="fas fa-circle-notch fa-spin opacity-20 text-sm"></i>
+                </p>
+                <p class="text-sm text-slate-500">Total Orders</p>
+            </div>
+            <div class="soft-card rounded-2xl p-5 text-center">
+                <p id="savedAddressCount" class="text-2xl font-bold text-cyan-700">
+                    <i class="fas fa-circle-notch fa-spin opacity-20 text-sm"></i>
+                </p>
+                <p class="text-sm text-slate-500">Saved Addresses</p>
+            </div>
+            <div class="soft-card rounded-2xl p-5 text-center">
+                <p id="userAvgRating" class="text-2xl font-bold text-indigo-600">
+                    <i class="fas fa-circle-notch fa-spin opacity-20 text-sm"></i>
+                </p>
+                <p class="text-sm text-slate-500">Rating</p>
+            </div>
+        </section>
+
+        <!-- Premium Action Cards -->
+        <section class="mt-8">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Orders Card -->
+                <a href="/my-orders"
+                    class="group flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm border border-slate-100 transition-all hover:shadow-md active:scale-[0.98]">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-900 text-white shadow-lg group-hover:scale-110 transition-transform">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 leading-tight">My Orders</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Track & manage history</p>
+                        </div>
+                    </div>
+                    <i
+                        class="fas fa-chevron-right text-slate-300 text-sm group-hover:text-slate-900 transition-colors pr-2"></i>
+                </a>
+
+                <!-- Address Card -->
+                <button id="addressActionCard" onclick="openDrawer()"
+                    class="group flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm border border-slate-100 transition-all hover:shadow-md active:scale-[0.98] text-left w-full">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-lg group-hover:scale-110 transition-transform">
+                            <i class="fas fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 leading-tight">Addresses</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Manage delivery spots</p>
+                        </div>
+                    </div>
+                    <i
+                        class="fas fa-chevron-right text-slate-300 text-sm group-hover:text-emerald-600 transition-colors pr-2"></i>
+                </button>
+
+                <!-- Security Card -->
+                <button onclick="openPasswordModal()"
+                    class="group flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm border border-slate-100 transition-all hover:shadow-md active:scale-[0.98] text-left w-full">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg group-hover:scale-110 transition-transform">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 leading-tight">Security</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Change your password</p>
+                        </div>
+                    </div>
+                    <i
+                        class="fas fa-chevron-right text-slate-300 text-sm group-hover:text-indigo-600 transition-colors pr-2"></i>
+                </button>
+
+                <!-- Logout Card -->
+                <a href="/logout"
+                    class="group flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm border border-slate-100 transition-all hover:shadow-md active:scale-[0.98]">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-500 text-white shadow-lg group-hover:scale-110 transition-transform">
+                            <i class="fas fa-right-from-bracket"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 leading-tight">Logout</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Securely exit session</p>
+                        </div>
+                    </div>
+                    <i
+                        class="fas fa-chevron-right text-slate-300 text-sm group-hover:text-rose-600 transition-colors pr-2"></i>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Custom Delete Confirmation Modal (replaces browser confirm which gets blocked) -->
+    <div id="deleteModal"
+        class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+        <div class="mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl text-center">
+            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-rose-100">
+                <i class="fas fa-trash text-rose-500 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-2">Remove Profile Photo?</h3>
+            <p class="text-sm text-slate-500 mb-6">Your photo will be permanently deleted from our servers.</p>
+            <div class="flex gap-3">
+                <button id="modalCancel"
+                    class="flex-1 rounded-xl border border-slate-300 py-2.5 font-semibold text-slate-700 hover:bg-slate-100 transition">Cancel</button>
+                <button id="modalConfirm"
+                    class="flex-1 rounded-xl bg-rose-500 py-2.5 font-semibold text-white hover:bg-rose-600 transition">Delete</button>
+            </div>
+        </div>
+    </div>
+    <!-- Change Email Modal -->
+    <div id="emailModal"
+        class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div
+            class="w-full max-w-md rounded-3xl bg-white shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="bg-emerald-600 p-6 text-white relative">
+                <button onclick="closeEmailModal()"
+                    class="absolute top-4 right-4 text-white/80 hover:text-white transition">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
+                        <i class="fas fa-envelope text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold">Change Email</h3>
+                        <p class="text-emerald-200 text-xs">Update your primary contact email</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <!-- Step 1: Enter New Email -->
+                <div id="emailStep1">
+                    <div class="mb-3">
+                        <p class="text-xs text-slate-500 mb-1">Current Email</p>
+                        <p class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                            <i class="fas fa-envelope text-emerald-400 text-xs"></i> {{ user.email }}
+                            <span
+                                class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-600 border border-emerald-200">
+                                <i class="fas fa-circle-check text-[7px]"></i> Verified
+                            </span>
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">New Email
+                            Address</label>
+                        <input type="email" id="newEmailInput" placeholder="your-new-email@example.com"
+                            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                    </div>
+                    <div id="emailChangeError"
+                        class="hidden rounded-xl bg-rose-50 p-3 text-xs font-medium text-rose-600 border border-rose-100 mt-3">
+                        <i class="fas fa-circle-exclamation mr-1"></i>
+                        <span id="emailErrorText"></span>
+                    </div>
+                </div>
+
+                <!-- Step 2: Verify OTP -->
+                <div id="emailStep2" class="hidden">
+                    <div class="text-center py-2">
+                        <div
+                            class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 mb-3">
+                            <i class="fas fa-shield-halved text-xl"></i>
+                        </div>
+                        <p class="text-sm text-slate-600">Enter the code sent to <strong id="newEmailDisplay"
+                                class="text-emerald-600"></strong></p>
+                    </div>
+                    <div>
+                        <input type="text" id="emailOtpInput" maxlength="6" placeholder="000000"
+                            class="w-full text-center text-2xl font-bold tracking-[0.5em] rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                    </div>
+                    <div id="emailOtpError"
+                        class="hidden rounded-xl bg-rose-50 p-3 text-xs font-medium text-rose-600 border border-rose-100 mt-3">
+                        <i class="fas fa-circle-exclamation mr-1"></i>
+                        <span id="emailOtpErrorText"></span>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between px-1">
+                        <button type="button" onclick="goBackToEmailStep1()"
+                            class="text-[10px] font-bold text-slate-400 hover:text-emerald-600 transition-colors uppercase tracking-tight">
+                            <i class="fas fa-arrow-left mr-1"></i> Wrong Email?
+                        </button>
+                        <button type="button" id="resendEmailOtpBtn" onclick="resendEmailOtp()"
+                            class="text-xs font-bold text-emerald-600 hover:text-emerald-800 disabled:text-slate-400 disabled:cursor-not-allowed transition-colors">
+                            Resend Code <span id="emailOtpTimer"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" id="emailActionBtn" onclick="handleEmailAction()"
+                    class="w-full rounded-xl bg-emerald-600 py-3.5 font-bold text-white shadow-lg shadow-emerald-200 hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-2">
+                    <span id="emailBtnText">Send Verification Code</span>
+                    <i id="emailBtnIcon" class="fas fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="passwordModal"
+        class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div
+            class="w-full max-w-md rounded-3xl bg-white shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="bg-emerald-600 p-6 text-white relative">
+                <button onclick="closePasswordModal()"
+                    class="absolute top-4 right-4 text-white/80 hover:text-white transition">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="bg-white/20 p-2 rounded-lg">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Update Password</h3>
+                </div>
+                <p class="text-emerald-100 text-sm">Enhance your account security</p>
+            </div>
+
+            <!-- Step 1: Input Passwords -->
+            <form id="changePasswordForm" class="p-6 space-y-4">
+                <div id="pwInputs" class="space-y-4">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Current
+                                Password</label>
+                            <button type="button" onclick="triggerForgotFlow()"
+                                class="text-[10px] font-bold text-emerald-600 hover:text-emerald-800 uppercase tracking-tighter">Forgot?</button>
+                        </div>
+                        <div class="relative">
+                            <input type="password" name="current_password" id="current_pw_input"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            <button type="button" onclick="togglePassword(this)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">New
+                            Password</label>
+                        <div class="relative">
+                            <input type="password" name="new_password" id="profile_new_pw" minlength="6"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            <button type="button" onclick="togglePassword(this)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="h-1 bg-slate-200 rounded-full mt-2 hidden" id="pw-str-container-1">
+                            <div id="pw-str-bar-1" class="h-full w-0 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-1">
+                            <p id="pw-str-text-1" class="text-[10px] font-medium hidden"></p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Confirm New
+                            Password</label>
+                        <div class="relative">
+                            <input type="password" name="confirm_password"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            <button type="button" onclick="togglePassword(this)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="otpInput" class="hidden space-y-4 animate-in slide-in-from-right-5 duration-300">
+                    <div class="text-center py-2">
+                        <div
+                            class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 mb-3">
+                            <i class="fas fa-envelope-open-text text-xl"></i>
+                        </div>
+                        <p class="text-sm text-slate-600">We've sent a code to your email.</p>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-center text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Verification
+                            Code</label>
+                        <input type="text" name="otp" maxlength="6" placeholder="000000"
+                            class="w-full text-center text-2xl font-bold tracking-[0.5em] rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                    </div>
+                    <div class="text-center">
+                        <button type="button" id="resendOtpBtn" onclick="resendOtp()"
+                            class="text-xs font-bold text-slate-400 cursor-not-allowed uppercase tracking-wider"
+                            disabled>
+                            Resend Code <span id="resendTimer">(30s)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: New Passwords for Forgot Flow -->
+                <div id="forgotNewPw" class="hidden space-y-4 animate-in slide-in-from-right-5 duration-300">
+                    <div class="bg-emerald-50 p-4 rounded-2xl mb-2">
+                        <p class="text-xs text-emerald-700 font-medium text-center">Verification successful! Please set
+                            your new password.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">New
+                            Password</label>
+                        <div class="relative">
+                            <input type="password" name="forgot_new_pw" id="profile_forgot_pw" minlength="6"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            <button type="button" onclick="togglePassword(this)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="h-1 bg-slate-200 rounded-full mt-2 hidden" id="pw-str-container-2">
+                            <div id="pw-str-bar-2" class="h-full w-0 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-1">
+                            <p id="pw-str-text-2" class="text-[10px] font-medium hidden"></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Confirm New
+                            Password</label>
+                        <div class="relative">
+                            <input type="password" name="forgot_confirm_pw"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            <button type="button" onclick="togglePassword(this)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="passwordError"
+                    class="hidden rounded-xl bg-rose-50 p-3 text-xs font-medium text-rose-600 border border-rose-100">
+                    <i class="fas fa-circle-exclamation mr-1"></i>
+                    <span id="errorText"></span>
+                </div>
+
+                <button type="submit" id="savePasswordBtn"
+                    class="w-full rounded-xl bg-emerald-600 py-3.5 font-bold text-white shadow-lg shadow-emerald-200 hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4">
+                    <span id="saveBtnText">Get Verification Code</span>
+                    <i id="saveBtnIcon" class="fas fa-arrow-right text-xs"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Component (Simplified if not using base.html system) -->
+    <div id="profileToast"
+        class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] hidden animate-in slide-in-from-bottom-5 duration-300">
+        <div id="toastContent"
+            class="flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl text-white font-semibold">
+            <i id="toastIcon" class="fas"></i>
+            <span id="toastMsg"></span>
+        </div>
+    </div>
+
+    <div id="drawerBackdrop" class="fixed inset-0 z-40 hidden bg-slate-900/40"></div>
+    <aside id="addressDrawer"
+        class="drawer-shadow fixed right-0 top-0 z-50 h-full w-full max-w-md translate-x-full overflow-y-auto bg-white transition-transform duration-300">
+        <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+            <h3 class="font-semibold">Saved Addresses</h3>
+            <button id="closeMenuBtn" class="rounded-lg border border-slate-300 px-3 py-1 text-sm hover:bg-slate-100">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="p-5 border-b border-slate-50">
+            <button onclick="openAddressForm()"
+                class="w-full flex items-center justify-center gap-2 py-3 bg-emerald-50 text-emerald-600 rounded-xl font-bold text-xs uppercase tracking-widest border border-emerald-100 hover:bg-emerald-100 transition-all">
+                <i class="fas fa-plus-circle"></i> Add New Address
+            </button>
+        </div>
+
+        <div class="p-6 space-y-4 flex-grow" id="profile-addresses-list">
+            {% if user.addresses and user.addresses|length > 0 %}
+            {% for addr in user.addresses %}
+            <div
+                class="address-card-item group relative rounded-2xl border border-slate-100 bg-white p-6 shadow-sm hover:border-emerald-200 hover:shadow-md transition-all">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex flex-col">
+                        <h4 class="font-bold text-slate-900 text-lg">{{ addr.name }}</h4>
+                        <div class="mt-1">
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 uppercase tracking-wider">{{
+                                addr.city }}</span>
+                        </div>
+                    </div>
+                    <button onclick="openDeleteAddressConfirm({{ loop.index0 }})"
+                        class="w-8 h-8 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all flex items-center justify-center">
+                        <i class="fas fa-trash-alt text-[10px]"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-1">
+                    <p class="text-sm text-slate-600 leading-relaxed">{{ addr.address }}{% if addr.landmark %}, Near {{
+                        addr.landmark }}{% endif %}</p>
+                    <p class="text-sm text-slate-500">{{ addr.state }} - {{ addr.pincode }}</p>
+                    <p class="text-sm font-bold text-slate-700 mt-2">{{ addr.phone }}</p>
+                    {% if addr.alt_phone %}
+                    <p class="text-[11px] text-slate-400 font-medium">Alt: {{ addr.alt_phone }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="rounded-xl border border-dashed border-slate-300 p-8 text-center">
+                <p class="mb-3 text-sm text-slate-500">No address found yet.</p>
+                <button onclick="openAddressForm()"
+                    class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-all transform active:scale-95">Add
+                    New Address</button>
+            </div>
+            {% endif %}
+        </div>
+    </aside>
+
+    <!-- Add New Address Drawer (Direct Entry) -->
+    <div id="addressFormOverlay" onclick="closeAddressForm()"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300">
+    </div>
+    <div id="addressFormDrawer"
+        class="drawer-shadow fixed right-0 top-0 z-[70] h-full w-full sm:w-[450px] translate-x-full overflow-y-auto bg-white transition-transform duration-300 flex flex-col">
+        <div class="p-6 border-b border-slate-50 flex justify-between items-center bg-white sticky top-0 z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-emerald-100/50 rounded-full flex items-center justify-center text-emerald-600">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3 class="font-extrabold text-slate-800 text-lg">Add Delivery Details</h3>
+            </div>
+            <button onclick="closeAddressForm()"
+                class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form id="profileAddressForm" class="p-8 space-y-5 flex-grow pb-32" onsubmit="saveProfileAddress(event)">
+            <!-- Full Name -->
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Full Name</label>
+                <input type="text" name="name" required
+                    class="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-sm font-medium text-slate-700 focus:border-emerald-500/50 transition-all outline-none"
+                    placeholder="Enter recipient name">
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Mobile Number</label>
+                <input type="tel" name="phone" required pattern="[0-9]{10}"
+                    class="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-sm font-medium text-slate-700 focus:border-emerald-500/50 transition-all outline-none"
+                    placeholder="10-digit primary number">
+            </div>
+
+            <!-- Alternate Phone -->
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Alternate Phone
+                    (Optional)</label>
+                <input type="tel" name="alt_phone" pattern="[0-9]{10}"
+                    class="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-sm font-medium text-slate-700 focus:border-emerald-500/50 transition-all outline-none"
+                    placeholder="Secondary contact number">
+            </div>
+
+            <!-- Pincode & City -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Pincode</label>
+                    <div class="relative">
+                        <input type="text" name="pincode" id="profile_pincode" required pattern="[0-9]{6}"
+                            class="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-sm font-medium text-slate-700 focus:border-emerald-500/50 transition-all outline-none"
+                            placeholder="600001" oninput="if(this.value.length === 6) fetchProfilePincode(this.value)">
+                        <div id="profilePincodeLoader" class="absolute right-4 top-3.5 hidden"><i
+                                class="fas fa-circle-notch fa-spin text-emerald-500"></i></div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">City</label>
+                    <input type="text" name="city" id="profile_city" required
+                        class="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-sm font-medium text-slate-700 focus:border-emerald-500/50 transition-all outline-none"
+                        placeholder="District">
+                </div>
+            </div>
+
+            <!-- State -->
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">State</label>
+                <input type="text" name="state" id="profile_state" required
+                    class="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-sm font-medium text-slate-700 focus:border-emerald-500/50 transition-all outline-none"
+                    placeholder="State name">
+            </div>
+
+            <!-- Detailed Address -->
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Detailed
+                    Address</label>
+                <textarea name="address" required
+                    class="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-sm font-medium text-slate-700 focus:border-emerald-500/50 transition-all outline-none h-24 resize-none"
+                    placeholder="House No, Street Name, Area..."></textarea>
+            </div>
+
+            <!-- Landmark -->
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Landmark
+                    (Optional)</label>
+                <input type="text" name="landmark"
+                    class="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-sm font-medium text-slate-700 focus:border-emerald-500/50 transition-all outline-none"
+                    placeholder="e.g. Near City Hospital">
+            </div>
+            <!-- Inline Error Message -->
+            <div id="profileAddressError" class="hidden animate-toast-in mt-4">
+                <div class="bg-rose-50 border border-rose-100 rounded-xl p-4 flex items-center gap-3 text-rose-600">
+                    <i class="fas fa-exclamation-circle text-sm"></i>
+                    <p id="profileAddressErrorMsg" class="text-[11px] font-bold uppercase tracking-wider"></p>
+                </div>
+            </div>
+        </form>
+
+        <div class="p-6 border-t border-slate-50 bg-white sticky bottom-0 z-10">
+            <button type="submit" form="profileAddressForm" id="saveAddressBtn"
+                class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold uppercase tracking-widest text-xs shadow-lg shadow-emerald-200 hover:bg-emerald-700 active:scale-95 transition-all">
+                Save New Address
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const drawer = document.getElementById('addressDrawer');
+        const backdrop = document.getElementById('drawerBackdrop');
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const uploadForm = document.getElementById('profileUploadForm');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadBtnText = document.getElementById('uploadBtnText');
+        const profileSpinner = document.getElementById('profileSpinner');
+        const profileImageInput = document.getElementById('profile_image');
+
+        // --- Loader Logic ---
+        function hideLoader() {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }
+        }
+
+        function showPageLoader(customText) {
+            const loader = document.getElementById('page-loader');
+            const loaderText = document.getElementById('loader-text');
+            if(loader) {
+                if(customText && loaderText) loaderText.innerText = customText;
+                loader.style.display = 'flex';
+                loader.style.opacity = '1';
+                // Safety timeout: auto-hide after 5s if stuck
+                setTimeout(hideLoader, 5000);
+            }
+        }
+
+        // Hide on initial load
+        window.addEventListener('load', () => {
+            setTimeout(hideLoader, 500);
+        });
+
+        let addressToDeleteIndex = null;
+        function openDeleteAddressConfirm(index) {
+            addressToDeleteIndex = index;
+            const modal = document.getElementById('addressDeleteConfirmationModal');
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeDeleteAddressConfirm() {
+            const modal = document.getElementById('addressDeleteConfirmationModal');
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        async function processAddressDeletion() {
+            if(addressToDeleteIndex === null) return;
+            
+            // Optimistic UI: Update count immediately in frontend
+            const counter = document.getElementById('savedAddressCount');
+            const currentCount = parseInt(counter.innerText) || 0;
+            if(counter && currentCount > 0) {
+                counter.innerText = currentCount - 1;
+                counter.classList.add('animate-count-pulse');
+            }
+
+            closeDeleteAddressConfirm();
+            showPageLoader('Updating Profile Stats...');
+            
+            try {
+                const res = await fetch(`/api/delete-address/${addressToDeleteIndex}`, {
+                    method: 'POST'
+                });
+                const data = await res.json();
+                
+                if(data.status === 'success') {
+                    // Cache-busting fetch
+                    setTimeout(async () => {
+                        await refreshProfileList();
+                        if(typeof fetchUserStats === 'function') fetchUserStats();
+                        
+                        setTimeout(() => {
+                            hideLoader();
+                        }, 500);
+                    }, 800);
+                } else {
+                    // Revert on error
+                    if(counter) counter.innerText = currentCount;
+                    hideLoader();
+                }
+            } catch(e) {
+                if(counter) counter.innerText = currentCount;
+                hideLoader();
+            } finally {
+                addressToDeleteIndex = null;
+            }
+        }
+
+        async function refreshProfileList() {
+            try {
+                const res = await fetch('/api/get-user-addresses?t=' + Date.now());
+                const data = await res.json();
+                const listContainer = document.getElementById('profile-addresses-list');
+                
+                if (data.status === 'success' && data.addresses) {
+                    // Final verification of count
+                    const statCount = document.getElementById('savedAddressCount');
+                    if(statCount) statCount.innerText = data.addresses.length;
+
+                    // Clear and Re-render with animation
+                    listContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        if (data.addresses.length === 0) {
+                            listContainer.innerHTML = `
+                                <div class="rounded-xl border border-dashed border-slate-300 p-8 text-center address-sync-fade">
+                                    <p class="mb-3 text-sm text-slate-500">No address found yet.</p>
+                                    <button onclick="openAddressForm()" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-all transform active:scale-95">Add New Address</button>
+                                </div>`;
+                        } else {
+                            listContainer.innerHTML = data.addresses.map((addr, idx) => `
+                                <div class="address-card-item address-sync-fade group relative rounded-2xl border border-slate-100 bg-white p-6 shadow-sm hover:border-emerald-200 hover:shadow-md transition-all" style="animation-delay: ${idx * 50}ms">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <div class="flex flex-col">
+                                            <h4 class="font-bold text-slate-900 text-lg">${addr.name}</h4>
+                                            <div class="mt-1">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 uppercase tracking-wider">${addr.city}</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button onclick="openDeleteAddressConfirm(${idx})" class="w-9 h-9 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all flex items-center justify-center">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <p class="text-sm text-slate-600 leading-relaxed">${addr.address}${addr.landmark ? ', Near ' + addr.landmark : ''}</p>
+                                        <p class="text-sm text-slate-500 font-medium">${addr.state} - ${addr.pincode}</p>
+                                        <div class="pt-3 flex flex-col gap-1 border-t border-slate-50 mt-3">
+                                            <div class="flex items-center gap-3 mt-1">
+                                                <div class="flex items-center gap-1.5 text-sm font-bold text-slate-700 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                                                    <i class="fas fa-phone-alt text-[10px] text-emerald-500"></i>
+                                                    ${addr.phone}
+                                                </div>
+                                                ${addr.alt_phone ? `
+                                                <div class="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
+                                                    <span class="w-1.5 h-1.5 bg-slate-200 rounded-full"></span>
+                                                    ${addr.alt_phone}
+                                                </div>` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`).join('');
+                        }
+                        listContainer.style.opacity = '1';
+                    }, 200);
+                }
+            } catch (err) { console.error("Refresh Error:", err); }
+        }
+
+        function openDrawer() {
+            drawer.classList.remove('translate-x-full');
+            backdrop.classList.remove('hidden');
+        }
+
+        function closeDrawer() {
+            drawer.classList.add('translate-x-full');
+            backdrop.classList.add('hidden');
+        }
+
+        menuBtn.addEventListener('click', openDrawer);
+        closeMenuBtn.addEventListener('click', closeDrawer);
+        backdrop.addEventListener('click', closeDrawer);
+
+        profileImageInput.addEventListener('change', function () {
+            if (this.files && this.files.length > 0) {
+                profileSpinner.classList.remove('hidden');
+                profileSpinner.classList.add('flex');
+
+                // Add a small delay so user can see the 3 dots animation before the page navigates
+                setTimeout(() => {
+                    uploadForm.submit();
+                }, 800);
+            }
+        });
+
+        // --- Delete Photo with Custom Modal ---
+        var deleteBtn = document.getElementById('deletePhotoBtn');
+        var deleteModal = document.getElementById('deleteModal');
+        var modalCancel = document.getElementById('modalCancel');
+        var modalConfirm = document.getElementById('modalConfirm');
+
+        function openAddressForm() {
+            const drawer = document.getElementById('addressFormDrawer');
+            const overlay = document.getElementById('addressFormOverlay');
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.add('opacity-100');
+                drawer.classList.remove('translate-x-full');
+            }, 10);
+            closeDrawer(); // Close the main address list drawer if open
+        }
+
+        function closeAddressForm() {
+            const drawer = document.getElementById('addressFormDrawer');
+            const overlay = document.getElementById('addressFormOverlay');
+            drawer.classList.add('translate-x-full');
+            overlay.classList.remove('opacity-100');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
+
+        async function fetchProfilePincode(pincode) {
+            const loader = document.getElementById('profilePincodeLoader');
+            const cityInput = document.getElementById('profile_city');
+            const stateInput = document.getElementById('profile_state');
+
+            loader.classList.remove('hidden');
+            cityInput.placeholder = "Fetching City...";
+            stateInput.placeholder = "Fetching State...";
+
+            try {
+                const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+                const data = await response.json();
+                if (data && data[0] && data[0].Status === "Success") {
+                    const postOffice = data[0].PostOffice[0];
+                    cityInput.value = postOffice.District;
+                    stateInput.value = postOffice.State;
+                }
+            } catch (error) {
+                console.error("Pincode API Error:", error);
+            } finally {
+                loader.classList.add('hidden');
+                cityInput.placeholder = "City";
+                stateInput.placeholder = "State";
+            }
+        }
+
+        function openDeleteAddressConfirm(index) {
+            window.addressToDeleteProfile = index;
+            const modal = document.getElementById('addressDeleteConfirmationModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDeleteAddressConfirm() {
+            const modal = document.getElementById('addressDeleteConfirmationModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function processAddressDeletion() {
+            const index = window.addressToDeleteProfile;
+            if (index === undefined) return;
+
+            // Optimistic UI: Animate and remove instantly
+            const addressCards = document.querySelectorAll('.address-card-item');
+            const targetCard = addressCards[index];
+
+            if (targetCard) {
+                targetCard.classList.add('address-exit-active');
+                closeDeleteAddressConfirm();
+
+                // Call API in background
+                fetch(`/api/delete-address/${index}`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status !== 'success') {
+                            showProfileToast('Error', 'Could not delete address from server.', 'error');
+                            // In a real app, we might restore the card here, but for simplicity we'll just log
+                        }
+                    });
+
+                // Remove from DOM after animation
+                setTimeout(() => {
+                    targetCard.remove();
+                    // If no addresses left, show the "No address" state
+                    const remaining = document.querySelectorAll('.address-card-item');
+                    if (remaining.length === 0) {
+                        window.location.reload(); // Show empty state
+                    }
+                }, 400);
+            }
+        }
+        async function saveProfileAddress(e) {
+            e.preventDefault();
+            const btn = document.getElementById('saveAddressBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                if(data.phone === data.alt_phone && data.alt_phone) {
+                    const errorDiv = document.getElementById('profileAddressError');
+                    const errorMsg = document.getElementById('profileAddressErrorMsg');
+                    if (errorDiv && errorMsg) {
+                        errorMsg.innerText = 'Primary and Alternate numbers cannot be the same';
+                        errorDiv.classList.remove('hidden');
+                        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    return;
+                }
+
+                const response = await fetch('/api/add-address', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success') {
+                    showPageLoader('Verifying & Syncing Address...');
+                    
+                    setTimeout(async () => {
+                        await refreshProfileList();
+                        closeAddressForm();
+                        e.target.reset();
+                        
+                        setTimeout(() => {
+                            hideLoader();
+                        }, 500);
+                    }, 1200);
+                } else {
+                    // Show error in the inline banner
+                    const errorDiv = document.getElementById('profileAddressError');
+                    const errorMsg = document.getElementById('profileAddressErrorMsg');
+                    if (errorDiv && errorMsg) {
+                        errorMsg.innerText = result.message || 'Error saving address';
+                        errorDiv.classList.remove('hidden');
+                        // Scroll to center for best visibility
+                        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            } catch (err) {
+                console.error("Save Error:", err);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        if (deleteBtn && deleteModal) {
+            deleteBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                deleteModal.classList.remove('hidden');
+                deleteModal.classList.add('flex');
+            });
+
+            modalCancel.addEventListener('click', function () {
+                deleteModal.classList.add('hidden');
+                deleteModal.classList.remove('flex');
+            });
+
+            modalConfirm.addEventListener('click', function () {
+                // Hide modal, show loader
+                deleteModal.classList.add('hidden');
+                deleteModal.classList.remove('flex');
+                profileSpinner.classList.remove('hidden');
+                profileSpinner.classList.add('flex');
+
+                // POST to backend via fetch
+                fetch('/profile/remove-photo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                }).then(function () {
+                    window.location.href = '/profile';
+                }).catch(function () {
+                    profileSpinner.classList.add('hidden');
+                    profileSpinner.classList.remove('flex');
+                });
+            });
+        }
+
+        // --- Fetch Real Stats ---
+        function fetchUserStats() {
+            fetch('/api/user-stats?t=' + Date.now())
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    const orders = document.getElementById('totalOrderCount');
+                    const addrs = document.getElementById('savedAddressCount');
+                    const rating = document.getElementById('userAvgRating');
+                    
+                    if(orders) orders.textContent = data.order_count;
+                    if(addrs) addrs.textContent = data.address_count;
+                    if(rating) rating.textContent = data.avg_rating;
+                })
+                .catch(function (err) {
+                    console.error("Stats fetch failed:", err);
+                });
+        }
+
+        fetchUserStats();
+
+        // --- Dynamic Header Button Visibility ---
+        const headerBtn = document.getElementById('menuBtn');
+        const actionCard = document.getElementById('addressActionCard');
+
+        if (headerBtn && actionCard) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Action card is visible, hide header button
+                        headerBtn.classList.add('opacity-0', 'invisible', 'pointer-events-none', 'scale-90');
+                        headerBtn.classList.remove('opacity-100', 'visible', 'scale-100');
+                    } else {
+                        // Action card is hidden, show header button
+                        headerBtn.classList.add('opacity-100', 'visible', 'scale-100');
+                        headerBtn.classList.remove('opacity-0', 'invisible', 'pointer-events-none', 'scale-90');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            observer.observe(actionCard);
+        }
+        // --- Password Reset Flow ---
+        const passwordModal = document.getElementById('passwordModal');
+        const changePasswordForm = document.getElementById('changePasswordForm');
+        const passwordError = document.getElementById('passwordError');
+        const errorText = document.getElementById('errorText');
+        const savePasswordBtn = document.getElementById('savePasswordBtn');
+        const saveBtnText = document.getElementById('saveBtnText');
+        const saveBtnIcon = document.getElementById('saveBtnIcon');
+
+        const pwInputs = document.getElementById('pwInputs');
+        const otpInput = document.getElementById('otpInput');
+        const forgotNewPw = document.getElementById('forgotNewPw');
+
+        let currentStep = 1;
+        let isForgotFlow = false;
+        let resendTimerInterval;
+
+        function openPasswordModal() {
+            passwordModal.classList.remove('hidden');
+            passwordModal.classList.add('flex');
+            passwordError.classList.add('hidden');
+            pwInputs.classList.remove('hidden');
+            otpInput.classList.add('hidden');
+            forgotNewPw.classList.add('hidden');
+            saveBtnText.textContent = "Get Verification Code";
+            changePasswordForm.reset();
+            currentStep = 1;
+            isForgotFlow = false;
+            clearInterval(resendTimerInterval);
+        }
+
+        function closePasswordModal() {
+            passwordModal.classList.add('hidden');
+            passwordModal.classList.remove('flex');
+        }
+
+        function togglePassword(btn) {
+            const input = btn.parentElement.querySelector('input');
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        var isPw1Strong = false;
+        var isPw2Strong = false;
+
+        function updateSaveBtnState() {
+            if (currentStep === 1) {
+                // If they are typing a new password, it must be strong
+                const newPwVal = document.getElementById('profile_new_pw').value;
+                if (newPwVal) {
+                    savePasswordBtn.disabled = !isPw1Strong;
+                } else {
+                    // If empty, they might just be entering current password to verify something? No, to change password, new password is required.
+                    savePasswordBtn.disabled = false; // We let the backend catch empty new password, or we can disable it. Let's keep it simple: if there is a value, force it to be strong.
+                }
+            } else if (currentStep === 2) {
+                savePasswordBtn.disabled = false; // OTP step
+            } else if (currentStep === 3) {
+                savePasswordBtn.disabled = !isPw2Strong; // Forgot flow new password
+            }
+
+            if (savePasswordBtn.disabled) {
+                savePasswordBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                savePasswordBtn.classList.remove('hover:bg-emerald-700', 'active:scale-[0.98]');
+            } else {
+                savePasswordBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                savePasswordBtn.classList.add('hover:bg-emerald-700', 'active:scale-[0.98]');
+            }
+        }
+
+        // --- Password Strength Logic ---
+        function attachStrengthTracker(inputId, barId, textId, containerId, flagName) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+
+            input.addEventListener('input', function () {
+                const val = this.value;
+                const bar = document.getElementById(barId);
+                const text = document.getElementById(textId);
+                const container = document.getElementById(containerId);
+
+                if (!val) {
+                    container.classList.add('hidden');
+                    text.classList.add('hidden');
+                    window[flagName] = false;
+                    updateSaveBtnState();
+                    return;
+                }
+
+                container.classList.remove('hidden');
+                text.classList.remove('hidden');
+
+                let strength = 0;
+                if (val.length >= 8) strength += 20;
+                if (/[A-Z]/.test(val)) strength += 20;
+                if (/[a-z]/.test(val)) strength += 20;
+                if (/[0-9]/.test(val)) strength += 20;
+                if (/[@$!%*?&#^_\-]/.test(val)) strength += 20;
+
+                bar.style.width = strength + '%';
+
+                if (strength <= 40) {
+                    bar.style.backgroundColor = '#EF4444'; // Red-500
+                    text.textContent = 'Weak';
+                    text.style.color = '#EF4444';
+                    window[flagName] = false;
+                } else if (strength <= 80) {
+                    bar.style.backgroundColor = '#F97316'; // Orange-500
+                    text.textContent = 'Fair';
+                    text.style.color = '#F97316';
+                    window[flagName] = false;
+                } else {
+                    bar.style.backgroundColor = '#16A34A'; // Green-600
+                    text.textContent = 'Strong';
+                    text.style.color = '#16A34A';
+                    window[flagName] = true;
+                }
+
+                updateSaveBtnState();
+            });
+        }
+
+        attachStrengthTracker('profile_new_pw', 'pw-str-bar-1', 'pw-str-text-1', 'pw-str-container-1', 'isPw1Strong');
+        attachStrengthTracker('profile_forgot_pw', 'pw-str-bar-2', 'pw-str-text-2', 'pw-str-container-2', 'isPw2Strong');
+
+        function showProfileToast(title, message, type = 'success') {
+            // Handle old 1 or 2 argument calls
+            if (arguments.length === 1) {
+                message = title;
+                title = "Success";
+            } else if (arguments.length === 2 && (message === 'success' || message === 'error')) {
+                type = message;
+                message = title;
+                title = type === 'success' ? 'Success' : 'Error';
+            }
+
+            const toast = document.getElementById('profileToast');
+            const toastIcon = document.getElementById('profileToastIcon');
+            const toastTitle = document.getElementById('profileToastTitle');
+            const toastMsg = document.getElementById('profileToastMsg');
+            const toastBg = document.getElementById('profileToastBg');
+
+            if (toastTitle) toastTitle.innerText = title;
+            if (toastMsg) toastMsg.innerText = message || "";
+
+            if (type === 'success') {
+                if (toastBg) toastBg.className = "bg-emerald-600 text-white rounded-2xl p-4 shadow-2xl flex items-center gap-4 border border-emerald-500/30 ring-4 ring-emerald-500/20";
+                if (toastIcon) {
+                    toastIcon.className = "w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-xl shrink-0";
+                    toastIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                }
+            } else {
+                if (toastBg) toastBg.className = "bg-rose-600 text-white rounded-2xl p-4 shadow-2xl flex items-center gap-4 border border-rose-500/30 ring-4 ring-rose-500/20";
+                if (toastIcon) {
+                    toastIcon.className = "w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-xl shrink-0";
+                    toastIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                }
+            }
+
+            if (toast) {
+                toast.style.zIndex = "9999";
+                toast.classList.remove('hidden');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 4000);
+            }
+        }
+
+        function startResendTimer() {
+            const btn = document.getElementById('resendOtpBtn');
+            const timer = document.getElementById('resendTimer');
+            let seconds = 30;
+
+            btn.disabled = true;
+            btn.classList.add('cursor-not-allowed', 'text-slate-400');
+            btn.classList.remove('text-emerald-600', 'hover:text-emerald-800');
+
+            clearInterval(resendTimerInterval);
+            resendTimerInterval = setInterval(() => {
+                seconds--;
+                timer.textContent = `(${seconds}s)`;
+                if (seconds <= 0) {
+                    clearInterval(resendTimerInterval);
+                    btn.disabled = false;
+                    btn.classList.remove('cursor-not-allowed', 'text-slate-400');
+                    btn.classList.add('text-emerald-600', 'hover:text-emerald-800');
+                    timer.textContent = "";
+                }
+            }, 1000);
+        }
+
+        function resendOtp() {
+            requestOtp(isForgotFlow);
+        }
+
+        function triggerForgotFlow() {
+            isForgotFlow = true;
+            requestOtp(true);
+        }
+
+        function requestOtp(isForgot = false) {
+            const formData = new FormData(changePasswordForm);
+            const data = Object.fromEntries(formData.entries());
+            data.is_forgot = isForgot;
+
+            savePasswordBtn.disabled = true;
+            saveBtnText.textContent = "Sending Code...";
+            saveBtnIcon.className = "fas fa-circle-notch fa-spin text-xs";
+            passwordError.classList.add('hidden');
+
+            fetch('/api/request-password-change', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        currentStep = 2;
+                        pwInputs.classList.add('hidden');
+                        otpInput.classList.remove('hidden');
+                        forgotNewPw.classList.add('hidden');
+                        saveBtnText.textContent = "Verify Code";
+                        startResendTimer();
+                    } else {
+                        errorText.textContent = result.error || "Verification failed.";
+                        passwordError.classList.remove('hidden');
+                    }
+                })
+                .catch(err => {
+                    errorText.textContent = "Network error. Please try again.";
+                    passwordError.classList.remove('hidden');
+                })
+                .finally(() => {
+                    savePasswordBtn.disabled = false;
+                    if (currentStep === 1) {
+                        saveBtnText.textContent = "Get Verification Code";
+                    }
+                    saveBtnIcon.className = "fas fa-arrow-right text-xs";
+                    updateSaveBtnState(); // re-evaluate disabled state
+                });
+        }
+
+        changePasswordForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            passwordError.classList.add('hidden');
+
+            if (currentStep === 1) {
+                if (!data.current_password) {
+                    errorText.textContent = "Current password is required or use 'Forgot?'";
+                    passwordError.classList.remove('hidden');
+                    return;
+                }
+                if (data.new_password !== data.confirm_password) {
+                    errorText.textContent = "New passwords do not match!";
+                    passwordError.classList.remove('hidden');
+                    return;
+                }
+                isForgotFlow = false;
+                requestOtp(false);
+            } else if (currentStep === 2) {
+                savePasswordBtn.disabled = true;
+                saveBtnText.textContent = "Verifying...";
+                saveBtnIcon.className = "fas fa-circle-notch fa-spin text-xs";
+
+                fetch('/api/confirm-password-change', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ otp: data.otp })
+                })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success) {
+                            if (result.step === 3) {
+                                currentStep = 3;
+                                otpInput.classList.add('hidden');
+                                forgotNewPw.classList.remove('hidden');
+                                saveBtnText.textContent = "Set New Password";
+                            } else {
+                                showProfileToast("Password updated successfully!");
+                                closePasswordModal();
+                            }
+                        } else {
+                            errorText.textContent = result.error || "Invalid code.";
+                            passwordError.classList.remove('hidden');
+                        }
+                    })
+                    .catch(err => {
+                        errorText.textContent = "Network error.";
+                        passwordError.classList.remove('hidden');
+                    })
+                    .finally(() => {
+                        savePasswordBtn.disabled = false;
+                        saveBtnIcon.className = "fas fa-arrow-right text-xs";
+                    });
+            } else if (currentStep === 3) {
+                if (data.forgot_new_pw !== data.forgot_confirm_pw) {
+                    errorText.textContent = "Passwords do not match!";
+                    passwordError.classList.remove('hidden');
+                    return;
+                }
+
+                savePasswordBtn.disabled = true;
+                saveBtnText.textContent = "Saving...";
+                saveBtnIcon.className = "fas fa-circle-notch fa-spin text-xs";
+
+                fetch('/api/confirm-password-change', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        otp: data.otp,
+                        new_password: data.forgot_new_pw
+                    })
+                })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success) {
+                            showProfileToast("Password updated successfully!");
+                            closePasswordModal();
+                        } else {
+                            errorText.textContent = result.error || "Failed to update.";
+                            passwordError.classList.remove('hidden');
+                        }
+                    })
+                    .catch(err => {
+                        errorText.textContent = "Network error.";
+                        passwordError.classList.remove('hidden');
+                    })
+                    .finally(() => {
+                        savePasswordBtn.disabled = false;
+                        saveBtnText.textContent = "Set New Password";
+                        saveBtnIcon.className = "fas fa-arrow-right text-xs";
+                    });
+            }
+        });
+
+        // Close modal on escape key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePasswordModal();
+                closeEmailModal();
+            }
+        });
+
+        // --- Email Change Flow ---
+        const emailModal = document.getElementById('emailModal');
+        const emailStep1 = document.getElementById('emailStep1');
+        const emailStep2 = document.getElementById('emailStep2');
+        const newEmailInput = document.getElementById('newEmailInput');
+        const emailOtpInput = document.getElementById('emailOtpInput');
+        const emailActionBtn = document.getElementById('emailActionBtn');
+        const emailBtnText = document.getElementById('emailBtnText');
+        const emailBtnIcon = document.getElementById('emailBtnIcon');
+        const emailChangeError = document.getElementById('emailChangeError');
+        const emailErrorText = document.getElementById('emailErrorText');
+        const emailOtpError = document.getElementById('emailOtpError');
+        const emailOtpErrorText = document.getElementById('emailOtpErrorText');
+        const newEmailDisplay = document.getElementById('newEmailDisplay');
+
+        let emailStep = 1;
+        let emailOtpTimerInterval;
+
+        function startEmailOtpTimer() {
+            const btn = document.getElementById('resendEmailOtpBtn');
+            const timer = document.getElementById('emailOtpTimer');
+            let seconds = 30;
+
+            btn.disabled = true;
+            clearInterval(emailOtpTimerInterval);
+
+            emailOtpTimerInterval = setInterval(() => {
+                seconds--;
+                timer.textContent = `(${seconds}s)`;
+                if (seconds <= 0) {
+                    clearInterval(emailOtpTimerInterval);
+                    btn.disabled = false;
+                    timer.textContent = "";
+                }
+            }, 1000);
+        }
+
+        function goBackToEmailStep1() {
+            emailStep = 1;
+            emailStep1.classList.remove('hidden');
+            emailStep2.classList.add('hidden');
+            emailOtpError.classList.add('hidden');
+            emailBtnText.textContent = "Send Verification Code";
+            clearInterval(emailOtpTimerInterval);
+            document.getElementById('emailOtpTimer').textContent = "";
+            document.getElementById('resendEmailOtpBtn').disabled = false;
+        }
+
+        function resendEmailOtp() {
+            const newEmail = newEmailInput.value.trim();
+            if (!newEmail) return;
+
+            const btn = document.getElementById('resendEmailOtpBtn');
+            const timerSpan = document.getElementById('emailOtpTimer');
+
+            btn.disabled = true;
+            timerSpan.textContent = "(...)";
+            emailOtpError.classList.add('hidden');
+
+            fetch('/api/request-email-change', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ new_email: newEmail })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showProfileToast("New verification code sent!");
+                        startEmailOtpTimer();
+                    } else {
+                        emailOtpErrorText.textContent = data.error || "Failed to resend.";
+                        emailOtpError.classList.remove('hidden');
+                        btn.disabled = false;
+                        timerSpan.textContent = "";
+                    }
+                })
+                .catch(() => {
+                    emailOtpErrorText.textContent = "Network error.";
+                    emailOtpError.classList.remove('hidden');
+                    btn.disabled = false;
+                    timerSpan.textContent = "";
+                });
+        }
+
+        function openEmailModal() {
+            emailModal.classList.remove('hidden');
+            emailModal.classList.add('flex');
+            emailStep = 1;
+            emailStep1.classList.remove('hidden');
+            emailStep2.classList.add('hidden');
+            emailChangeError.classList.add('hidden');
+            emailOtpError.classList.add('hidden');
+            newEmailInput.value = '';
+            emailOtpInput.value = '';
+            emailBtnText.textContent = "Send Verification Code";
+        }
+
+        function closeEmailModal() {
+            emailModal.classList.add('hidden');
+            emailModal.classList.remove('flex');
+        }
+
+        function handleEmailAction() {
+            if (emailStep === 1) {
+                const newEmail = newEmailInput.value.trim();
+                if (!newEmail || !newEmail.includes('@')) {
+                    emailErrorText.textContent = "Please enter a valid email address.";
+                    emailChangeError.classList.remove('hidden');
+                    return;
+                }
+
+                emailActionBtn.disabled = true;
+                emailBtnText.textContent = "Sending Code...";
+                emailBtnIcon.className = "fas fa-circle-notch fa-spin text-xs";
+                emailChangeError.classList.add('hidden');
+
+                fetch('/api/request-email-change', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_email: newEmail })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            emailStep = 2;
+                            emailStep1.classList.add('hidden');
+                            emailStep2.classList.remove('hidden');
+                            newEmailDisplay.textContent = newEmail;
+                            emailBtnText.textContent = "Update Email";
+                            startEmailOtpTimer();
+                        } else {
+                            emailErrorText.textContent = data.error || "Failed to send code.";
+                            emailChangeError.classList.remove('hidden');
+                        }
+                    })
+                    .catch(() => {
+                        emailErrorText.textContent = "Network error. Try again.";
+                        emailChangeError.classList.remove('hidden');
+                    })
+                    .finally(() => {
+                        emailActionBtn.disabled = false;
+                        if (emailStep === 1) {
+                            emailBtnText.textContent = "Send Verification Code";
+                        }
+                        emailBtnIcon.className = "fas fa-arrow-right text-xs";
+                    });
+
+            } else if (emailStep === 2) {
+                const otp = emailOtpInput.value.trim();
+                if (otp.length !== 6) {
+                    emailOtpErrorText.textContent = "Enter 6-digit code.";
+                    emailOtpError.classList.remove('hidden');
+                    return;
+                }
+
+                emailActionBtn.disabled = true;
+                emailBtnText.textContent = "Updating...";
+                emailBtnIcon.className = "fas fa-circle-notch fa-spin text-xs";
+                emailOtpError.classList.add('hidden');
+
+                fetch('/api/confirm-email-change', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ otp: otp })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            showProfileToast("Email updated successfully!");
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            emailOtpErrorText.textContent = data.error || "Invalid code.";
+                            emailOtpError.classList.remove('hidden');
+                        }
+                    })
+                    .catch(() => {
+                        emailOtpErrorText.textContent = "Network error.";
+                        emailOtpError.classList.remove('hidden');
+                    })
+                    .finally(() => {
+                        emailActionBtn.disabled = false;
+                        if (emailStep === 1) {
+                            emailBtnText.textContent = "Send Verification Code";
+                        } else if (emailStep === 2) {
+                            emailBtnText.textContent = "Update Email";
+                        }
+                        emailBtnIcon.className = "fas fa-arrow-right text-xs";
+                    });
+            }
+        }
+
+        // --- Inline Name Edit Logic ---
+        function toggleNameEdit(show) {
+            const display = document.getElementById('displayNameContainer');
+            const edit = document.getElementById('editNameContainer');
+            const input = document.getElementById('newNameInput');
+            
+            if (show) {
+                display.classList.add('hidden');
+                edit.classList.remove('hidden');
+                input.focus();
+                input.setSelectionRange(input.value.length, input.value.length);
+            } else {
+                display.classList.remove('hidden');
+                edit.classList.add('hidden');
+                document.getElementById('nameEditError').classList.add('hidden');
+            }
+        }
+
+        async function saveNewName() {
+            const input = document.getElementById('newNameInput');
+            const newName = input.value.trim();
+            const btn = document.getElementById('saveNameBtn');
+            const error = document.getElementById('nameEditError');
+            
+            if (!newName) {
+                error.innerText = "Name cannot be empty";
+                error.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+                
+                const response = await fetch('/api/update-profile-name', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_name: newName })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('currentDisplayName').innerText = newName;
+                    
+                    // Update global UI elements (Drawer/Navbar names)
+                    const globalNameEls = document.querySelectorAll('.global-username-display');
+                    globalNameEls.forEach(el => el.innerText = newName);
+
+                    if (typeof showToast === 'function') {
+                        showToast('Success', 'Profile name updated!', 'success');
+                    }
+                    toggleNameEdit(false);
+                } else {
+                    error.innerText = data.error || "Failed to update name";
+                    error.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error("Profile update error:", err);
+                error.innerText = "Connection error";
+                error.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Save";
+            }
+        }
+    </script>
+
+    <!-- Address Delete Confirmation Modal -->
+    <div id="addressDeleteConfirmationModal"
+        class="fixed inset-0 z-[100] hidden bg-black/60 backdrop-blur-sm items-center justify-center p-4">
+        <div
+            class="bg-white w-full max-w-sm rounded-3xl p-8 text-center shadow-2xl transform transition-all animate-toast-in">
+            <div class="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-trash-alt text-rose-500 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-black text-slate-900 mb-2">Delete Address?</h3>
+            <p class="text-sm text-slate-500 mb-8">Are you sure you want to remove this delivery point? This cannot be
+                undone.</p>
+            <div class="flex flex-col gap-3">
+                <button id="confirmAddressDeleteBtn" onclick="processAddressDeletion()"
+                    class="w-full bg-rose-500 text-white py-4 rounded-2xl font-bold uppercase tracking-widest text-xs shadow-lg shadow-rose-200 hover:bg-rose-600 transition-all active:scale-95">Delete
+                    Address</button>
+                <button onclick="closeDeleteAddressConfirm()"
+                    class="w-full bg-slate-50 text-slate-500 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-slate-100 transition-all active:scale-95">Cancel</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

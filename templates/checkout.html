@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Green Naturals - Pure Herbal Excellence</title>
+    <link rel="icon" type="image/png" href="/static/images/official_brand_logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --amazon-gray: #EAEDED;
+            --gn-green: #064e3b;
+            --amazon-yellow: #FFD814;
+            --amazon-yellow-hover: #F7CA00;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--amazon-gray);
+            color: #111;
+        }
+
+        /* --- Standardized Page Loader --- */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10002;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin { animation: spin 1s linear infinite; }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-bounce { animation: bounce 1s infinite; }
+
+        .checkout-header {
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .step-card {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .step-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .step-indicator {
+            color: #c45500;
+            font-size: 18px;
+            font-weight: 700;
+            width: 28px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .step-indicator.completed {
+            color: #064e3b;
+        }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .step-summary {
+            font-size: 14px;
+            color: #333;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .step-content {
+            padding: 0 20px 20px 40px;
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .step-content {
+                padding: 0 10px 20px 15px;
+            }
+            .step-header {
+                padding: 15px 10px;
+            }
+        }
+
+        .step-card.active .step-content {
+            display: block;
+        }
+
+        .step-card.active .step-summary {
+            display: none;
+        }
+
+        .step-card.active .change-btn {
+            display: none;
+        }
+
+        .change-btn {
+            color: #007185;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .change-btn:hover {
+            color: #c45500;
+            text-decoration: underline;
+        }
+
+        .btn-amazon-yellow {
+            background: var(--amazon-yellow);
+            border: 1px solid #FCD200;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px 0 rgba(213,217,217,.5);
+            color: #0f1111;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-amazon-yellow:hover { background: var(--amazon-yellow-hover); }
+
+        .btn-amazon-primary {
+            background: var(--gn-green);
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 700;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .btn-amazon-primary:disabled {
+            background: #d5d9d9;
+            color: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .input-amazon {
+            border: 1px solid #888c8c;
+            border-radius: 3px;
+            padding: 7px 10px;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .input-amazon:focus {
+            border-color: #e77600;
+            box-shadow: 0 0 3px 2px rgba(228,121,17,.5);
+            outline: none;
+        }
+
+        .address-box {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .address-box.selected {
+            border-color: #059669;
+            background-color: #f0fdf4;
+            box-shadow: 0 0 0 2px rgba(5,150,105,.15);
+        }
+
+        .loader-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+
+        .address-box { position: relative; }
+
+        /* Custom Delete Confirmation Modal */
+        #delete-confirm-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        #delete-confirm-modal.show {
+            display: flex;
+        }
+        .delete-modal-box {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 24px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalIn 0.2s ease;
+        }
+        @keyframes modalIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Standardized Page Loader -->
+    <div id="page-loader">
+        <div class="relative">
+            <!-- Spinner -->
+            <div class="animate-spin border-2 border-emerald-50 border-t-emerald-500 rounded-full" style="width: 80px; height: 80px;"></div>
+            <!-- Logo in center -->
+            <img src="/static/images/official_brand_logo.png" class="absolute inset-0 m-auto animate-pulse" style="width: 40px; height: 40px; object-fit: contain;">
+        </div>
+        <div class="mt-8 flex flex-col items-center gap-2">
+            <p class="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-900" id="loader-text">Green Naturals</p>
+            <div class="flex gap-1">
+                <div class="animate-bounce bg-emerald-400 rounded-full" style="width: 4px; height: 4px; animation-delay: -0.3s;"></div>
+                <div class="animate-bounce bg-emerald-400 rounded-full" style="width: 4px; height: 4px; animation-delay: -0.15s;"></div>
+                <div class="animate-bounce bg-emerald-400 rounded-full" style="width: 4px; height: 4px;"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <header class="checkout-header py-4 px-6 mb-6">
+        <div class="container mx-auto max-w-[1150px] flex justify-between items-center">
+            <a href="/" class="flex items-center gap-2">
+                <img src="/static/images/official_brand_logo.png" alt="Logo" class="h-8 rounded">
+                <div>
+                    <span class="text-base font-extrabold text-emerald-900 block leading-tight">Green Naturals</span>
+                    <span class="text-[8px] font-semibold text-emerald-600 uppercase tracking-widest block">Pure Herbal Excellence</span>
+                </div>
+            </a>
+            <h1 class="text-xl font-normal text-gray-700 hidden sm:block">Checkout</h1>
+            <div class="text-gray-400 text-sm">
+                <i class="fas fa-lock mr-1 text-emerald-600"></i> Secure Checkout
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-[1150px] px-4 pb-20">
+        <div class="flex flex-col lg:flex-row gap-6">
+            
+            <!-- Left Side: Accordian Steps -->
+            <div class="lg:w-[75%] space-y-3">
+                
+                <!-- Step 1: Address -->
+                <div id="step-1" class="step-card active">
+                    <div class="step-header">
+                        <div class="flex gap-4">
+                            <span id="indicator-1" class="step-indicator">1</span>
+                            <div>
+                                <h2 class="step-title">Delivery address</h2>
+                                <div id="summary-address" class="step-summary text-xs text-gray-600">Not selected</div>
+                            </div>
+                        </div>
+                        <span class="change-btn" onclick="goToStep(1)">Change</span>
+                    </div>
+                    <div class="step-content">
+                        <div id="address-list-container" class="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                            <div id="address-list" class="contents"></div>
+                        </div>
+
+                        <button onclick="toggleNewAddressForm()" class="text-blue-600 hover:underline text-sm font-medium mb-4 block">
+                            <i class="fas fa-plus mr-1"></i> Add a new address
+                        </button>
+                        
+                        <form id="new-address-form" class="hidden space-y-4 max-w-xl p-5 bg-white rounded-xl border-2 border-dashed border-emerald-100 mb-6 shadow-sm">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-sm">Add Delivery Details</h3>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">Full Name</label>
+                                    <input type="text" id="cust_name" placeholder="Enter recipient name" class="input-amazon !rounded-lg !py-2.5">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">Mobile Number</label>
+                                    <input type="tel" id="cust_phone" placeholder="10-digit primary number" class="input-amazon !rounded-lg !py-2.5">
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">Alternate Phone (Optional)</label>
+                                <input type="tel" id="cust_alt_phone" placeholder="Secondary contact number" class="input-amazon !rounded-lg !py-2.5">
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">Pincode</label>
+                                    <div class="relative">
+                                        <input type="text" id="pincode" placeholder="600001" class="input-amazon !rounded-lg !py-2.5">
+                                        <div id="pin-loader" class="hidden absolute right-3 top-1/2 -translate-y-1/2">
+                                            <i class="fas fa-circle-notch loader-spin text-emerald-600"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">City</label>
+                                    <input type="text" id="city" placeholder="District" class="input-amazon !rounded-lg !py-2.5">
+                                </div>
+                                <div class="space-y-1 col-span-2 sm:col-span-1">
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">State</label>
+                                    <input type="text" id="state" placeholder="State name" class="input-amazon !rounded-lg !py-2.5">
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">Detailed Address</label>
+                                <textarea id="address" placeholder="House No, Street Name, Area..." class="input-amazon !rounded-lg !py-2.5 h-20 resize-none"></textarea>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">Landmark (Optional)</label>
+                                <input type="text" id="landmark" placeholder="Near by hospital, park etc." class="input-amazon !rounded-lg !py-2.5">
+                            </div>
+
+                            <div class="pt-2">
+                                <button type="button" id="use-new-address-btn" onclick="useNewAddress()" class="w-full sm:w-auto btn-amazon-yellow !py-3 !px-8 !font-bold flex items-center justify-center gap-2">
+                                    <i class="fas fa-check-circle"></i> Use this address
+                                </button>
+                            </div>
+                        </form>
+
+                        <div id="use-address-btn-container" class="hidden">
+                            <button onclick="goToStep(2)" id="use-address-btn" class="btn-amazon-yellow mt-2 px-8 py-2.5 font-bold shadow-sm">Use this address</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Payment -->
+                <div id="step-2" class="step-card">
+                    <div class="step-header">
+                        <div class="flex gap-4">
+                            <span id="indicator-2" class="step-indicator">2</span>
+                            <div>
+                                <h2 class="step-title">Payment method</h2>
+                                <p id="summary-payment" class="step-summary">Not selected</p>
+                            </div>
+                        </div>
+                        <span class="change-btn" onclick="goToStep(2)">Change</span>
+                    </div>
+                    <div class="step-content">
+                        <div class="space-y-3 max-w-md">
+                            <!-- UPI Option -->
+                            <label id="upi-label" class="online-payment-option flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all group relative overflow-hidden">
+                                <input type="radio" id="upi-input" name="payment" value="UPI" checked onclick="setPayment('UPI')" class="w-4 h-4 accent-emerald-600">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <p class="font-extrabold text-sm text-slate-800 truncate">UPI / QR</p>
+                                        <div class="flex gap-1.5 items-center flex-nowrap flex-shrink-0">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/googlepay.svg" alt="GPay" class="w-5 h-5 flex-shrink-0" style="filter: invert(30%) sepia(90%) saturate(500%) hue-rotate(200deg);">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/phonepe.svg" alt="PhonePe" class="w-5 h-5 flex-shrink-0" style="filter: invert(20%) sepia(80%) saturate(2000%) hue-rotate(250deg);">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/paytm.svg" alt="Paytm" class="w-5 h-5 flex-shrink-0" style="filter: invert(40%) sepia(90%) saturate(1000%) hue-rotate(170deg);">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-gray-500 mt-0.5 truncate">Instant payment via any UPI app</p>
+                                    <p class="unavailable-msg hidden text-[10px] text-red-500 font-bold mt-1 uppercase tracking-tighter">Currently unavailable</p>
+                                </div>
+                            </label>
+
+                            <!-- Card Option -->
+                            <label id="card-label" class="online-payment-option flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all group relative overflow-hidden">
+                                <input type="radio" id="card-input" name="payment" value="CARD" onclick="setPayment('CARD')" class="w-4 h-4 accent-emerald-600">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <p class="font-extrabold text-sm text-slate-800 truncate">Cards</p>
+                                        <div class="flex gap-1.5 items-center flex-nowrap flex-shrink-0">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/visa.svg" alt="Visa" class="w-6 h-auto flex-shrink-0" style="filter: invert(20%) sepia(80%) saturate(1000%) hue-rotate(200deg);">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/mastercard.svg" alt="Mastercard" class="w-6 h-auto flex-shrink-0">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/RuPay.svg" alt="RuPay" class="h-3 w-auto flex-shrink-0 opacity-80" onerror="this.src='https://www.vectorlogo.zone/logos/rupay/rupay-ar21.svg'">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-gray-500 mt-0.5 truncate">Visa, Mastercard, RuPay & more</p>
+                                    <p class="unavailable-msg hidden text-[10px] text-red-500 font-bold mt-1 uppercase tracking-tighter">Currently unavailable</p>
+                                </div>
+                            </label>
+
+                            <!-- Netbanking Option -->
+                            <label id="nb-label" class="online-payment-option flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all group relative overflow-hidden">
+                                <input type="radio" id="nb-input" name="payment" value="NETBANKING" onclick="setPayment('NETBANKING')" class="w-4 h-4 accent-emerald-600">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <p class="font-extrabold text-sm text-slate-800 truncate">Netbanking</p>
+                                        <div class="flex gap-1.5 items-center flex-nowrap flex-shrink-0 grayscale group-hover:grayscale-0 transition-all opacity-70 group-hover:opacity-100">
+                                            <span class="text-[10px] font-bold text-gray-400">HDFC</span>
+                                            <span class="text-[10px] font-bold text-gray-400">ICICI</span>
+                                            <span class="text-[10px] font-bold text-gray-400">SBI</span>
+                                            <i class="fas fa-university text-xs ml-1"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-gray-500 mt-0.5 truncate">All major Indian banks supported</p>
+                                    <p class="unavailable-msg hidden text-[10px] text-red-500 font-bold mt-1 uppercase tracking-tighter">Currently unavailable</p>
+                                </div>
+                            </label>
+
+                            <!-- EMI Option -->
+                            <label id="emi-label" class="online-payment-option flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all group relative overflow-hidden">
+                                <input type="radio" id="emi-input" name="payment" value="EMI" onclick="setPayment('EMI')" class="w-4 h-4 accent-emerald-600">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <p class="font-extrabold text-sm text-slate-800">EMI (Easy Installments)</p>
+                                        <div class="flex gap-1.5 items-center flex-shrink-0 opacity-70 group-hover:opacity-100">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/ICICI_Bank_Logo.svg" alt="ICICI" class="h-3 w-auto">
+                                            <i class="fas fa-calendar-check text-slate-400 group-hover:text-emerald-600"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-gray-500 mt-0.5">Pay in easy monthly installments</p>
+                                    <p class="unavailable-msg hidden text-[10px] text-red-500 font-bold mt-1 uppercase tracking-tighter">Currently unavailable</p>
+                                </div>
+                            </label>
+
+                            <!-- Wallet Option -->
+                            <label id="wallet-label" class="online-payment-option flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all group relative overflow-hidden">
+                                <input type="radio" id="wallet-input" name="payment" value="WALLET" onclick="setPayment('WALLET')" class="w-4 h-4 accent-emerald-600">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <p class="font-extrabold text-sm text-slate-800 truncate">Wallets</p>
+                                        <div class="flex gap-1.5 items-center flex-nowrap flex-shrink-0">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/amazonpay.svg" alt="Amazon Pay" class="w-5 h-5 flex-shrink-0" style="color: #FF9900;">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/phonepe.svg" alt="PhonePe" class="w-5 h-5 flex-shrink-0" style="filter: grayscale(100%); opacity: 0.6;">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/paytm.svg" alt="Paytm" class="w-5 h-5 flex-shrink-0" style="filter: grayscale(100%); opacity: 0.6;">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-gray-500 mt-0.5 truncate">Amazon Pay, PhonePe & more</p>
+                                    <p class="unavailable-msg hidden text-[10px] text-red-500 font-bold mt-1 uppercase tracking-tighter">Currently unavailable</p>
+                                </div>
+                            </label>
+
+                            <!-- Pay Later Option -->
+                            <label id="paylater-label" class="online-payment-option flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all group relative overflow-hidden">
+                                <input type="radio" id="paylater-input" name="payment" value="PAYLATER" onclick="setPayment('PAYLATER')" class="w-4 h-4 accent-emerald-600">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <p class="font-extrabold text-sm text-slate-800 truncate">Pay Later</p>
+                                        <div class="flex gap-1.5 items-center flex-nowrap flex-shrink-0">
+                                            <span class="text-[10px] font-bold text-gray-400">LAZYPAY</span>
+                                            <span class="text-[10px] font-bold text-gray-400">ICICI</span>
+                                            <i class="fas fa-history text-xs ml-1 text-slate-300"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-gray-500 mt-0.5 truncate">LazyPay, ICICI PayLater & more</p>
+                                    <p class="unavailable-msg hidden text-[10px] text-red-500 font-bold mt-1 uppercase tracking-tighter">Currently unavailable</p>
+                                </div>
+                            </label>
+
+                            <!-- COD Option -->
+                            <label id="payment-cod" class="flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all group relative overflow-hidden bg-slate-50/50">
+                                <input type="radio" id="cod-input" name="payment" value="COD" onclick="setPayment('COD')" class="w-4 h-4 accent-emerald-600">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <p class="font-extrabold text-sm text-slate-800">Cash on Delivery (COD)</p>
+                                        <i class="fas fa-hand-holding-dollar text-lg text-slate-400 group-hover:text-emerald-600 transition-colors"></i>
+                                    </div>
+                                    <p id="cod-status-text" class="text-[11px] text-gray-500 mt-0.5">Pay at your doorstep (Cash/UPI)</p>
+                                </div>
+                            </label>
+
+                            <button onclick="goToStep(3)" class="btn-amazon-yellow mt-4 w-full py-3 rounded-xl font-bold shadow-sm">Use this payment method</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Review -->
+                <div id="step-3" class="step-card">
+                    <div class="step-header">
+                        <div class="flex gap-4">
+                            <span id="indicator-3" class="step-indicator">3</span>
+                            <div>
+                                <h2 class="step-title">Review items and shipping</h2>
+                                <p id="summary-items-count" class="step-summary">0 items</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <div id="checkout-items" class="space-y-4 max-w-2xl"></div>
+                        <div class="mt-6 p-4 bg-emerald-50 rounded border border-emerald-100 flex items-center gap-4">
+                            <i class="fas fa-truck text-emerald-600"></i>
+                            <div>
+                                <p class="text-[13px] text-emerald-800 font-bold">Standard Delivery: Guaranteed in 3-5 days</p>
+                                <p id="free-delivery-text" class="text-[11px] text-emerald-600 font-medium hidden">Eligible for FREE Shipping</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="lg:w-[25%]">
+                <div class="bg-white border border-gray-300 rounded-lg p-5 sticky top-6">
+                    <button onclick="handleCheckout()" id="pay-btn" disabled class="btn-amazon-primary mb-3">
+                        Place Your Order
+                    </button>
+                    <p class="text-[10px] text-gray-500 text-center mb-4 leading-relaxed">
+                        By placing your order, you agree to Green Naturals' <a href="#" class="text-blue-600">conditions of use</a>.
+                    </p>
+
+                    <h3 class="font-bold text-sm border-b border-gray-200 pb-2 mb-3 uppercase tracking-tighter">Order Summary</h3>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Items:</span>
+                            <span id="summary-subtotal">₹0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Shipping:</span>
+                            <span id="summary-shipping" class="text-emerald-600 font-bold">FREE</span>
+                        </div>
+                        <div id="handling-row" class="hidden">
+                            <div class="flex justify-between">
+                                <span id="handling-label" class="text-gray-600">Handling Fee:</span>
+                                <span id="summary-handling" class="font-bold">₹0</span>
+                            </div>
+                            <div id="online-fee-breakdown" class="hidden pl-3 space-y-0.5 mt-1 border-l-2 border-slate-200 ml-1">
+                                <div class="flex justify-between text-[10px] text-gray-400 italic">
+                                    <span>RZP Processing (<span id="summary-rzp-pct">0</span>%):</span>
+                                    <span id="summary-rzp-fee">₹0</span>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-gray-400 italic">
+                                    <span>Service Tax (<span id="summary-gst-pct">0</span>% GST):</span>
+                                    <span id="summary-gst-fee">₹0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="round-off-row" class="flex justify-between text-gray-400 italic text-[10px] hidden">
+                            <span>Round Off:</span>
+                            <span id="summary-round-off">₹0</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-base text-red-700 border-t border-gray-200 pt-2 mt-2">
+                            <span>Order Total:</span>
+                            <span id="summary-total">₹0</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 border-t border-gray-100 pt-4 hidden" id="selection-hint">
+                        <p class="text-[10px] text-emerald-700 font-bold text-center">Complete all steps to place order</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Address Delete Confirmation Modal -->
+    <div id="delete-confirm-modal" style="z-index: 2147483640;">
+        <div class="delete-modal-box">
+            <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-trash-alt text-2xl text-red-500"></i>
+            </div>
+            <h3 class="font-bold text-gray-900 text-lg mb-1">Remove Address?</h3>
+            <p class="text-sm text-gray-500 mb-6">This address will be permanently removed from your saved list.</p>
+            <div class="flex gap-3">
+                <button id="delete-cancel-btn" class="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition-all">Cancel</button>
+                <button id="delete-confirm-btn" class="flex-1 py-2.5 rounded-xl bg-red-500 text-white font-bold text-sm hover:bg-red-600 transition-all">
+                    <i class="fas fa-trash-alt mr-1"></i> Yes, Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Error Modal -->
+    <div id="payment-error-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center px-4" style="z-index: 2147483647 !important;">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-[360px] text-center shadow-2xl" style="animation: modalIn 0.2s ease;">
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-red-100">
+                <i class="fas fa-exclamation-triangle text-2xl text-red-500"></i>
+            </div>
+            <h3 class="font-bold text-gray-900 text-lg mb-2" id="error-modal-title">Payment Issue</h3>
+            <p class="text-sm text-gray-500 mb-6 leading-relaxed" id="error-modal-message">Something went wrong. Please try again.</p>
+            <button onclick="closeErrorModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-black transition-all shadow-lg active:scale-95">
+                Try Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let selectedPayment = 'UPI';
+        let baseSubtotal = 0;
+        let currentTotal = 0;
+        let shippingCharge = 0;
+        let handlingFee = 0;
+        let COD_FEE = 40;
+        let checkoutItemsData = [];
+        let savedAddresses = [];
+        let selectedAddress = null;
+        let currentStep = 1;
+        let paymentSettings = {
+            cod_enabled: true,
+            online_enabled: true,
+            fetch_razorpay_fee: true,
+            charge_cod_fee: true,
+            rzp_fee_percent: 2.0,
+            rzp_gst_percent: 18.0,
+            cod_fee: 40.0
+        };
+
+        const STORAGE_KEY = 'gn_cart';
+
+        function hideLoader() {
+            const loader = document.getElementById('page-loader');
+            if(loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(hideLoader, 500);
+        });
+
+        async function initializeCheckout() {
+            let cart = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            if(!Object.keys(cart).length) return window.location.href = '/cart';
+            
+            // 1. Fetch Cart/Checkout Data
+            try {
+                let cartRes = await fetch('/api/get-checkout-data?t=' + Date.now());
+                let cartData = await cartRes.json();
+                
+                // FALLBACK: If session is empty but localStorage has items, re-sync now
+                if ((!cartData.items || cartData.items.length === 0) && Object.keys(cart).length > 0) {
+                    console.log("Session empty, re-syncing from localStorage...");
+                    const syncRes = await fetch('/api/get-cart-details', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(cart)
+                    });
+                    cartData = await syncRes.json();
+                }
+
+                if (cartData.status === 'error' || !cartData.items) {
+                    console.warn("Checkout data error or empty:", cartData.message);
+                } else {
+                    checkoutItemsData = cartData.items || [];
+                    baseSubtotal = cartData.subtotal;
+                    shippingCharge = cartData.shipping_charge !== undefined ? cartData.shipping_charge : (cartData.shipping || 0);
+                    
+                    renderItems(cartData);
+                    document.getElementById('summary-items-count').innerText = `${checkoutItemsData.length} items`;
+                    document.getElementById('summary-subtotal').innerText = `₹${baseSubtotal}`;
+                    document.getElementById('summary-shipping').innerText = shippingCharge === 0 ? 'FREE' : `₹${shippingCharge}`;
+                    
+                    if(shippingCharge === 0) {
+                        const freeText = document.getElementById('free-delivery-text');
+                        if(freeText) freeText.classList.remove('hidden');
+                    }
+                }
+            } catch(e) { console.error("Cart Fetch/Sync Error:", e); }
+
+            // 2. Fetch Payment Settings
+            try {
+                const payRes = await fetch('/api/payment-config');
+                paymentSettings = await payRes.json();
+                
+                // Hide/Show options based on settings
+                COD_FEE = paymentSettings.cod_fee || 40;
+                
+                if(!paymentSettings.cod_enabled) document.getElementById('payment-cod')?.classList.add('hidden');
+                else document.getElementById('payment-cod')?.classList.remove('hidden');
+
+                // Amazon-style "Currently Unavailable" Logic
+                function setOptionStatus(id, inputId, isEnabled) {
+                    const label = document.getElementById(id);
+                    const input = document.getElementById(inputId);
+                    const msg = label.querySelector('.unavailable-msg');
+                    
+                    if (!isEnabled) {
+                        label.classList.add('opacity-40', 'cursor-not-allowed', 'bg-gray-100');
+                        label.classList.remove('hover:border-emerald-500', 'hover:bg-emerald-50', 'cursor-pointer');
+                        input.disabled = true;
+                        input.checked = false;
+                        if(msg) msg.classList.remove('hidden');
+                    } else {
+                        label.classList.remove('opacity-40', 'cursor-not-allowed', 'bg-gray-100');
+                        label.classList.add('hover:border-emerald-500', 'hover:bg-emerald-50', 'cursor-pointer');
+                        input.disabled = false;
+                        if(msg) msg.classList.add('hidden');
+                    }
+                }
+
+                // Global Toggles
+                if(!paymentSettings.online_enabled) {
+                    document.querySelectorAll('.online-payment-option').forEach(el => {
+                        const input = el.querySelector('input');
+                        setOptionStatus(el.id, input.id, false);
+                    });
+                } else {
+                    // Granular Toggles
+                    setOptionStatus('upi-label', 'upi-input', paymentSettings.upi_enabled);
+                    setOptionStatus('card-label', 'card-input', paymentSettings.card_enabled);
+                    setOptionStatus('nb-label', 'nb-input', paymentSettings.netbanking_enabled);
+                    setOptionStatus('wallet-label', 'wallet-input', paymentSettings.wallet_enabled);
+                    setOptionStatus('emi-label', 'emi-input', paymentSettings.emi_enabled);
+                    setOptionStatus('paylater-label', 'paylater-input', paymentSettings.paylater_enabled);
+                }
+
+                // Handle COD Toggle
+                const codLabel = document.getElementById('payment-cod');
+                const codInput = document.getElementById('cod-input');
+                const codStatus = document.getElementById('cod-status-text');
+                
+                if (!paymentSettings.cod_enabled) {
+                    codLabel.classList.add('opacity-40', 'cursor-not-allowed', 'bg-gray-100');
+                    codLabel.classList.remove('hover:bg-emerald-50', 'cursor-pointer');
+                    codInput.disabled = true;
+                    codInput.checked = false;
+                    codStatus.innerText = 'Currently unavailable for this order';
+                    codStatus.classList.add('text-red-600', 'font-bold');
+                } else {
+                    codLabel.classList.remove('opacity-40', 'cursor-not-allowed', 'bg-gray-100');
+                    codLabel.classList.add('hover:bg-emerald-50', 'cursor-pointer');
+                    codInput.disabled = false;
+                    codStatus.innerText = 'Pay at your doorstep (Cash/UPI)';
+                    codStatus.classList.remove('text-red-600', 'font-bold');
+                }
+
+                // Set Default Selection (Prioritize UPI if available, else COD)
+                if (paymentSettings.online_enabled && paymentSettings.upi_enabled) {
+                    document.getElementById('upi-input').checked = true;
+                    setPayment('UPI');
+                } else if (paymentSettings.cod_enabled) {
+                    document.getElementById('cod-input').checked = true;
+                    setPayment('COD');
+                } else {
+                    // Find first available online method
+                    const firstAvailable = document.querySelector('.online-payment-option input:not(:disabled)');
+                    if (firstAvailable) {
+                        firstAvailable.checked = true;
+                        setPayment(firstAvailable.value);
+                    }
+                }
+            } catch(e) { console.error("Payment Settings Error:", e); }
+
+            // 3. Fetch Addresses
+            try {
+                const addrRes = await fetch('/api/get-user-addresses?t=' + Date.now());
+                const addrData = await addrRes.json();
+                
+                savedAddresses = addrData.addresses || [];
+                displayAddresses();
+
+                if (savedAddresses.length > 0) {
+                    selectAddress(0);
+                    document.getElementById('use-address-btn-container').classList.remove('hidden');
+                } else {
+                    selectedAddress = null;
+                    document.getElementById('summary-address').innerHTML = '<span class="text-red-500 font-bold">No address selected</span>';
+                    document.getElementById('use-address-btn-container').classList.add('hidden');
+                    if(document.getElementById('new-address-form').classList.contains('hidden')) {
+                        toggleNewAddressForm();
+                    }
+                }
+            } catch(e) { console.error("Address Fetch Error:", e); }
+
+            // Final UI Sync
+            setPayment(selectedPayment);
+            updateSidebarButton();
+            
+            // Hide Loader
+            setTimeout(() => {
+                const loader = document.getElementById('page-loader');
+                if(loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.style.display = 'none', 500);
+                }
+            }, 800);
+        }
+
+        function displayAddresses() {
+            const list = document.getElementById('address-list');
+            if (savedAddresses.length === 0) {
+                list.innerHTML = `
+                    <div class="col-span-full py-8 text-center bg-gray-50 border border-dashed border-gray-300 rounded-xl">
+                        <i class="fas fa-map-marker-alt text-3xl text-gray-300 mb-3 block"></i>
+                        <p class="text-sm text-gray-500 font-medium">No saved addresses found</p>
+                    </div>
+                `;
+                return;
+            }
+            list.innerHTML = savedAddresses.map((addr, idx) => {
+                const isSelected = selectedAddress && JSON.stringify(selectedAddress) === JSON.stringify(addr);
+                return `
+                <div class="address-box ${isSelected ? 'selected' : ''}" onclick="selectAddress(${idx})">
+                    <div class="delete-addr-btn absolute -top-2 -right-2 bg-white border border-red-200 text-red-500 w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-red-500 hover:text-white transition-all z-50 cursor-pointer" 
+                         title="Delete Address" 
+                         onclick="event.stopPropagation(); window.deleteAddress(${idx});">
+                        <i class="fas fa-trash-alt text-[10px]" style="pointer-events: none;"></i>
+                    </div>
+                    <p class="font-bold text-sm">${addr.name}</p>
+                    <p class="text-xs text-gray-600 mt-1">${addr.address}, ${addr.city}, ${addr.state} - ${addr.pincode}</p>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        <p class="text-[11px] text-gray-500 font-medium">Phone: ${addr.phone}</p>
+                        ${addr.alt_phone ? `<p class="text-[11px] text-gray-500 font-medium border-l border-gray-200 pl-2">Alt: ${addr.alt_phone}</p>` : ''}
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // Custom confirmation modal logic
+        let _deleteResolve = null;
+        const deleteModal = document.getElementById('delete-confirm-modal');
+        document.getElementById('delete-confirm-btn').onclick = () => {
+            deleteModal.classList.remove('show');
+            if (_deleteResolve) _deleteResolve(true);
+        };
+        document.getElementById('delete-cancel-btn').onclick = () => {
+            deleteModal.classList.remove('show');
+            if (_deleteResolve) _deleteResolve(false);
+        };
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) {
+                deleteModal.classList.remove('show');
+                if (_deleteResolve) _deleteResolve(false);
+            }
+        });
+
+        function showDeleteConfirm() {
+            return new Promise(resolve => {
+                _deleteResolve = resolve;
+                deleteModal.classList.add('show');
+            });
+        }
+
+        window.deleteAddress = async function(idx) {
+            const confirmed = await showDeleteConfirm();
+            if (!confirmed) return;
+
+            const loader = document.getElementById('page-loader');
+            const loaderText = document.getElementById('loader-text');
+            if(loader) {
+                loaderText.innerText = "Removing Address...";
+                loader.style.display = 'flex';
+                loader.style.opacity = '1';
+            }
+
+            try {
+                const res = await fetch(`/api/delete-address/${idx}`, {
+                    method: 'POST'
+                });
+
+                const result = await res.json();
+
+                if (result.status === 'success') {
+                    // Re-sync everything
+                    await initializeCheckout();
+                    
+                    setTimeout(() => {
+                        if(loader) {
+                            loader.style.opacity = '0';
+                            setTimeout(() => loader.style.display = 'none', 500);
+                        }
+                    }, 500);
+                } else {
+                    if(loader) loader.style.display = 'none';
+                    alert("Error: " + result.message);
+                }
+            } catch (err) {
+                if(loader) loader.style.display = 'none';
+                console.error("Delete Error:", err);
+                alert("Server connection failed");
+            }
+        };
+
+        function selectAddress(idx) {
+            savedAddresses.forEach(a => a.selected = false);
+            savedAddresses[idx].selected = true;
+            selectedAddress = savedAddresses[idx];
+            displayAddresses();
+            
+            // Sync summary
+            const detailStr = `
+                <span class="font-bold text-gray-800">${selectedAddress.name}</span><br>
+                <span class="text-gray-600">${selectedAddress.address}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.pincode}</span>
+            `;
+            document.getElementById('summary-address').innerHTML = detailStr;
+            
+            // Show the button container
+            const btnContainer = document.getElementById('use-address-btn-container');
+            if(btnContainer) btnContainer.classList.remove('hidden');
+        }
+
+        function goToStep(n) {
+            if(n > currentStep + 1) return; 
+            
+            // Mark previous steps as completed with tick
+            for(let i = 1; i < n; i++) {
+                const indicator = document.getElementById(`indicator-${i}`);
+                indicator.innerHTML = '<i class="fas fa-check"></i>';
+                indicator.classList.add('completed');
+            }
+            
+            // Revert current and future steps to numbers
+            for(let i = n; i <= 3; i++) {
+                const indicator = document.getElementById(`indicator-${i}`);
+                indicator.innerHTML = i;
+                indicator.classList.remove('completed');
+            }
+
+            // Fix: Update summary text immediately when moving
+            if(n > 2 || currentStep >= 2) {
+                setPayment(selectedPayment);
+            }
+
+            currentStep = Math.max(currentStep, n);
+            document.querySelectorAll('.step-card').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step-${n}`).classList.add('active');
+            updateSidebarButton();
+        }
+
+        function updateSidebarButton() {
+            const btn = document.getElementById('pay-btn');
+            const hint = document.getElementById('selection-hint');
+            if(currentStep === 3) {
+                btn.disabled = false;
+                hint.classList.add('hidden');
+                btn.classList.remove('opacity-50');
+            } else {
+                btn.disabled = true;
+                hint.classList.remove('hidden');
+                btn.classList.add('opacity-50');
+            }
+        }
+
+        function setPayment(type) {
+            selectedPayment = type;
+            let displayLabel = 'Cash on Delivery';
+            
+            // Handling Fee Logic
+            const hRow = document.getElementById('handling-row');
+            const hLabel = document.getElementById('summary-handling');
+            const hTextLabel = document.getElementById('handling-label');
+            const breakdown = document.getElementById('online-fee-breakdown');
+            
+            if(type === 'COD') {
+                displayLabel = 'Cash on Delivery';
+                hTextLabel.innerText = 'COD Handling Fee:';
+                if(breakdown) breakdown.classList.add('hidden');
+                
+                if(paymentSettings.charge_cod_fee) {
+                    handlingFee = COD_FEE;
+                    if(hLabel) hLabel.innerText = `₹${handlingFee}`;
+                    if(hLabel) hLabel.classList.remove('text-emerald-600');
+                } else {
+                    handlingFee = 0;
+                    if(hLabel) hLabel.innerText = 'FREE';
+                    if(hLabel) hLabel.classList.add('text-emerald-600');
+                }
+                if(hRow) hRow.classList.remove('hidden');
+            } else {
+                hTextLabel.innerText = 'Payment Handling:';
+                if(paymentSettings.fetch_razorpay_fee) {
+                    const feeRate = (paymentSettings.rzp_fee_percent || 2.0) / 100;
+                    const gstRate = (paymentSettings.rzp_gst_percent || 18.0) / 100;
+                    const rzpBase = baseSubtotal * feeRate;
+                    const gstFee = rzpBase * gstRate;
+                    handlingFee = rzpBase + gstFee;
+
+                    if(hLabel) hLabel.innerText = `₹${handlingFee.toFixed(2)}`;
+                    if(hLabel) hLabel.classList.remove('text-emerald-600');
+                    if(breakdown) {
+                        breakdown.classList.remove('hidden');
+                        document.getElementById('summary-rzp-pct').innerText = paymentSettings.rzp_fee_percent || 2.0;
+                        document.getElementById('summary-gst-pct').innerText = paymentSettings.rzp_gst_percent || 18.0;
+                        document.getElementById('summary-rzp-fee').innerText = `₹${rzpBase.toFixed(2)}`;
+                        document.getElementById('summary-gst-fee').innerText = `₹${gstFee.toFixed(2)}`;
+                    }
+                } else {
+                    handlingFee = 0;
+                    if(hLabel) hLabel.innerText = 'FREE';
+                    if(hLabel) hLabel.classList.add('text-emerald-600');
+                    if(breakdown) breakdown.classList.add('hidden');
+                }
+                if(hRow) hRow.classList.remove('hidden');
+            }
+
+            if(type === 'UPI') displayLabel = 'UPI Payment';
+            else if(type === 'CARD') displayLabel = 'Card Payment';
+            else if(type === 'NETBANKING') displayLabel = 'Net Banking';
+            else if(type === 'EMI') displayLabel = 'EMI / Installments';
+            else if(type === 'WALLET') displayLabel = 'Wallet Payment';
+            else if(type === 'PAYLATER') displayLabel = 'Pay Later';
+            
+            document.getElementById('summary-payment').innerText = displayLabel;
+            
+            // Update Final Total with Round Off
+            const rawTotal = baseSubtotal + shippingCharge + handlingFee;
+            currentTotal = Math.ceil(rawTotal);
+            const roundOff = currentTotal - rawTotal;
+
+            const roundRow = document.getElementById('round-off-row');
+            if (roundOff > 0) {
+                roundRow.classList.remove('hidden');
+                document.getElementById('summary-round-off').innerText = `+₹${roundOff.toFixed(2)}`;
+            } else {
+                roundRow.classList.add('hidden');
+            }
+
+            document.getElementById('summary-total').innerText = `₹${currentTotal}`;
+        }
+
+        function toggleNewAddressForm() {
+            document.getElementById('new-address-form').classList.toggle('hidden');
+        }
+
+        async function useNewAddress() {
+            const btn = document.getElementById('use-new-address-btn');
+            const data = {
+                name: document.getElementById('cust_name').value,
+                phone: document.getElementById('cust_phone').value,
+                alt_phone: document.getElementById('cust_alt_phone').value,
+                pincode: document.getElementById('pincode').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                address: document.getElementById('address').value,
+                landmark: document.getElementById('landmark').value
+            };
+            if(!data.name || !data.phone || !data.pincode || !data.city) return alert("Please fill all details and fetch location via Pincode");
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
+
+            try {
+                if(data.phone === data.alt_phone && data.alt_phone) {
+                    alert("Alternate number cannot be same as Primary number");
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Use this address';
+                    return;
+                }
+
+                const res = await fetch('/api/add-address', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if(result.status === 'success') {
+                    // Start Proper Sync
+                    const loader = document.getElementById('page-loader');
+                    const loaderText = document.getElementById('loader-text');
+                    if(loader) {
+                        loaderText.innerText = "Syncing Your Data...";
+                        loader.style.display = 'flex';
+                        loader.style.opacity = '1';
+                    }
+
+                    setTimeout(async () => {
+                        // Re-initialize all data behind the loader
+                        await initializeCheckout();
+                        toggleNewAddressForm();
+                        
+                        setTimeout(() => {
+                            if(loader) {
+                                loader.style.opacity = '0';
+                                setTimeout(() => loader.style.display = 'none', 500);
+                            }
+                            // Message removed as per request
+                        }, 500);
+                    }, 1200);
+                } else {
+                    alert(result.message || "Error saving address");
+                }
+            } catch(e) { alert("Error connecting to server"); }
+            finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Use this address';
+            }
+        }
+
+        // --- Pincode Fetching for Checkout ---
+        document.getElementById('pincode').addEventListener('input', async function(e) {
+            const pincode = e.target.value;
+            if (pincode.length === 6) {
+                const loader = document.getElementById('pin-loader');
+                const cityInput = document.getElementById('city');
+                const stateInput = document.getElementById('state');
+                
+                loader.classList.remove('hidden');
+                try {
+                    const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+                    const data = await response.json();
+                    if (data && data[0] && data[0].Status === "Success") {
+                        const postOffice = data[0].PostOffice[0];
+                        cityInput.value = postOffice.District;
+                        stateInput.value = postOffice.State;
+                    }
+                } catch (error) { console.error("Pincode Error:", error); }
+                finally { loader.classList.add('hidden'); }
+            }
+        });
+
+        function renderItems(data) {
+            document.getElementById('checkout-items').innerHTML = data.items.map(item => {
+                const originalPrice = item.original_price || item.price;
+                const hasDiscount = originalPrice > item.price;
+                return `
+                <div class="flex items-center gap-5 py-4 border-b border-gray-100 last:border-0">
+                    <div class="w-20 h-20 flex-shrink-0 bg-gray-50 rounded p-1">
+                        <img src="${item.image}" class="w-full h-full object-contain">
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="text-sm font-bold text-gray-800 leading-snug">${item.name}</h4>
+                        <div class="flex items-center gap-2 mt-1">
+                            ${hasDiscount ? `<span class="text-xs text-gray-400 line-through">₹${originalPrice}</span>` : ''}
+                            <span class="text-sm font-bold text-red-700">₹${item.price}</span>
+                        </div>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Quantity: ${item.qty}</p>
+                        ${shippingCharge === 0 ? `<p class="text-[10px] text-emerald-600 font-bold mt-1 uppercase tracking-tight"><i class="fas fa-check-circle"></i> Eligible for FREE Shipping</p>` : ''}
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function showErrorModal(title, message) {
+            const modal = document.getElementById('payment-error-modal');
+            if(modal.dataset.showing === 'true') return; // Prevent duplicate calls
+            modal.dataset.showing = 'true';
+            
+            // Move to end of body only if not already there (prevents blink)
+            if(document.body.lastElementChild !== modal) {
+                document.body.appendChild(modal);
+            }
+            document.getElementById('error-modal-title').innerText = title;
+            document.getElementById('error-modal-message').innerText = message;
+            modal.classList.remove('hidden');
+        }
+
+        function closeErrorModal() {
+            const modal = document.getElementById('payment-error-modal');
+            modal.classList.add('hidden');
+            modal.dataset.showing = 'false';
+        }
+
+        async function handleCheckout() {
+            if(!selectedAddress) return showErrorModal("Selection Required", "Please select a delivery address first.");
+            if(currentStep < 3) return showErrorModal("Step Incomplete", "Please complete all steps including payment selection first.");
+            if(!currentTotal || currentTotal <= 0) return showErrorModal("Order Error", "Cart total is invalid. Please refresh the page.");
+            
+            const btn = document.getElementById('pay-btn');
+            
+            if(selectedPayment !== 'COD') {
+                btn.innerHTML = '<i class="fas fa-circle-notch loader-spin mr-2"></i> Initializing ' + selectedPayment + '...';
+                btn.disabled = true;
+                
+                try {
+                    // 1. Get Keys and Config
+                    const settingsRes = await fetch('/admin/api/get-payment-settings');
+                    const settings = await settingsRes.json();
+                    
+                    // 2. Create Razorpay Order on Server
+                    const orderRes = await fetch('/api/create-razorpay-order', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ amount: currentTotal })
+                    });
+                    const rOrder = await orderRes.json();
+                    
+                    if(rOrder.status !== 'success') {
+                        throw new Error(rOrder.message || "Could not create payment order");
+                    }
+
+                    // Map our selectedPayment to Razorpay method config
+                    let preferredMethod = '';
+                    if(selectedPayment === 'UPI') preferredMethod = 'upi';
+                    else if(selectedPayment === 'CARD') preferredMethod = 'card';
+                    else if(selectedPayment === 'NETBANKING') preferredMethod = 'netbanking';
+                    else if(selectedPayment === 'EMI') preferredMethod = 'emi';
+                    else if(selectedPayment === 'WALLET') preferredMethod = 'wallet';
+                    else if(selectedPayment === 'PAYLATER') preferredMethod = 'paylater';
+
+                    // 3. Dynamic Method Restriction: Show ONLY what the user selected
+                    const allMethods = ['upi', 'card', 'netbanking', 'wallet', 'emi', 'paylater'];
+                    const hideMethods = [];
+                    
+                    // Force hide everything EXCEPT the preferred method
+                    if (preferredMethod) {
+                        allMethods.forEach(m => {
+                            if (m !== preferredMethod) {
+                                hideMethods.push({ method: m });
+                            }
+                        });
+                    }
+
+                    // Always respect admin settings
+                    if (!settings.upi_enabled && !hideMethods.some(h => h.method === 'upi')) hideMethods.push({method: 'upi'});
+                    if (!settings.card_enabled && !hideMethods.some(h => h.method === 'card')) hideMethods.push({method: 'card'});
+                    if (!settings.netbanking_enabled && !hideMethods.some(h => h.method === 'netbanking')) hideMethods.push({method: 'netbanking'});
+                    if (!settings.wallet_enabled && !hideMethods.some(h => h.method === 'wallet')) hideMethods.push({method: 'wallet'});
+                    if (!settings.emi_enabled && !hideMethods.some(h => h.method === 'emi')) hideMethods.push({method: 'emi'});
+                    if (!settings.paylater_enabled && !hideMethods.some(h => h.method === 'paylater')) hideMethods.push({method: 'paylater'});
+
+                    var options = {
+                        "key": settings.razorpay_key_id,
+                        "amount": rOrder.amount,
+                        "currency": "INR",
+                        "name": "Green Naturals",
+                        "description": "Pure Herbal Excellence",
+                        "image": window.location.origin + "/static/images/official_brand_logo.png",
+                        "order_id": rOrder.razorpay_order_id,
+                        "handler": function (response){ 
+                            processOrder(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature); 
+                        },
+                        "prefill": {
+                            "name": selectedAddress.name,
+                            "contact": selectedAddress.phone,
+                            "method": preferredMethod 
+                        },
+                        "theme": { "color": "#064e3b" },
+                        "config": {
+                            "display": {
+                                "hide": hideMethods,
+                                "preferences": { "show_default_blocks": true } 
+                            }
+                        },
+                        "modal": {
+                            "ondismiss": function() {
+                                btn.disabled = false;
+                                btn.innerText = "Place Your Order";
+                            }
+                        }
+                    };
+                    var rzp = new Razorpay(options);
+                    
+                    // HANDLE PAYMENT FAILURE
+                    rzp.on('payment.failed', function (response){
+                        btn.disabled = false;
+                        btn.innerText = "Place Your Order";
+                        showErrorModal("Payment Failed", response.error.description || "The transaction could not be completed.");
+                        console.error("Razorpay Failure:", response.error);
+                    });
+
+                    rzp.open();
+                } catch(err) {
+                    showErrorModal("Initialization Error", "Please check your internet connection and try again.");
+                    btn.disabled = false;
+                    btn.innerText = "Place Your Order";
+                }
+            } else {
+                processOrder('COD_ORDER');
+            }
+        }
+
+        async function processOrder(paymentId, razorOrderId = null, razorSignature = null) {
+            const btn = document.getElementById('pay-btn');
+            btn.innerHTML = '<i class="fas fa-circle-notch loader-spin mr-2"></i> Confirming Order...';
+            btn.disabled = true;
+            
+            const orderData = {
+                items: checkoutItemsData,
+                total: currentTotal,
+                shipping: shippingCharge,
+                handling_fee: handlingFee,
+                round_off: currentTotal - (baseSubtotal + shippingCharge + handlingFee),
+                payment_method: selectedPayment,
+                payment_id: paymentId,
+                razorpay_order_id: razorOrderId,
+                razorpay_signature: razorSignature,
+                customer: selectedAddress
+            };
+            try {
+                const res = await fetch('/api/place-order', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(orderData)
+                });
+                const result = await res.json();
+                if(result.status === 'success') {
+                    localStorage.removeItem(STORAGE_KEY);
+                    window.location.href = '/order-success?oid=' + result.order_id;
+                } else {
+                    showErrorModal("Order Error", result.message || "Something went wrong while placing your order.");
+                    btn.disabled = false;
+                    btn.innerText = "Place Your Order";
+                }
+            } catch(e) { 
+                showErrorModal("Order Error", "Order Confirmation Failed. If amount was deducted, please contact support."); 
+                btn.disabled = false;
+                btn.innerText = "Place Your Order";
+            }
+        }
+
+        // Pincode fetching logic is handled securely above.
+
+
+        // --- Smooth Exit Logic ---
+        function showPageLoader(customText) {
+            const loader = document.getElementById('page-loader');
+            const loaderText = document.getElementById('loader-text');
+            if(loader) {
+                if(customText && loaderText) loaderText.innerText = customText;
+                loader.style.display = 'flex';
+                setTimeout(() => loader.style.opacity = '1', 10);
+            }
+        }
+
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                const target = this.getAttribute('target');
+
+                if (href && href !== '#' && !href.startsWith('javascript:') && !target && !this.hasAttribute('download')) {
+                    e.preventDefault();
+                    
+                    let transitionText = "Loading...";
+                    if(href === '/') transitionText = "Returning to Home";
+                    else if(href === '/cart') transitionText = "Going back to Cart";
+                    
+                    showPageLoader(transitionText);
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 400);
+                }
+            });
+        });
+
+        window.addEventListener('pageshow', () => {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+        });
+
+        // Execute immediately since script is at the bottom of the body
+        initializeCheckout();
+
+    </script>
+</body>
+</html>
